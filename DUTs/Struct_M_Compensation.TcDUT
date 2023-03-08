@@ -8,6 +8,10 @@ STRUCT
 	RightTop:LREAL;
 	LeftBottom:LREAL;
 	RightBottom:LREAL;
+	LeftIn:LREAL;
+	RightIn:LREAL;
+	LeftOut:LREAL;
+	RightOut:LREAL;
 	InRange:BOOL;
 END_STRUCT
 END_TYPE]]></Declaration>

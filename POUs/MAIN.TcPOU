@@ -3,11 +3,8 @@
   <POU Name="MAIN" Id="{9221b602-3f7e-4757-b581-54b56182ad8f}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
-	pbGapMode: BOOL:=FALSE;
-	pbTaperMode: BOOL:=FALSE;
 	pbSingleCarrierMode: BOOL:=FALSE;
 	pbDebugMode:BOOL:=FALSE;
-	pbBCGapMode:BOOL:=FALSE;
 	fb_led_Show: FB_LedShow;
 	btn_reset: BOOL;
 	CPMU_PLC_Reset: PLC_Reset;
@@ -36,8 +33,7 @@ VAR
 	fb_ton1: TON;
 	fb_ton0: TON;
 (*IO*)
-	el1808_D1  AT%I* :ARRAY[1..8] OF BOOL;
-	el1008 AT%I*:BOOL;
+	el1808_D1  AT%I* :ARRAY[1..16] OF BOOL;
 	EStopTrig:BOOL;
 (*setAxisPosition*)
 	SetAxisPosState: INT;
@@ -56,11 +52,19 @@ VAR
 	moveDoneRightTop: BOOL;
 	moveDoneLeftBottom: BOOL;
 	moveDoneRightBottom: BOOL;
+	moveDoneLeftIn: BOOL;
+	moveDoneRightIn: BOOL;
+	moveDoneLeftOut: BOOL;
+	moveDoneRightOut: BOOL;
 	moveDoneAllAxis: BOOL;
 	moveStatusLeftTop: BOOL;
 	moveStatusRightTop: BOOL;
 	moveStatusLeftBottom: BOOL;
 	moveStatusRightBottom: BOOL;
+	moveStatusLeftIn: BOOL;
+	moveStatusRightIn: BOOL;
+	moveStatusLeftOut: BOOL;
+	moveStatusRightOut: BOOL;
 	moveStatusAllAxis: BOOL;
 
 (*Torque*)
@@ -68,12 +72,20 @@ VAR
 	Torque_RT AT%I*:INT;
 	Torque_LB AT%I*:INT;
 	Torque_RB AT%I*:INT;
+	Torque_LI AT%I*:INT;
+	Torque_RI AT%I*:INT;
+	Torque_LO AT%I*:INT;
+	Torque_RO AT%I*:INT;
 (**)
 	btn_setAxisPosition: BOOL;
 	ValueSet_LeftTop:LREAL;
 	ValueSet_RightTop:LREAL;
 	ValueSet_LeftBottom:LREAL;
 	ValueSet_RightBottom:LREAL;
+	ValueSet_LeftIn:LREAL;
+	ValueSet_RightIn:LREAL;
+	ValueSet_LeftOut:LREAL;
+	ValueSet_RightOut:LREAL;
 (**)
 	RestartTC: TC_Restart;
 	
@@ -91,7 +103,7 @@ VAR
 	InsertionDeviceName:STRING;
 (*UserMode*)
 	pbUserMode: BOOL:=TRUE;
-	EL1904 AT%I* :ARRAY[1..24] OF BOOL;
+	EL1904 AT%I* :ARRAY[1..48] OF BOOL;
 	setAxisPositionEnable: BOOL;
 	state_loadParameters: INT;
 	state_setLEPosBias: INT;
@@ -101,10 +113,18 @@ VAR
 	MC_SetLEPosBias_RightTop:MC_WriteParameter;
 	MC_SetLEPosBias_LeftBottom:MC_WriteParameter;
 	MC_SetLEPosBias_RightBottom:MC_WriteParameter;
-	PositionBias_LeftTop: LREAL:=10.1;
-	PositionBias_RightTop: LREAL:=10.2;
-	PositionBias_LeftBottom: LREAL:=10.3;
-	PositionBias_RightBottom: LREAL:=10.4;
+	MC_SetLEPosBias_LeftIn:MC_WriteParameter;
+	MC_SetLEPosBias_RightIn:MC_WriteParameter;
+	MC_SetLEPosBias_LeftOut:MC_WriteParameter;
+	MC_SetLEPosBias_RightOut:MC_WriteParameter;
+	PositionBias_LeftTop: LREAL:=0;
+	PositionBias_RightTop: LREAL:=0;
+	PositionBias_LeftBottom: LREAL:=0;
+	PositionBias_RightBottom: LREAL:=0;
+	PositionBias_LeftIn: LREAL:=0;
+	PositionBias_RightIn: LREAL:=0;
+	PositionBias_LeftOut: LREAL:=0;
+	PositionBias_RightOut: LREAL:=0;
 
 	LoadLEPB_R_TRIG: R_TRIG;
 	PositionBiasTON: TON;
@@ -179,6 +199,14 @@ VAR
 	DriveDiagMessage_RightTop:STRING;
 	DriveDiagMessage_LeftBottom:STRING;
 	DriveDiagMessage_RightBottom:STRING;
+	fb_SoEReadDiagMessage_LeftIn: FB_SoEReadDiagMessage;
+	fb_SoEReadDiagMessage_RightIn: FB_SoEReadDiagMessage;
+	fb_SoEReadDiagMessage_LeftOut: FB_SoEReadDiagMessage;
+	fb_SoEReadDiagMessage_RightOut: FB_SoEReadDiagMessage;
+	DriveDiagMessage_LeftIn:STRING;
+	DriveDiagMessage_RightIn:STRING;
+	DriveDiagMessage_LeftOut:STRING;
+	DriveDiagMessage_RightOut:STRING;
 	//
 	FB_SoEReadDiagNumber_LeftTop: FB_SoEReadDiagNumber;
 	FB_SoEReadDiagNumber_RightTop: FB_SoEReadDiagNumber;
@@ -188,6 +216,14 @@ VAR
 	DriveDiagNumber_RightTop:UDINT;
 	DriveDiagNumber_LeftBottom:UDINT;
 	DriveDiagNumber_RightBottom:UDINT;
+	FB_SoEReadDiagNumber_LeftIn: FB_SoEReadDiagNumber;
+	FB_SoEReadDiagNumber_RightIn: FB_SoEReadDiagNumber;
+	FB_SoEReadDiagNumber_LeftOut: FB_SoEReadDiagNumber;
+	FB_SoEReadDiagNumber_RightOut: FB_SoEReadDiagNumber;
+	DriveDiagNumber_LeftIn:UDINT;
+	DriveDiagNumber_RightIn:UDINT;
+	DriveDiagNumber_LeftOut:UDINT;
+	DriveDiagNumber_RightOut:UDINT;
 	bReloadDriveDiagMessageAndNumber: BOOL;
 	
 	(*load IOC*)
@@ -203,6 +239,8 @@ VAR
 	R_TRIG_Exekill: R_TRIG;
 	Exe_Kill_Done:BOOL;
 	LoadOpcIocTON:TON;
+	//
+	IDControlReadyTon:TON;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[(*加载Ricipe参数*)
@@ -236,22 +274,20 @@ IF  NOT USELinearEncoder AND setAxisPositionEnable AND btn_setAxisPosition THEN
 		FB_Set_AxisPosition.ValueSet_RightTop:=ValueSet_RightTop;
 		FB_Set_AxisPosition.ValueSet_LeftBottom:=ValueSet_LeftBottom;
 		FB_Set_AxisPosition.ValueSet_RightBottom:=ValueSet_RightBottom;
+		FB_Set_AxisPosition.ValueSet_LeftIn:=ValueSet_LeftIn;
+		FB_Set_AxisPosition.ValueSet_RightIn:=ValueSet_RightIn;
+		FB_Set_AxisPosition.ValueSet_LeftOut:=ValueSet_LeftOut;
+		FB_Set_AxisPosition.ValueSet_RightOut:=ValueSet_RightOut;
 		A_SetAxisPosition();
 	//END_IF
 END_IF
 (*******³Mode Select******)
 IF SafePLCRunOK OR Simulation THEN
-	IF pbSingleCarrierMode AND NOT pbTaperMode AND NOT pbGapMode AND NOT pbDebugMode AND NOT pbBCGapMode AND NOT pbUserMode THEN
+	IF pbSingleCarrierMode AND NOT pbDebugMode AND  NOT pbUserMode THEN
 		SingleCarrierMode();
-	ELSIF pbTaperMode  AND NOT pbSingleCarrierMode AND NOT pbGapMode  AND NOT pbDebugMode AND NOT pbBCGapMode AND NOT pbUserMode THEN
-		TaperMode();
-	ELSIF pbGapMode AND  NOT pbSingleCarrierMode AND NOT pbTaperMode  AND NOT pbDebugMode AND NOT pbBCGapMode AND NOT pbUserMode THEN
-		GapMode();
-	ELSIF pbDebugMode AND NOT pbGapMode AND NOT pbSingleCarrierMode AND NOT pbTaperMode AND NOT pbBCGapMode  AND NOT pbUserMode THEN
+	ELSIF pbDebugMode AND NOT pbSingleCarrierMode AND NOT pbUserMode THEN
 		DebugMode();
-	ELSIF pbBCGapMode AND NOT pbGapMode AND NOT pbSingleCarrierMode AND NOT pbTaperMode AND NOT pbDebugMode AND NOT pbUserMode THEN
-		BCGapMode();
-	ELSIF pbUserMode AND NOT pbGapMode AND NOT pbSingleCarrierMode AND NOT pbTaperMode AND NOT pbDebugMode AND NOT pbBCGapMode THEN
+	ELSIF pbUserMode AND NOT pbSingleCarrierMode AND NOT pbDebugMode THEN
 		UserMode();
 	END_IF
 END_IF
@@ -260,17 +296,15 @@ fb_led_Show();
 (*******Check Power status******)
 FB_Power(Check:=TRUE);
 st_Power:=FB_Power.PowerState;
-(******Check Couple Status*****)
-FB_CheckCoupleStatus(Check:=TRUE);
-st_Couple:=FB_CheckCoupleStatus.CoupleState;
+
 (*********RS232*********************)
 BackgroundEL();
 (*fbEL6001(TxBuffer:=TxBufferEL, RxBuffer:=RxBufferEL);*)
 
 (*获取温度传感器数据*)
-A_GetTemperatureSensorsData();
+//A_GetTemperatureSensorsData();
 (*低温补偿监控*)
-A_CryogenicCompensationMonitoring();
+//A_CryogenicCompensationMonitoring();
 
 (*设置position bias*)
 IF loadParametersDone AND (DriveStatus=1 OR simulation) THEN 
@@ -284,7 +318,6 @@ IF NOT simulation THEN
 END_IF
 (*IDControlReady*)
 IF ((DriveStatus<>0 AND SafePLCRunOK) OR simulation) AND NOT Error THEN
-//IF (SafePLCRunOK OR simulation) AND NOT Error THEN
 	IDControlReady:=TRUE;
 ELSE
 	IDControlReady:=FALSE;
@@ -323,6 +356,24 @@ END_IF]]></ST>
 	NOT KS_LeftBottom_Near_Contact2 OR
 	NOT KS_RightBottom_Near_Contact1 OR
 	NOT KS_RightBottom_Near_Contact2 OR
+	
+	NOT KS_LeftIn_Far_Contact1 OR
+	NOT KS_LeftIn_Far_Contact2 OR
+	NOT KS_RightIn_Far_Contact1 OR
+	NOT KS_RightIn_Far_Contact2 OR
+	NOT KS_LeftOut_Far_Contact1 OR
+	NOT KS_LeftOut_Far_Contact2 OR
+	NOT KS_RightOut_Far_Contact1 OR
+	NOT KS_RightOut_Far_Contact2 OR
+	
+	NOT KS_LeftIn_Near_Contact1 OR
+	NOT KS_LeftIn_Near_Contact2 OR
+	NOT KS_RightIn_Near_Contact1 OR
+	NOT KS_RightIn_Near_Contact2 OR
+	NOT KS_LeftOut_Near_Contact1 OR
+	NOT KS_LeftOut_Near_Contact2 OR
+	NOT KS_RightOut_Near_Contact1 OR
+	NOT KS_RightOut_Near_Contact2 OR
 (*E-STOP*)
 	NOT KS_CabinetEmergency_contact1 OR
 	NOT KS_CabinetEmergency_contact2 OR
@@ -356,7 +407,24 @@ END_IF
 	KS_RightBottom_Far_Contact1:=TRUE;
 	KS_RightBottom_Far_Contact2:=TRUE;
 	KS_RightBottom_Near_Contact1:=TRUE;
-	KS_RightBottom_Near_Contact2:=TRUE;		
+	KS_RightBottom_Near_Contact2:=TRUE;	
+
+	KS_LeftIn_Far_Contact1:=TRUE;
+	KS_LeftIn_Far_Contact2:=TRUE;
+	KS_LeftIn_Near_Contact1:=TRUE;
+	KS_LeftIn_Near_Contact2:=TRUE;
+	KS_RightIn_Far_Contact1:=TRUE;
+	KS_RightIn_Far_Contact2:=TRUE;
+	KS_RightIn_Near_Contact1:=TRUE;
+	KS_RightIn_Near_Contact2:=TRUE;
+	KS_LeftOut_Far_Contact1:=TRUE;
+	KS_LeftOut_Far_Contact2:=TRUE;
+	KS_LeftOut_Near_Contact1:=TRUE;
+	KS_LeftOut_Near_Contact2:=TRUE;	
+	KS_RightOut_Far_Contact1:=TRUE;
+	KS_RightOut_Far_Contact2:=TRUE;
+	KS_RightOut_Near_Contact1:=TRUE;
+	KS_RightOut_Near_Contact2:=TRUE;		
 	(*E-STOP*)
 	KS_CabinetEmergency_contact1:=TRUE;
 	KS_CabinetEmergency_contact2:=TRUE;	
@@ -368,154 +436,105 @@ END_IF
 	KS_softEmergency2_Contact:=TRUE;
 
 ELSE
-	KS_LeftTop_Far_Contact1:=EL1904[1];//c1
-	KS_LeftTop_Far_Contact2:=EL1904[2];//c2
-	KS_LeftTop_Near_Contact1:=EL1904[3];//c3
-	KS_LeftTop_Near_Contact2:=EL1904[4];//c4
+	KS_LeftTop_Near_Contact1:=EL1904[1];//c3
+	KS_LeftTop_Near_Contact2:=EL1904[2];//c4
+	KS_LeftTop_Far_Contact1:=EL1904[3];//c1
+	KS_LeftTop_Far_Contact2:=EL1904[4];//c2
+
+	KS_RightTop_Near_Contact1:=EL1904[5];
+	KS_RightTop_Near_Contact2:=EL1904[6];
+	KS_RightTop_Far_Contact1:=EL1904[7];
+	KS_RightTop_Far_Contact2:=EL1904[8];
+
+	KS_LeftBottom_Near_Contact1:=EL1904[9];
+	KS_LeftBottom_Near_Contact2:=EL1904[10];
+	KS_LeftBottom_Far_Contact1:=EL1904[11];
+	KS_LeftBottom_Far_Contact2:=EL1904[12];
+
+	KS_RightBottom_Near_Contact1:=EL1904[13];
+	KS_RightBottom_Near_Contact2:=EL1904[14];	
+	KS_RightBottom_Far_Contact1:=EL1904[15];
+	KS_RightBottom_Far_Contact2:=EL1904[16];
 	
-	KS_RightTop_Far_Contact1:=EL1904[5];
-	KS_RightTop_Far_Contact2:=EL1904[6];
-	KS_RightTop_Near_Contact1:=EL1904[7];
-	KS_RightTop_Near_Contact2:=EL1904[8];
-	
-	KS_LeftBottom_Far_Contact1:=EL1904[9];
-	KS_LeftBottom_Far_Contact2:=EL1904[10];
-	KS_LeftBottom_Near_Contact1:=EL1904[11];
-	KS_LeftBottom_Near_Contact2:=EL1904[12];
-	
-	KS_RightBottom_Far_Contact1:=EL1904[13];
-	KS_RightBottom_Far_Contact2:=EL1904[14];
-	KS_RightBottom_Near_Contact1:=EL1904[15];
-	KS_RightBottom_Near_Contact2:=EL1904[16];	
-	
+	KS_LeftIn_Near_Contact1:=EL1904[17];//c3
+	KS_LeftIn_Near_Contact2:=EL1904[18];//c4
+	KS_LeftIn_Far_Contact1:=EL1904[19];//c1
+	KS_LeftIn_Far_Contact2:=EL1904[20];//c2
+
+	KS_RightIn_Near_Contact1:=EL1904[21];
+	KS_RightIn_Near_Contact2:=EL1904[22];
+	KS_RightIn_Far_Contact1:=EL1904[23];
+	KS_RightIn_Far_Contact2:=EL1904[24];
+
+	KS_LeftOut_Near_Contact1:=EL1904[25];
+	KS_LeftOut_Near_Contact2:=EL1904[26];
+	KS_LeftOut_Far_Contact1:=EL1904[27];
+	KS_LeftOut_Far_Contact2:=EL1904[28];
+
+	KS_RightOut_Near_Contact1:=EL1904[29];
+	KS_RightOut_Near_Contact2:=EL1904[30];	
+	KS_RightOut_Far_Contact1:=EL1904[31];
+	KS_RightOut_Far_Contact2:=EL1904[32];
 	
 	(*E-STOP*)
-	KS_CabinetEmergency_contact1:=EL1904[17];
-	KS_CabinetEmergency_contact2:=EL1904[18];
+	KS_CabinetEmergency_contact1:=EL1904[33];
+	KS_CabinetEmergency_contact2:=EL1904[34];
 	
-	KS_handEmergency1_Contact1:=EL1904[19];
-	KS_handEmergency1_Contact2:=EL1904[20];
-	KS_handEmergency2_Contact1:=EL1904[21];
-	KS_handEmergency2_Contact2:=EL1904[22];
+	KS_handEmergency1_Contact1:=EL1904[35];
+	KS_handEmergency1_Contact2:=EL1904[36];
+	KS_handEmergency2_Contact1:=EL1904[37];
+	KS_handEmergency2_Contact2:=EL1904[38];
 	
-	KS_softEmergency2_Contact:=EL1904[23];
+	KS_softEmergency2_Contact:=EL1904[39];
 	END_IF]]></ST>
       </Implementation>
     </Action>
     <Action Name="A_CheckLimitSwitch" Id="{1026ae85-58e3-4004-8dd3-becfab0085f9}" FolderPath="Check\">
       <Implementation>
-        <ST><![CDATA[(*******1.´ÓIO»ñÈ¡ÏÞÎ»×´Ì¬******)
-(**)
+        <ST><![CDATA[(**)
 IF simulation THEN
 	(**)
-	LS_LeftTop_Top:=TRUE;
-	LS_LeftTop_Bottom:=TRUE;
-	LS_RightTop_Top:=TRUE;
-	LS_RightTop_Bottom:=TRUE;
-	LS_LeftBottom_Top:=TRUE;
-	LS_LeftBottom_Bottom:=TRUE;
-	LS_RightBottom_Top:=TRUE;
-	LS_RightBottom_Bottom:=TRUE;
+	LS_LeftTop_Far:=TRUE;
+	LS_LeftTop_Near:=TRUE;
+	LS_RightTop_Far:=TRUE;
+	LS_RightTop_Near:=TRUE;
+	LS_LeftBottom_Far:=TRUE;
+	LS_LeftBottom_Near:=TRUE;
+	LS_RightBottom_Far:=TRUE;
+	LS_RightBottom_Near:=TRUE;	
+	LS_LeftIn_Far:=TRUE;
+	LS_LeftIn_Near:=TRUE;
+	LS_RightIn_Far:=TRUE;
+	LS_RightIn_Near:=TRUE;
+	LS_LeftOut_Far:=TRUE;
+	LS_LeftOut_Near:=TRUE;
+	LS_RightOut_Far:=TRUE;
+	LS_RightOut_Near:=TRUE;
 ELSE
-	LS_LeftTop_Top :=el1808_D1[1];
-	LS_LeftTop_Bottom:=el1808_D1[3];
-	LS_RightTop_Top:=el1808_D1[2];
-	LS_RightTop_Bottom:=el1808_D1[4];
-	LS_LeftBottom_Top:=el1808_D1[7];
-	LS_LeftBottom_Bottom:=el1808_D1[5];
-	LS_RightBottom_Top:=el1808_D1[8];
-	LS_RightBottom_Bottom:=el1808_D1[6];
-END_IF
-(*
-	LS_LeftTop_Top:=TRUE;
-	LS_LeftTop_Bottom:=TRUE;
-	LS_RightTop_Top:=TRUE;
-	LS_RightTop_Bottom:=TRUE;
-	LS_LeftBottom_Top:=TRUE;
-	LS_LeftBottom_Bottom:=TRUE;
-	LS_RightBottom_Top:=TRUE;
-	LS_RightBottom_Bottom:=TRUE;
-*)
-(******2.TopÏÞÎ»»òÕßBottomÏÞÎ»ÓÐÒ»¸ö´¥·¢£¬È«¾Ö±äÁ¿¡£¸øMC_POWERÓÃÓÚ·½Ïò¿ØÖÆ£¬ÓÐÒ»¸öÏÞÎ»Îª´¥·¢ÎªFALSE£¬ÔòUnreach_LSÎªFALSE******)
-Unreach_LS_Top:=LS_LeftTop_Top AND LS_RightTop_Top AND LS_LeftBottom_Top AND LS_RightBottom_Top;
-Unreach_LS_Bottom:=LS_LeftTop_Bottom AND LS_RightTop_Bottom AND LS_LeftBottom_Bottom AND LS_RightBottom_Bottom;
-(**************************ÏòTopÔË¶¯Ê±£¬´¥ÅöBottomÏÞÎ»¿ª¹Ø£¬»òÕßÏà·´£¬ESTOP**************************************)
-(*
-IF LeftTopLin.Status.Moving AND Velo_LeftTopLin>0 THEN
-	IF NOT Unreach_LS_Bottom THEN
-		Error:=TRUE;
-		ErrorID:=61;
-		FB_PlcEmergencyStop();
-	END_IF
-ELSIF LeftTopLin.Status.Moving AND Velo_LeftTopLin<0 THEN
-	IF NOT Unreach_LS_Top THEN
-		Error:=TRUE;
-		ErrorID:=62;
-		FB_PlcEmergencyStop();
-	END_IF
-ELSIF RightTopLin.Status.Moving AND Velo_RightTopLin>0 THEN
-	IF NOT Unreach_LS_Bottom THEN
-		Error:=TRUE;
-		ErrorID:=63;
-		FB_PlcEmergencyStop();
-	END_IF
-ELSIF RightTopLin.Status.Moving AND Velo_RightTopLin<0 THEN
-	IF NOT  Unreach_LS_Top THEN
-		Error:=TRUE;
-		ErrorID:=64;
-		FB_PlcEmergencyStop();
-	END_IF
-ELSIF LeftBottomLin.Status.Moving AND Velo_LeftBottomLin>0 THEN
-	IF NOT Unreach_LS_Bottom THEN
-		Error:=TRUE;
-		ErrorID:=65;
-		FB_PlcEmergencyStop();
-	END_IF
-ELSIF LeftBottomLin.Status.Moving AND Velo_LeftBottomLin<0 THEN
-	IF NOT Unreach_LS_Top THEN
-		Error:=TRUE;
-		ErrorID:=66;
-		FB_PlcEmergencyStop();
-	END_IF
-ELSIF RightBottomLin.Status.Moving AND Velo_RightBottomLin>0 THEN
-	IF NOT Unreach_LS_Bottom THEN
-		Error:=TRUE;
-		ErrorID:=67;
-		FB_PlcEmergencyStop();
-	END_IF
-ELSIF RightBottomLin.Status.Moving AND Velo_RightBottomLin<0 THEN
-	IF NOT Unreach_LS_Top THEN
-		Error:=TRUE;
-		ErrorID:=68;
-		FB_PlcEmergencyStop();
-	END_IF
-END_IF
-*)
-(*
-(******3.ÓÐÒ»¸öÏÞÎ»´¥·¢£¬ delayÊ±¼äºó£¬¼à²âÖáÊÇ·ñÔÚÍ£Ö¹×´Ì¬£¬ÈôÃ»ÓÐ£¬Emergency AND PowerOff******)
-IF NOT Unreach_LS_Top OR NOT Unreach_LS_Bottom THEN
-	fb_ton.IN:=TRUE;
-END_IF
-IF fb_ton.Q THEN
-	IF LeftTopLin.Status.Moving OR RightTopLin.Status.Moving OR LeftBottomLin.Status.Moving OR RightBottomLin.Status.Moving THEN
-		FB_PlcEmergencyStop();
-		fb_ton.IN:=FALSE;
-		Error:=TRUE;
-		EStopTrig:=TRUE;
-		ErrorID:=1;
-		(*FB_Power_Off(Execute:=TRUE);*)
-	END_IF
+	LS_LeftTop_Near :=el1808_D1[1];
+	LS_LeftTop_Far:=el1808_D1[2];
+	LS_RightTop_Near:=el1808_D1[3];
+	LS_RightTop_Far:=el1808_D1[4];
+	LS_LeftBottom_Near:=el1808_D1[5];
+	LS_LeftBottom_Far:=el1808_D1[6];
+	LS_RightBottom_Near:=el1808_D1[7];
+	LS_RightBottom_Far:=el1808_D1[8];
+	LS_LeftIn_Near :=el1808_D1[9];
+	LS_LeftIn_Far:=el1808_D1[10];
+	LS_RightIn_Near:=el1808_D1[11];
+	LS_RightIn_Far:=el1808_D1[12];
+	LS_LeftOut_Near:=el1808_D1[13];
+	LS_LeftOut_Far:=el1808_D1[14];
+	LS_RightOut_Near:=el1808_D1[15];
+	LS_RightOut_Far:=el1808_D1[16];
 END_IF
 
-(*******4.µ¥ÖáÉÏÏÂÏÞÎ»¾ùÎªFALSEÊ±£¬ÏÞÎ»´íÎó£¬Emergency*******)
-IF (NOT LS_LeftTop_Top AND NOT LS_LeftTop_Bottom) OR  (NOT  LS_RightTop_Top AND NOT LS_RightTop_Bottom)
-		OR (NOT LS_LeftBottom_Top AND NOT LS_LeftBottom_Bottom) OR (NOT LS_RightBottom_Top AND NOT LS_RightBottom_Bottom) THEN
-	(*FB_Plc_EmergencyStop();*)
-	Error:=TRUE;
-	EStopTrig:=TRUE;
-	ErrorID:=2;
-END_IF
-*)]]></ST>
+(********************)
+Unreach_LS_Far:=LS_LeftTop_Far AND LS_RightTop_Far AND LS_LeftBottom_Far AND LS_RightBottom_Far
+				AND LS_LeftIn_Far AND LS_RightIn_Far AND LS_LeftOut_Far AND LS_RightOut_Far;
+Unreach_LS_Near:=LS_LeftTop_Near AND LS_RightTop_Near AND LS_LeftBottom_Near AND LS_RightBottom_Near
+				AND LS_LeftIn_Near AND LS_RightIn_Near AND LS_LeftOut_Near AND LS_RightOut_Near;
+]]></ST>
       </Implementation>
     </Action>
     <Action Name="A_CryogenicCompensationMonitoring" Id="{196f46d5-b4be-43fe-a564-735eda66c49f}" FolderPath="Temperature\">
@@ -589,40 +608,72 @@ CASE m_GetDriveStatusState OF
 		DriveDiagMessage_RightTop:=fb_SoEReadDiagMessage_RightTop.sDiagMessage.strData;
 		DriveDiagMessage_LeftBottom:=fb_SoEReadDiagMessage_LeftBottom.sDiagMessage.strData;
 		DriveDiagMessage_RightBottom:=fb_SoEReadDiagMessage_RightBottom.sDiagMessage.strData;
+		DriveDiagMessage_LeftIn:=fb_SoEReadDiagMessage_LeftIn.sDiagMessage.strData;
+		DriveDiagMessage_RightIn:=fb_SoEReadDiagMessage_RightIn.sDiagMessage.strData;
+		DriveDiagMessage_LeftOut:=fb_SoEReadDiagMessage_LeftOut.sDiagMessage.strData;
+		DriveDiagMessage_RightOut:=fb_SoEReadDiagMessage_RightOut.sDiagMessage.strData;
 		//
 		DriveDiagNumber_LeftTop:=FB_SoEReadDiagNumber_LeftTop.iDiagNumber;
 		DriveDiagNumber_RightTop:=FB_SoEReadDiagNumber_RightTop.iDiagNumber;
 		DriveDiagNumber_LeftBottom:=FB_SoEReadDiagNumber_LeftBottom.iDiagNumber;
 		DriveDiagNumber_RightBottom:=FB_SoEReadDiagNumber_RightBottom.iDiagNumber;
+		DriveDiagNumber_LeftIn:=FB_SoEReadDiagNumber_LeftIn.iDiagNumber;
+		DriveDiagNumber_RightIn:=FB_SoEReadDiagNumber_RightIn.iDiagNumber;
+		DriveDiagNumber_LeftOut:=FB_SoEReadDiagNumber_LeftOut.iDiagNumber;
+		DriveDiagNumber_RightOut:=FB_SoEReadDiagNumber_RightOut.iDiagNumber;
 		//
 		IF 	NOT fb_SoEReadDiagMessage_LeftTop.bBusy
 			AND NOT fb_SoEReadDiagMessage_RightTop.bBusy
 			AND NOT fb_SoEReadDiagMessage_LeftBottom.bBusy
 			AND NOT fb_SoEReadDiagMessage_RightBottom.bBusy 
+			AND NOT fb_SoEReadDiagMessage_LeftIn.bBusy
+			AND NOT fb_SoEReadDiagMessage_RightIn.bBusy
+			AND NOT fb_SoEReadDiagMessage_LeftOut.bBusy
+			AND NOT fb_SoEReadDiagMessage_RightOut.bBusy 
 			AND NOT FB_SoEReadDiagNumber_LeftTop.bBusy
 			AND NOT  FB_SoEReadDiagNumber_RightTop.bBusy
 			AND NOT FB_SoEReadDiagNumber_LeftBottom.bBusy
-			AND NOT FB_SoEReadDiagNumber_RightBottom.bBusy THEN
+			AND NOT FB_SoEReadDiagNumber_RightBottom.bBusy
+			AND NOT FB_SoEReadDiagNumber_LeftIn.bBusy
+			AND NOT  FB_SoEReadDiagNumber_RightIn.bBusy
+			AND NOT FB_SoEReadDiagNumber_LeftOut.bBusy
+			AND NOT FB_SoEReadDiagNumber_RightOut.bBusy THEN
 			m_GetDriveStatusState:=88;
 		END_IF
 		IF 	fb_SoEReadDiagMessage_LeftTop.bError
 			OR fb_SoEReadDiagMessage_RightTop.bError
 			OR fb_SoEReadDiagMessage_LeftBottom.bError
 			OR fb_SoEReadDiagMessage_RightBottom.bError
+			OR fb_SoEReadDiagMessage_LeftIn.bError
+			OR fb_SoEReadDiagMessage_RightIn.bError
+			OR fb_SoEReadDiagMessage_LeftOut.bError
+			OR fb_SoEReadDiagMessage_RightOut.bError
 			OR FB_SoEReadDiagNumber_LeftTop.bError
 			OR FB_SoEReadDiagNumber_RightTop.bError
 			OR FB_SoEReadDiagNumber_LeftBottom.bError
-			OR FB_SoEReadDiagNumber_RightBottom.bError THEN
+			OR FB_SoEReadDiagNumber_RightBottom.bError 
+			OR FB_SoEReadDiagNumber_LeftTop.bError
+			OR FB_SoEReadDiagNumber_RightTop.bError
+			OR FB_SoEReadDiagNumber_LeftBottom.bError
+			OR FB_SoEReadDiagNumber_RightBottom.bError	
+			OR FB_SoEReadDiagNumber_LeftIn.bError
+			OR FB_SoEReadDiagNumber_RightIn.bError
+			OR FB_SoEReadDiagNumber_LeftOut.bError
+			OR FB_SoEReadDiagNumber_RightOut.bError THEN
 			m_GetDriveStatusState:=-100;
 		END_IF
 		(*Drive Status*)
 		//D012, Axis state machine: Control and power section ready
 		IF DriveDiagNumber_LeftTop=16#D012 AND DriveDiagNumber_RightTop=16#D012
-			AND DriveDiagNumber_LeftBottom=16#D012 AND DriveDiagNumber_RightBottom=16#D012 THEN
+			AND DriveDiagNumber_LeftBottom=16#D012 AND DriveDiagNumber_RightBottom=16#D012 
+			AND DriveDiagNumber_LeftIn=16#D012 AND DriveDiagNumber_RightIn=16#D012
+			AND DriveDiagNumber_LeftOut=16#D012 AND DriveDiagNumber_RightOut=16#D012  THEN
 			DriveStatus:=1;
 		//D013, Axis state machine: Axis in operation
 		ELSIF DriveDiagNumber_LeftTop=16#D013 AND DriveDiagNumber_RightTop=16#D013
-			AND DriveDiagNumber_LeftBottom=16#D013 AND DriveDiagNumber_RightBottom=16#D013 THEN
+			AND DriveDiagNumber_LeftBottom=16#D013 AND DriveDiagNumber_RightBottom=16#D013
+			AND DriveDiagNumber_LeftIn=16#D013 AND DriveDiagNumber_RightIn=16#D013
+			AND DriveDiagNumber_LeftOut=16#D013 AND DriveDiagNumber_RightOut=16#D013 THEN
 			DriveStatus:=2;
 		ELSE
 			DriveStatus:=0;
@@ -2723,36 +2774,53 @@ END_IF
     </Action>
     <Action Name="A_InitAxisParameters" Id="{a92c2dd6-12b0-4a71-a4bc-d7afbc965cb4}" FolderPath="Axis\">
       <Implementation>
-        <ST><![CDATA[(*ÖáÎ»ÖÃ¡¢ËÙ¶È¡¢PosDiff*)
-
+        <ST><![CDATA[
 	Pos_LeftTopLin:=DINT_TO_LREAL(LREAL_TO_DINT(LeftTopLin.NcToPlc.ActPos*100000))/100000;
 	Pos_RightTopLin:=DINT_TO_LREAL(LREAL_TO_DINT(RightTopLin.NcToPlc.ActPos*100000))/100000;
 	Pos_LeftBottomLin:=DINT_TO_LREAL(LREAL_TO_DINT(LeftBottomLin.NcToPlc.ActPos*100000))/100000;
-	Pos_RightBottomLin:=DINT_TO_LREAL(LREAL_TO_DINT(RightBottomLin.NcToPlc.ActPos*100000))/100000;
+	Pos_RightBottomLin:=DINT_TO_LREAL(LREAL_TO_DINT(RightBottomLin.NcToPlc.ActPos*100000))/100000;	
+	Pos_LeftInLin:=DINT_TO_LREAL(LREAL_TO_DINT(LeftInLin.NcToPlc.ActPos*100000))/100000;
+	Pos_RightInLin:=DINT_TO_LREAL(LREAL_TO_DINT(RightInLin.NcToPlc.ActPos*100000))/100000;
+	Pos_LeftOutLin:=DINT_TO_LREAL(LREAL_TO_DINT(LeftOutLin.NcToPlc.ActPos*100000))/100000;
+	Pos_RightOutLin:=DINT_TO_LREAL(LREAL_TO_DINT(RightOutLin.NcToPlc.ActPos*100000))/100000;
 
-	
-	LB_TestRecord:=Pos_LeftBottomLin-5;
-	RB_TestRecord:=Pos_RightBottomLin-5;
 	moveStatusLeftTop:=LeftTopLin.Status.Moving;
 	moveStatusRightTop:=RightTopLin.Status.Moving;
 	moveStatusLeftBottom:=LeftBottomLin.Status.Moving;
 	moveStatusRightBottom:=RightBottomLin.Status.Moving;
-	moveStatusAllAxis:=moveStatusLeftTop AND moveStatusRightTop AND moveStatusLeftBottom AND moveStatusRightBottom;
+	moveStatusLeftIn:=LeftInLin.Status.Moving;
+	moveStatusRightIn:=RightInLin.Status.Moving;
+	moveStatusLeftOut:=LeftOutLin.Status.Moving;
+	moveStatusRightOut:=RightOutLin.Status.Moving;
+	moveStatusAllAxis:=moveStatusLeftTop AND moveStatusRightTop AND moveStatusLeftBottom AND moveStatusRightBottom
+						AND moveStatusLeftIn AND moveStatusRightIn AND moveStatusLeftOut AND moveStatusRightOut;
 
 	Velo_LeftTopLin:=DINT_TO_LREAL(LREAL_TO_DINT(LeftTopLin.NcToPlc.ActVelo*100000))/100000;
 	Velo_RightTopLin:=DINT_TO_LREAL(LREAL_TO_DINT(RightTopLin.NcToPlc.ActVelo*100000))/100000;
 	Velo_LeftBottomLin:=DINT_TO_LREAL(LREAL_TO_DINT(LeftBottomLin.NcToPlc.ActVelo*100000))/100000;
 	Velo_RightBottomLin:=DINT_TO_LREAL(LREAL_TO_DINT(RightBottomLin.NcToPlc.ActVelo*100000))/100000;
+	Velo_LeftInLin:=DINT_TO_LREAL(LREAL_TO_DINT(LeftInLin.NcToPlc.ActVelo*100000))/100000;
+	Velo_RightInLin:=DINT_TO_LREAL(LREAL_TO_DINT(RightInLin.NcToPlc.ActVelo*100000))/100000;
+	Velo_LeftOutLin:=DINT_TO_LREAL(LREAL_TO_DINT(LeftOutLin.NcToPlc.ActVelo*100000))/100000;
+	Velo_RightOutLin:=DINT_TO_LREAL(LREAL_TO_DINT(RightOutLin.NcToPlc.ActVelo*100000))/100000;
 
 	PosDiff_LeftTopLin_actual:=LeftTopLin.NcToPlc.PosDiff;
 	PosDiff_RightTopLin_actual:=RightTopLin.NcToPlc.PosDiff;
 	PosDiff_LeftBottomLin_actual:=LeftBottomLin.NcToPlc.PosDiff;
 	PosDiff_RightBottomLin_actual:=RightBottomLin.NcToPlc.PosDiff;
+	PosDiff_LeftInLin_actual:=LeftInLin.NcToPlc.PosDiff;
+	PosDiff_RightInLin_actual:=RightInLin.NcToPlc.PosDiff;
+	PosDiff_LeftOutLin_actual:=LeftOutLin.NcToPlc.PosDiff;
+	PosDiff_RightOutLin_actual:=RightOutLin.NcToPlc.PosDiff;
 
 	LeftTopLin.ReadStatus();
 	RightTopLin.ReadStatus();
 	LeftBottomLin.ReadStatus();
 	RightBottomLin.ReadStatus();
+	LeftInLin.ReadStatus();
+	RightInLin.ReadStatus();
+	LeftOutLin.ReadStatus();
+	RightOutLin.ReadStatus();
 
 
 
@@ -2770,7 +2838,7 @@ END_IF
 			state_loadParameters:=1;
 		END_IF
 	1:
-		 ReturnDwordLoad:=RecipeManCommands.LoadAndWriteRecipe(RecipeDefinitionName:='Recipes' , RecipeName:='Parameters');
+		 ReturnDwordLoad:=RecipeManCommands.LoadAndWriteRecipe(RecipeDefinitionName:='Recipes' , RecipeName:='IAMWParameters');
     	 LoadParameter:=FALSE;
 		 IF ReturnDwordLoad<>0 THEN
 		 	state_loadParameters:=-100;
@@ -2933,6 +3001,50 @@ IF ABS(PosDiff_LeftTopLin_actual-PosDiff_RightTopLin_actual)>0.05 THEN
 ELSIF ABS(PosDiff_LeftBottomLin_actual-PosDiff_RightBottomLin_actual)>0.05 THEN
 	ErrorID:=206;
 	ErrorDescription:='ABS(PosDiff_LeftBottomLin_actual-PosDiff_RightBottomLin_actual)>0.05';
+	Error:=TRUE;
+	FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+END_IF
+
+//In out
+IF ABS(PosDiff_LeftInLin_actual)>PosDiff_LeftInLin THEN
+	ErrorID:=201;
+	Error:=TRUE;
+	ErrorDescription:='ABS(PosDiff_LeftInLin_actual)>PosDiff_LeftInLin';
+	FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+END_IF
+IF ABS(PosDiff_RightInLin_actual)>PosDiff_RightInLin THEN
+	ErrorID:=202;
+	Error:=TRUE;
+	ErrorDescription:='ABS(PosDiff_RightInLin_actual)>PosDiff_RightInLin';
+	FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+END_IF
+IF ABS(PosDiff_LeftOutLin_actual)>PosDiff_LeftOutLin THEN
+	ErrorID:=203;
+	Error:=TRUE;
+	ErrorDescription:='ABS(PosDiff_LeftOutLin_actual)>PosDiff_LeftOutLin';
+	FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+END_IF
+IF ABS(PosDiff_RightOutLin_actual)>PosDiff_RightOutLin THEN
+	ErrorID:=204;
+	ErrorDescription:='ABS(PosDiff_RightOutLin_actual)>PosDiff_RightOutLin';
+	Error:=TRUE;
+	FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+END_IF
+//
+IF ABS(PosDiff_LeftTopLin_actual-PosDiff_RightTopLin_actual)>0.05 THEN
+	ErrorID:=205;
+	ErrorDescription:='ABS(PosDiff_LeftTopLin_actual-PosDiff_RightTopLin_actual)>0.05';
+	Error:=TRUE;
+	FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+ELSIF ABS(PosDiff_LeftOutLin_actual-PosDiff_RightOutLin_actual)>0.05 THEN
+	ErrorID:=206;
+	ErrorDescription:='ABS(PosDiff_LeftOutLin_actual-PosDiff_RightOutLin_actual)>0.05';
 	Error:=TRUE;
 	FB_PlcEmergencyStop();
 	LED_Error:=TRUE;
@@ -3243,13 +3355,13 @@ END_CASE
     <Action Name="A_SetLinearEncoderPositionBias" Id="{6f3d3f8e-255d-4e09-853f-5fdf91122229}" FolderPath="LinearEncoder\">
       <Implementation>
         <ST><![CDATA[//光栅positionBias补偿低温收缩量
-IF CryogenicCompensationConditionsReady AND NOT CryogenicCompensationDone THEN
-	PositionBias_LeftTop:=PositionBias_LeftTop+CryogenicCompensation_LeftTop;
-	PositionBias_RightTop:=PositionBias_RightTop+CryogenicCompensation_RightTop;
-	PositionBias_LeftBottom:=PositionBias_LeftBottom+CryogenicCompensation_LeftBottom;
-	PositionBias_RightBottom:=PositionBias_RightBottom+CryogenicCompensation_RightBottom;
-	CryogenicCompensationDone:=TRUE;
-END_IF
+//IF CryogenicCompensationConditionsReady AND NOT CryogenicCompensationDone THEN
+//	PositionBias_LeftTop:=PositionBias_LeftTop+CryogenicCompensation_LeftTop;
+//	PositionBias_RightTop:=PositionBias_RightTop+CryogenicCompensation_RightTop;
+//	PositionBias_LeftBottom:=PositionBias_LeftBottom+CryogenicCompensation_LeftBottom;
+//	PositionBias_RightBottom:=PositionBias_RightBottom+CryogenicCompensation_RightBottom;
+//	CryogenicCompensationDone:=TRUE;
+//END_IF
 //设置bias开始
 A_SetLinearEncoderPositionBiasMC();
 PositionBiasTON(PT:=T#0.1S);
@@ -3257,25 +3369,35 @@ CASE state_setLEPosBias OF
 	0:
 		PositionBiasTON.IN:=TRUE;
 		IF MC_SetLEPosBias_LeftTop.Error OR MC_SetLEPosBias_RightTop.Error OR 
-			MC_SetLEPosBias_LeftBottom.Error OR MC_SetLEPosBias_RightBottom.Error THEN
+			MC_SetLEPosBias_LeftBottom.Error OR MC_SetLEPosBias_RightBottom.Error OR
+			MC_SetLEPosBias_LeftIn.Error OR MC_SetLEPosBias_RightIn.Error OR 
+			MC_SetLEPosBias_LeftOut.Error OR MC_SetLEPosBias_RightOut.Error THEN
 			state_setLEPosBias:=-100;
 		ELSE 
 			state_setLEPosBias:=1;
 		END_IF
 	1:
 		IF NOT MC_SetLEPosBias_LeftTop.Done OR NOT MC_SetLEPosBias_RightTop.Done OR 
-			NOT MC_SetLEPosBias_LeftBottom.Done OR NOT MC_SetLEPosBias_RightBottom.Done THEN
+			NOT MC_SetLEPosBias_LeftBottom.Done OR NOT MC_SetLEPosBias_RightBottom.Done OR
+			NOT MC_SetLEPosBias_LeftIn.Done OR NOT MC_SetLEPosBias_RightIn.Done OR 
+			NOT MC_SetLEPosBias_LeftOut.Done OR NOT MC_SetLEPosBias_RightOut.Done THEN
 			MC_SetLEPosBias_LeftTop.Execute:=TRUE;
 			MC_SetLEPosBias_RightTop.Execute:=TRUE;
 			MC_SetLEPosBias_LeftBottom.Execute:=TRUE;
 			MC_SetLEPosBias_RightBottom.Execute:=TRUE;
+			MC_SetLEPosBias_LeftIn.Execute:=TRUE;
+			MC_SetLEPosBias_RightIn.Execute:=TRUE;
+			MC_SetLEPosBias_LeftOut.Execute:=TRUE;
+			MC_SetLEPosBias_RightOut.Execute:=TRUE;
 			state_setLEPosBias:=2;
 		ELSE
 			state_setLEPosBias:=-100;
 		END_IF
 	2:
 		IF NOT MC_SetLEPosBias_LeftTop.Done OR NOT MC_SetLEPosBias_RightTop.Done OR 
-			NOT MC_SetLEPosBias_LeftBottom.Done OR NOT MC_SetLEPosBias_RightBottom.Done THEN
+			NOT MC_SetLEPosBias_LeftBottom.Done OR NOT MC_SetLEPosBias_RightBottom.Done OR
+			NOT MC_SetLEPosBias_LeftIn.Done OR NOT MC_SetLEPosBias_RightIn.Done OR 
+			NOT MC_SetLEPosBias_LeftOut.Done OR NOT MC_SetLEPosBias_RightOut.Done THEN
 			IF NOT PositionBiasTON.Q THEN
 				state_setLEPosBias:=2;
 			ELSE
@@ -3283,11 +3405,15 @@ CASE state_setLEPosBias OF
 			END_IF
 		END_IF
 		IF  MC_SetLEPosBias_LeftTop.Done AND MC_SetLEPosBias_RightTop.Done AND
-			MC_SetLEPosBias_LeftBottom.Done AND MC_SetLEPosBias_RightBottom.Done THEN
+			MC_SetLEPosBias_LeftBottom.Done AND MC_SetLEPosBias_RightBottom.Done AND 
+			MC_SetLEPosBias_LeftIn.Done AND MC_SetLEPosBias_RightIn.Done AND
+			MC_SetLEPosBias_LeftOut.Done AND MC_SetLEPosBias_RightOut.Done THEN
 			state_setLEPosBias:=88;
 		END_IF	
 		IF MC_SetLEPosBias_LeftTop.Error OR MC_SetLEPosBias_RightTop.Error OR 
-			MC_SetLEPosBias_LeftBottom.Error OR MC_SetLEPosBias_RightBottom.Error THEN
+			MC_SetLEPosBias_LeftBottom.Error OR MC_SetLEPosBias_RightBottom.Error OR 
+			MC_SetLEPosBias_LeftIn.Error OR MC_SetLEPosBias_RightIn.Error OR 
+			MC_SetLEPosBias_LeftOut.Error OR MC_SetLEPosBias_RightOut.Error THEN
 			state_setLEPosBias:=-100;
 		END_IF 
 		
@@ -4166,11 +4292,14 @@ END_CASE]]></ST>
       <LineId Id="2284" Count="0" />
       <LineId Id="2378" Count="0" />
       <LineId Id="2285" Count="0" />
-      <LineId Id="2287" Count="45" />
+      <LineId Id="2287" Count="17" />
+      <LineId Id="2838" Count="3" />
+      <LineId Id="2305" Count="7" />
+      <LineId Id="2317" Count="1" />
+      <LineId Id="2321" Count="8" />
+      <LineId Id="2332" Count="0" />
       <LineId Id="2334" Count="2" />
-      <LineId Id="2338" Count="17" />
-      <LineId Id="2581" Count="0" />
-      <LineId Id="2356" Count="2" />
+      <LineId Id="2338" Count="20" />
       <LineId Id="1694" Count="0" />
       <LineId Id="2368" Count="1" />
       <LineId Id="2371" Count="0" />
@@ -4181,6 +4310,9 @@ END_CASE]]></ST>
     <LineIds Name="MAIN.A_CheckHardwareEmergencyStopStatus">
       <LineId Id="2" Count="0" />
       <LineId Id="7" Count="15" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="40" Count="15" />
+      <LineId Id="39" Count="0" />
       <LineId Id="30" Count="0" />
       <LineId Id="24" Count="5" />
       <LineId Id="5" Count="0" />
@@ -4195,27 +4327,32 @@ END_CASE]]></ST>
       <LineId Id="52" Count="3" />
       <LineId Id="57" Count="3" />
       <LineId Id="62" Count="3" />
+      <LineId Id="96" Count="15" />
+      <LineId Id="94" Count="0" />
       <LineId Id="68" Count="2" />
       <LineId Id="72" Count="4" />
       <LineId Id="45" Count="1" />
-      <LineId Id="44" Count="0" />
-      <LineId Id="3" Count="1" />
-      <LineId Id="30" Count="0" />
+      <LineId Id="133" Count="0" />
+      <LineId Id="3" Count="0" />
+      <LineId Id="135" Count="0" />
+      <LineId Id="134" Count="0" />
+      <LineId Id="4" Count="0" />
       <LineId Id="29" Count="0" />
       <LineId Id="31" Count="0" />
+      <LineId Id="136" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="28" Count="0" />
-      <LineId Id="33" Count="0" />
       <LineId Id="32" Count="0" />
       <LineId Id="34" Count="0" />
+      <LineId Id="137" Count="0" />
       <LineId Id="7" Count="1" />
-      <LineId Id="37" Count="0" />
       <LineId Id="36" Count="0" />
       <LineId Id="35" Count="0" />
+      <LineId Id="138" Count="0" />
       <LineId Id="9" Count="1" />
-      <LineId Id="38" Count="0" />
-      <LineId Id="11" Count="0" />
-      <LineId Id="17" Count="0" />
+      <LineId Id="112" Count="0" />
+      <LineId Id="139" Count="17" />
+      <LineId Id="131" Count="0" />
       <LineId Id="19" Count="3" />
       <LineId Id="39" Count="0" />
       <LineId Id="23" Count="3" />
@@ -4224,14 +4361,20 @@ END_CASE]]></ST>
       <LineId Id="77" Count="0" />
     </LineIds>
     <LineIds Name="MAIN.A_CheckLimitSwitch">
-      <LineId Id="0" Count="0" />
       <LineId Id="110" Count="0" />
-      <LineId Id="1" Count="19" />
-      <LineId Id="111" Count="0" />
-      <LineId Id="103" Count="6" />
-      <LineId Id="102" Count="0" />
+      <LineId Id="1" Count="8" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="120" Count="0" />
+      <LineId Id="114" Count="5" />
+      <LineId Id="10" Count="8" />
+      <LineId Id="121" Count="7" />
+      <LineId Id="19" Count="1" />
       <LineId Id="112" Count="0" />
-      <LineId Id="21" Count="79" />
+      <LineId Id="21" Count="1" />
+      <LineId Id="129" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="130" Count="0" />
+      <LineId Id="100" Count="0" />
     </LineIds>
     <LineIds Name="MAIN.A_CryogenicCompensationMonitoring">
       <LineId Id="2" Count="35" />
@@ -4253,13 +4396,35 @@ END_CASE]]></ST>
       <LineId Id="217" Count="0" />
       <LineId Id="121" Count="0" />
       <LineId Id="218" Count="0" />
-      <LineId Id="122" Count="29" />
+      <LineId Id="122" Count="2" />
+      <LineId Id="219" Count="3" />
+      <LineId Id="125" Count="4" />
+      <LineId Id="223" Count="3" />
+      <LineId Id="130" Count="4" />
+      <LineId Id="228" Count="0" />
+      <LineId Id="231" Count="2" />
+      <LineId Id="230" Count="0" />
+      <LineId Id="136" Count="3" />
+      <LineId Id="235" Count="0" />
+      <LineId Id="237" Count="1" />
+      <LineId Id="234" Count="0" />
+      <LineId Id="140" Count="5" />
+      <LineId Id="240" Count="2" />
+      <LineId Id="239" Count="0" />
+      <LineId Id="146" Count="2" />
+      <LineId Id="243" Count="3" />
+      <LineId Id="149" Count="0" />
+      <LineId Id="249" Count="2" />
+      <LineId Id="247" Count="0" />
+      <LineId Id="150" Count="1" />
       <LineId Id="199" Count="0" />
       <LineId Id="204" Count="0" />
       <LineId Id="195" Count="1" />
+      <LineId Id="252" Count="1" />
       <LineId Id="198" Count="0" />
       <LineId Id="205" Count="0" />
       <LineId Id="202" Count="1" />
+      <LineId Id="254" Count="1" />
       <LineId Id="200" Count="1" />
       <LineId Id="206" Count="0" />
       <LineId Id="197" Count="0" />
@@ -4298,11 +4463,25 @@ END_CASE]]></ST>
       <LineId Id="91" Count="5" />
     </LineIds>
     <LineIds Name="MAIN.A_InitAxisParameters">
-      <LineId Id="0" Count="2" />
+      <LineId Id="1" Count="1" />
       <LineId Id="35" Count="0" />
-      <LineId Id="4" Count="1" />
-      <LineId Id="36" Count="0" />
-      <LineId Id="6" Count="27" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="38" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="4" />
+      <LineId Id="42" Count="2" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="14" Count="3" />
+      <LineId Id="46" Count="3" />
+      <LineId Id="18" Count="4" />
+      <LineId Id="50" Count="3" />
+      <LineId Id="23" Count="4" />
+      <LineId Id="54" Count="3" />
+      <LineId Id="28" Count="5" />
     </LineIds>
     <LineIds Name="MAIN.A_InitRecipeParameters">
       <LineId Id="78" Count="5" />
@@ -4373,7 +4552,7 @@ END_CASE]]></ST>
       <LineId Id="15" Count="1" />
       <LineId Id="40" Count="0" />
       <LineId Id="17" Count="2" />
-      <LineId Id="46" Count="0" />
+      <LineId Id="47" Count="0" />
       <LineId Id="20" Count="0" />
       <LineId Id="24" Count="1" />
       <LineId Id="41" Count="0" />
@@ -4383,7 +4562,10 @@ END_CASE]]></ST>
       <LineId Id="32" Count="0" />
       <LineId Id="34" Count="1" />
       <LineId Id="23" Count="0" />
+      <LineId Id="75" Count="0" />
       <LineId Id="21" Count="0" />
+      <LineId Id="77" Count="41" />
+      <LineId Id="76" Count="0" />
     </LineIds>
     <LineIds Name="MAIN.A_SafePlcStartInit">
       <LineId Id="0" Count="45" />
@@ -4406,27 +4588,36 @@ END_CASE]]></ST>
       <LineId Id="233" Count="0" />
       <LineId Id="198" Count="0" />
       <LineId Id="201" Count="0" />
+      <LineId Id="271" Count="1" />
       <LineId Id="199" Count="0" />
       <LineId Id="203" Count="1" />
       <LineId Id="200" Count="0" />
       <LineId Id="202" Count="0" />
-      <LineId Id="205" Count="2" />
+      <LineId Id="205" Count="1" />
+      <LineId Id="273" Count="1" />
+      <LineId Id="207" Count="0" />
       <LineId Id="209" Count="0" />
-      <LineId Id="211" Count="1" />
+      <LineId Id="211" Count="0" />
+      <LineId Id="275" Count="3" />
+      <LineId Id="212" Count="0" />
       <LineId Id="215" Count="0" />
       <LineId Id="213" Count="1" />
       <LineId Id="208" Count="0" />
       <LineId Id="251" Count="0" />
       <LineId Id="218" Count="1" />
+      <LineId Id="279" Count="1" />
       <LineId Id="223" Count="1" />
       <LineId Id="222" Count="0" />
       <LineId Id="225" Count="0" />
       <LineId Id="248" Count="1" />
       <LineId Id="221" Count="0" />
       <LineId Id="227" Count="0" />
+      <LineId Id="281" Count="1" />
       <LineId Id="230" Count="0" />
       <LineId Id="255" Count="0" />
-      <LineId Id="257" Count="2" />
+      <LineId Id="257" Count="1" />
+      <LineId Id="283" Count="1" />
+      <LineId Id="259" Count="0" />
       <LineId Id="256" Count="0" />
       <LineId Id="261" Count="0" />
       <LineId Id="107" Count="0" />

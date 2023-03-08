@@ -141,8 +141,8 @@ END_VAR]]></Declaration>
 		A_TopMove();
 	ELSIF Mode=2 AND CoupleState=0 AND BottomMove THEN
 		A_BottomMove();
-	ELSIF Mode=3 AND CoupleState=0 AND TaperMove THEN
-		A_TaperMove();
+	//ELSIF Mode=3 AND CoupleState=0 AND TaperMove THEN
+	//	A_TaperMove();
 	ELSIF Mode=4 AND CoupleState=0 AND LeftTopMove THEN
 		A_LeftTopMove();
 	ELSIF Mode=4 AND CoupleState=0 AND RightTopMove THEN
@@ -153,8 +153,8 @@ END_VAR]]></Declaration>
 		A_RightBottomMove();
 	ELSIF Mode=5 AND CoupleState=0 AND BCGapMove THEN
 		A_BCGapMove();
-	ELSIF Mode=6 AND CoupleState=0 AND BCGapMove_2 THEN
-		A_BCGapMove_2();
+	//ELSIF Mode=6 AND CoupleState=0 AND BCGapMove_2 THEN
+	//	A_BCGapMove_2();
 	END_IF
 END_IF]]></ST>
     </Implementation>

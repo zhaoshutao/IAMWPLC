@@ -29,6 +29,24 @@ VAR
 	RightBottomLinVelocityNew:LREAL:=1;
 	btn_RightBottomLinMove:BOOL;
 	btn_RightBottomLinStop:BOOL;
+	
+	
+	LeftInLinPositionNew:LREAL;
+	LeftInLinVelocityNew:LREAL:=1;
+	btn_LeftInLinMove:BOOL;
+	btn_LeftInLinStop:BOOL;
+	RightInLinPositionNew:LREAL;
+	RightInLinVelocityNew:LREAL:=1;
+	btn_RightInLinMove:BOOL;
+	btn_RightInLinStop:BOOL;
+	LeftOutLinPositionNew:LREAL;
+	LeftOutLinVelocityNew:LREAL:=1;
+	btn_LeftOutLinMove:BOOL;
+	btn_LeftOutLinStop:BOOL;
+	RightOutLinPositionNew:LREAL;
+	RightOutLinVelocityNew:LREAL:=1;
+	btn_RightOutLinMove:BOOL;
+	btn_RightOutLinStop:BOOL;
 (*LeftTopLin*)
 	fb_ton1_1:TON;
 	fb_ton1_2:TON;
@@ -57,6 +75,35 @@ VAR
 	RightBottomLinBusy:BOOL;
 	RightBottomLin_m_state: DINT;
 	RightBottomLin_s_state: DINT;
+	
+(*LeftInLin*)
+	fb_ton5_1:TON;
+	fb_ton5_2:TON;
+	LeftInLinState:DINT;
+	LeftInLinBusy:BOOL;
+	LeftInLin_m_state: DINT;
+	LeftInLin_s_state: DINT;
+(*RightInLin*)
+	fb_ton6_1:TON;
+	fb_ton6_2:TON;
+	RightInLinState:DINT;
+	RightInLinBusy:BOOL;
+	RightInLin_m_state: DINT;
+	RightInLin_s_state: DINT;
+(*LeftOutLin*)
+	fb_ton7_1:TON;
+	fb_ton7_2:TON;
+	LeftOutLinState:DINT;
+	LeftOutLinBusy:BOOL;
+	LeftOutLin_m_state: DINT;
+	LeftOutLin_s_state: DINT;
+(*RightOutLin*)
+	fb_ton8_1:TON;
+	fb_ton8_2:TON;
+	RightOutLinState:DINT;
+	RightOutLinBusy:BOOL;
+	RightOutLin_m_state: DINT;
+	RightOutLin_s_state: DINT;
 
 
 	btn_LeftTopStop: BOOL;
@@ -71,7 +118,7 @@ A_MonitoringAllAxis();
 (*********************************************************************A_PosDiffDetection***********************************************)
 A_PosDiffDetection();
 (*********************************************************************btn_PowerOn************************************************************)
-IF btn_Power AND st_Power=0 THEN
+IF btn_Power THEN
 	btn_PowerOn:=TRUE;
 	btn_Power:=FALSE;
 END_IF
@@ -85,7 +132,7 @@ IF btn_PowerOn THEN
 END_IF
 (******************************************************ÉÏµç×´Ì¬£¬´¦ÓÚñîºÏ×´Ì¬£¬ESTOP***********************************************)
 IF NOT btn_PowerOff THEN
-	IF st_Power=1 AND st_Couple<>0THEN
+	IF st_Power=1 THEN
 		Error:=TRUE;
 		ErrorID:=101;
 		FB_PlcEmergencyStop();
@@ -393,39 +440,10 @@ END_IF]]></ST>
     </Implementation>
     <Action Name="A_monitoringAllAxis" Id="{d1a34df5-69b1-4771-bf4a-eb30f477489b}">
       <Implementation>
-        <ST><![CDATA[(****************************************************************
-NAME:			A_MonitoringAllAxis
-DATA:			2017.5.8
-VERSION:		1.0.0
-DESCRIPTION:	
-				Ã¿´ÎÑ­»·¾ùÖ´ÐÐÖáÎ»ÖÃºÍÖáÔË¶¯µÄ¼ì²é
-				1.4ÖáÏà¶ÔÔË¶¯¼ì²é
-				2.4Öá¹âÕ¤³ßÎ»ÖÃ¡¢ËÙ¶È¶Ô±È¼ì²é
-				3.Ã¿Öá¹âÕ¤ºÍ±àÂëÆ÷Î»ÖÃ¶Ô±È¼ì²é
-HISTORY:
-				2017.5.8	NEW
-
-***************************************************************)
-(*************************************************************************************1.4ÖáÏà¶ÔÔË¶¯¼ì²é************************************************************************************)
-(*DebugÄ£Ê½£¬Öá¾ù×ÔÓÉ»î¶¯*)
-(*(*³ýÁËÓÒÉÏºÍÓÒÏÂÖáÒ»Æð¶¯£¬ÆäÓàÖá¶¯¶¼ESTOP*)
-(*×óÉÏ¡¢×óÏÂÖá¶¯*)
-IF  LeftTopLin.Status.Moving OR LeftBottomLin.Status.Moving THEN
-	FB_PlcEmergencyStop();
-	Error:=TRUE;
-	ErrorID:=11;
-END_IF
-(*ÓÒÉÏ¶¯¡¢ÓÒÏÂ²»¶¯£¬»òÕßÓÒÏÂ¶¯¡¢ÓÒÉÏ²»¶¯¡£ESTOP*)
-IF (RightTopLin.Status.Moving AND RightBottomLin.Status.NotMoving) OR (RightTopLin.Status.NotMoving AND RightBottomLin.Status.Moving) THEN
-		FB_PlcEmergencyStop();
-		Error:=TRUE;
-		ErrorID:=12;
-END_IF
-*)
-(*************************************************************************************2.4Öá¹âÕ¤³ßÎ»ÖÃ¡¢ËÙ¶È¶Ô±È¼ì²é**********************************************************************)
+        <ST><![CDATA[(*************************************************************************************2.4Öá¹âÕ¤³ßÎ»ÖÃ¡¢ËÙ¶È¶Ô±È¼ì²é**********************************************************************)
 IF st_power<>0 THEN
-(*×óÖáÉÏÏÂÎ»ÖÃ¶Ô±È£¬³¬³öESTOP*)
-IF ABS(Pos_LeftTopLin-Pos_LeftBottomLin)>Threshold_LeftPos_Debug  THEN
+
+IF ABS(Pos_LeftTopLin-Pos_LeftBottomLin)>Threshold_TBLeftPos_Debug  THEN
 		btn_LeftTopLinStop:=TRUE;
 		btn_RightTopLinStop:=TRUE;
 		btn_LeftBottomLinStop:=TRUE;
@@ -435,8 +453,8 @@ IF ABS(Pos_LeftTopLin-Pos_LeftBottomLin)>Threshold_LeftPos_Debug  THEN
 		ErrorID:=11;
 		LED_Error:=TRUE;
 END_IF
-(*ÓÒÖáÉÏÏÂÎ»ÖÃËÙ¶È¶Ô±È£¬³¬³öESTOP*)
-IF ABS(Pos_RightTopLin-Pos_RightBottomLin)>Threshold_RightPos_Debug  THEN
+
+IF ABS(Pos_RightTopLin-Pos_RightBottomLin)>Threshold_TBRightPos_Debug  THEN
 		btn_LeftTopLinStop:=TRUE;
 		btn_RightTopLinStop:=TRUE;
 		btn_LeftBottomLinStop:=TRUE;
@@ -446,7 +464,7 @@ IF ABS(Pos_RightTopLin-Pos_RightBottomLin)>Threshold_RightPos_Debug  THEN
 		ErrorID:=12;
 		LED_Error:=TRUE;
 END_IF
-(*ÉÏÖá×óÓÒÎ»ÖÃ¶Ô±È£¬³¬³öESTOP*)
+
 IF ABS(Pos_LeftTopLin-Pos_RightTopLin)>Threshold_TopPos_Debug  THEN
 		btn_LeftTopLinStop:=TRUE;
 		btn_RightTopLinStop:=TRUE;
@@ -457,7 +475,7 @@ IF ABS(Pos_LeftTopLin-Pos_RightTopLin)>Threshold_TopPos_Debug  THEN
 		ErrorID:=13;
 		LED_Error:=TRUE;
 END_IF
-(*ÏÂÖá×óÓÒÎ»ÖÃ¶Ô±È£¬³¬³öESTOP*)
+
 IF ABS(Pos_LeftBottomLin-Pos_RightBottomLin)>Threshold_BottomPos_Debug  THEN
 		btn_LeftTopLinStop:=TRUE;
 		btn_RightTopLinStop:=TRUE;
@@ -468,8 +486,54 @@ IF ABS(Pos_LeftBottomLin-Pos_RightBottomLin)>Threshold_BottomPos_Debug  THEN
 		ErrorID:=14;
 		LED_Error:=TRUE;
 END_IF
+//
+
+IF ABS(Pos_LeftInLin-Pos_LeftOutLin)>Threshold_IOLeftPos_Debug  THEN
+		btn_LeftInLinStop:=TRUE;
+		btn_RightInLinStop:=TRUE;
+		btn_LeftOutLinStop:=TRUE;
+		btn_RightOutLInStop:=TRUE;
+		FB_PlcEmergencyStop();
+		Error:=TRUE;
+		ErrorID:=15;
+		LED_Error:=TRUE;
 END_IF
-(*********************************************************************************3.Ã¿Öá¹âÕ¤ºÍ±àÂëÆ÷Î»ÖÃ¶Ô±È¼ì²é**********************************************************************)]]></ST>
+
+IF ABS(Pos_RightInLin-Pos_RightOutLin)>Threshold_IORightPos_Debug  THEN
+		btn_LeftInLinStop:=TRUE;
+		btn_RightInLinStop:=TRUE;
+		btn_LeftOutLinStop:=TRUE;
+		btn_RightOutLInStop:=TRUE;
+		FB_PlcEmergencyStop();
+		Error:=TRUE;
+		ErrorID:=16;
+		LED_Error:=TRUE;
+END_IF
+
+IF ABS(Pos_LeftInLin-Pos_RightInLin)>Threshold_InPos_Debug  THEN
+		btn_LeftInLinStop:=TRUE;
+		btn_RightInLinStop:=TRUE;
+		btn_LeftOutLinStop:=TRUE;
+		btn_RightOutLInStop:=TRUE;
+		FB_PlcEmergencyStop();
+		Error:=TRUE;
+		ErrorID:=17;
+		LED_Error:=TRUE;
+END_IF
+
+IF ABS(Pos_LeftOutLin-Pos_RightOutLin)>Threshold_OutPos_Debug  THEN
+		btn_LeftInLinStop:=TRUE;
+		btn_RightInLinStop:=TRUE;
+		btn_LeftOutLinStop:=TRUE;
+		btn_RightOutLInStop:=TRUE;
+		FB_PlcEmergencyStop();
+		Error:=TRUE;
+		ErrorID:=18;
+		LED_Error:=TRUE;
+END_IF
+END_IF
+
+]]></ST>
       </Implementation>
     </Action>
     <Action Name="A_PosDiffDetection" Id="{0b914de3-5a16-4135-8c47-916309d8d3da}">
@@ -484,12 +548,32 @@ END_IF
 	FB_PlcEmergencyStop();
 	LED_Error:=TRUE;
 ELSIF ABS(PosDiff_LeftBottomLin_actual-PosDiff_RightBottomLin_actual)>0.2 THEN
-	ErrorID:=53;
+	ErrorID:=52;
 	Error:=TRUE;
 	btn_LeftTopLinStop:=TRUE;
 	btn_RightTopLinStop:=TRUE;
 	btn_LeftBottomLinStop:=TRUE;
 	btn_RightBottomLInStop:=TRUE;
+	FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+END_IF
+
+IF ABS(PosDiff_LeftInLin_actual-PosDiff_RightInLin_actual)>0.2 THEN
+	ErrorID:=53;
+	Error:=TRUE;
+	btn_LeftInLinStop:=TRUE;
+	btn_RightInLinStop:=TRUE;
+	btn_LeftOutLinStop:=TRUE;
+	btn_RightOutLInStop:=TRUE;
+	FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+ELSIF ABS(PosDiff_LeftOutLin_actual-PosDiff_RightOutLin_actual)>0.2 THEN
+	ErrorID:=54;
+	Error:=TRUE;
+	btn_LeftInLinStop:=TRUE;
+	btn_RightInLinStop:=TRUE;
+	btn_LeftOutLinStop:=TRUE;
+	btn_RightOutLInStop:=TRUE;
 	FB_PlcEmergencyStop();
 	LED_Error:=TRUE;
 END_IF
@@ -561,22 +645,7 @@ END_CASE]]></ST>
     </Action>
     <Action Name="A_PowerOn" Id="{3be612a8-046c-45b5-ad28-b2fb90dcb4f1}">
       <Implementation>
-        <ST><![CDATA[(****************************************************************
-NAME:			A_SetAxisPositionAndPowerOn
-DATA:			2017.3.27
-VERSION:		1.0.0
-DESCRIPTION:	
-				ÉÏµãÃüÁîºó£¬Ë³ÐòÖ´ÐÐ£º
-				1.FB_SetAxisPosition
-				2.FB_PowerOn
-				·µ»ØÖ´ÐÐÊÇ·ñ³É¹¦
-HISTORY:
-				2017.3.27		NEW
-				2017.5.8		É¾³ýÁËsetAxisPosition£¬ÒÆ¶¯µ½MAIN³ÌÐòÖÐ
-							±ä¸üNAMEÎªA_PowerOn
-
-***************************************************************)
-fb_ton(PT:=t#0.5s);
+        <ST><![CDATA[fb_ton(PT:=T#0.5S);
 CASE PowerState OF
 	0:	(*FB_Power_On*)
 		FB_Power(On:=TRUE);
@@ -615,6 +684,11 @@ CASE PowerState OF
 END_CASE]]></ST>
       </Implementation>
     </Action>
+    <Action Name="ACT" Id="{7e3291ed-a082-43aa-a6d4-d5a94588fafc}">
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Action>
     <LineIds Name="DebugMode">
       <LineId Id="65" Count="3" />
       <LineId Id="445" Count="7" />
@@ -622,16 +696,27 @@ END_CASE]]></ST>
       <LineId Id="69" Count="310" />
     </LineIds>
     <LineIds Name="DebugMode.A_monitoringAllAxis">
-      <LineId Id="0" Count="76" />
+      <LineId Id="29" Count="45" />
+      <LineId Id="79" Count="0" />
+      <LineId Id="124" Count="42" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="76" Count="0" />
     </LineIds>
     <LineIds Name="DebugMode.A_PosDiffDetection">
-      <LineId Id="0" Count="19" />
+      <LineId Id="0" Count="18" />
+      <LineId Id="21" Count="19" />
+      <LineId Id="19" Count="0" />
     </LineIds>
     <LineIds Name="DebugMode.A_PowerOff">
       <LineId Id="0" Count="58" />
     </LineIds>
     <LineIds Name="DebugMode.A_PowerOn">
-      <LineId Id="0" Count="51" />
+      <LineId Id="15" Count="36" />
+    </LineIds>
+    <LineIds Name="DebugMode.ACT">
+      <LineId Id="1" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

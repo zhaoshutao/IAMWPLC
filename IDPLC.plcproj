@@ -66,31 +66,16 @@
     <Compile Include="POUs\0.UserMode\UserMode.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\1.CarrierMode\GapMode\BCGapMode.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="POUs\1.CarrierMode\GapMode\GapMode.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="POUs\1.CarrierMode\SingleCarrierMode\SingleCarrierMode.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\2.SingleMotorMode\DebugMode\DebugMode.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\2.SingleMotorMode\TaperMode\TaperMode.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="POUs\CommonFB\ExternFB\FB_LedShow.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\CommonFB\ExternFB\FB_PlcEmergencyStop.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="POUs\CommonFB\MainFB\FB_CoupleAxis.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="POUs\CommonFB\MainFB\FB_DecoupleAxis.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\CommonFB\MainFB\FB_Move.TcPOU">
@@ -126,11 +111,9 @@
     <Folder Include="GVLs" />
     <Folder Include="POUs" />
     <Folder Include="POUs\1.CarrierMode" />
-    <Folder Include="POUs\1.CarrierMode\GapMode" />
     <Folder Include="POUs\1.CarrierMode\SingleCarrierMode" />
     <Folder Include="POUs\2.SingleMotorMode" />
     <Folder Include="POUs\2.SingleMotorMode\DebugMode" />
-    <Folder Include="POUs\2.SingleMotorMode\TaperMode" />
     <Folder Include="POUs\CommonFB" />
     <Folder Include="POUs\CommonFB\ExternFB" />
     <Folder Include="POUs\CommonFB\MainFB" />

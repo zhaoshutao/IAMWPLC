@@ -10,20 +10,20 @@
               <v>3f2c537f-514a-45f4-b2a3-85271f15fce0</v>
               <v>RECIPEFACTORY</v>
               <v>21fac012-0871-415c-bff9-418e71ceb55a</v>
-              <v>RECIPEMANAGEMENTINITFB_INIT</v>
-              <v>a19fceff-70a1-437d-8676-8ed6bc63c683</v>
+              <v>RECIPEMANAGEMENTINIT</v>
+              <v>645eb6a4-f0e1-4351-a17c-c1aa6ec53666</v>
               <v>RECIPEFACTORYFREERECIPE</v>
               <v>d9474b39-00cf-4946-adcd-d1ad2b1f9a0a</v>
               <v>RECIPEFACTORYFB_INIT</v>
               <v>9701c596-8ac5-4544-b1e7-092805c269e8</v>
-              <v>RECIPEMANAGEMENTINITFB_REINIT</v>
-              <v>5c13c7ce-efc4-4913-ad21-7188b9088354</v>
-              <v>RECIPEMANAGEMENTINIT</v>
-              <v>645eb6a4-f0e1-4351-a17c-c1aa6ec53666</v>
-              <v>RECIPEMANAGEMENTINITINITIALIZE</v>
-              <v>4e9bd1eb-2abe-44bd-972e-3911b56f0136</v>
               <v>RECIPEFACTORYCREATERECIPE</v>
               <v>df6ed356-178a-461a-8388-2dddfcf5ef91</v>
+              <v>RECIPEMANAGEMENTINITFB_INIT</v>
+              <v>a19fceff-70a1-437d-8676-8ed6bc63c683</v>
+              <v>RECIPEMANAGEMENTINITINITIALIZE</v>
+              <v>4e9bd1eb-2abe-44bd-972e-3911b56f0136</v>
+              <v>RECIPEMANAGEMENTINITFB_REINIT</v>
+              <v>5c13c7ce-efc4-4913-ad21-7188b9088354</v>
             </d>
           </o>
           <o n="StorageSettings" t="RecipeManagerStorageSettings">
@@ -55,7 +55,7 @@
       <XmlArchive>
         <Data>
           <o xml:space="preserve" t="RecipeDefinitionObject">
-            <v n="UniqueIdGenerator">"411"</v>
+            <v n="UniqueIdGenerator">"527"</v>
             <o n="Recipes" t="RecipeList">
               <l n="Recipes" t="ArrayList" />
             </o>
@@ -106,66 +106,6 @@
                   <v n="VarUserDefTypeAsString">"Invalid Type"</v>
                 </o>
                 <o>
-                  <v n="VarName">"MAIN.HasTemperatureSensorOrNot"</v>
-                  <v n="VarType" t="TypeClass">Bool</v>
-                  <v n="VarTypeAsString">"BOOL"</v>
-                  <v n="Name">""</v>
-                  <n n="Boundaries" />
-                  <v n="Id">399</v>
-                  <v n="Comment">""</v>
-                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
-                </o>
-                <o>
-                  <v n="VarName">"MAIN.CryogenicCompensationOn"</v>
-                  <v n="VarType" t="TypeClass">Bool</v>
-                  <v n="VarTypeAsString">"BOOL"</v>
-                  <v n="Name">""</v>
-                  <n n="Boundaries" />
-                  <v n="Id">401</v>
-                  <v n="Comment">""</v>
-                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
-                </o>
-                <o>
-                  <v n="VarName">"MAIN.CryogenicCompensation_LeftTop"</v>
-                  <v n="VarType" t="TypeClass">LReal</v>
-                  <v n="VarTypeAsString">"LREAL"</v>
-                  <v n="Name">""</v>
-                  <n n="Boundaries" />
-                  <v n="Id">403</v>
-                  <v n="Comment">""</v>
-                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
-                </o>
-                <o>
-                  <v n="VarName">"MAIN.CryogenicCompensation_RightTop"</v>
-                  <v n="VarType" t="TypeClass">LReal</v>
-                  <v n="VarTypeAsString">"LREAL"</v>
-                  <v n="Name">""</v>
-                  <n n="Boundaries" />
-                  <v n="Id">405</v>
-                  <v n="Comment">""</v>
-                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
-                </o>
-                <o>
-                  <v n="VarName">"MAIN.CryogenicCompensation_LeftBottom"</v>
-                  <v n="VarType" t="TypeClass">LReal</v>
-                  <v n="VarTypeAsString">"LREAL"</v>
-                  <v n="Name">""</v>
-                  <n n="Boundaries" />
-                  <v n="Id">407</v>
-                  <v n="Comment">""</v>
-                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
-                </o>
-                <o>
-                  <v n="VarName">"MAIN.CryogenicCompensation_RightBottom"</v>
-                  <v n="VarType" t="TypeClass">LReal</v>
-                  <v n="VarTypeAsString">"LREAL"</v>
-                  <v n="Name">""</v>
-                  <n n="Boundaries" />
-                  <v n="Id">409</v>
-                  <v n="Comment">""</v>
-                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
-                </o>
-                <o>
                   <v n="VarName">"M_Compensation[1].Encoder"</v>
                   <v n="VarType" t="TypeClass">LReal</v>
                   <v n="VarTypeAsString">"LREAL"</v>
@@ -212,6 +152,62 @@
                   <v n="Name">""</v>
                   <n n="Boundaries" />
                   <v n="Id">127</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[1].LeftIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">420</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[1].RightIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">423</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[1].LeftOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">422</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[1].RightOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">421</v>
                   <v n="Comment">""</v>
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
@@ -276,6 +272,62 @@
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
                 <o>
+                  <v n="VarName">"M_Compensation[2].LeftIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">429</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[2].RightIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">428</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[2].LeftOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">427</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[2].RightOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">426</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
                   <v n="VarName">"M_Compensation[2].InRange"</v>
                   <v n="VarType" t="TypeClass">Bool</v>
                   <v n="VarTypeAsString">"BOOL"</v>
@@ -332,6 +384,62 @@
                   <v n="Name">""</v>
                   <n n="Boundaries" />
                   <v n="Id">139</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[3].LeftIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">435</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[3].RightIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">434</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[3].LeftOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">433</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[3].RightOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">432</v>
                   <v n="Comment">""</v>
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
@@ -396,6 +504,62 @@
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
                 <o>
+                  <v n="VarName">"M_Compensation[4].LeftIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">439</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[4].RightIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">438</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[4].LeftOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">437</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[4].RightOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">436</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
                   <v n="VarName">"M_Compensation[4].InRange"</v>
                   <v n="VarType" t="TypeClass">Bool</v>
                   <v n="VarTypeAsString">"BOOL"</v>
@@ -456,11 +620,71 @@
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
                 <o>
+                  <v n="VarName">"M_Compensation[5].LeftIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">443</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[5].RightIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">442</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[5].LeftOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">441</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[5].RightOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">440</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
                   <v n="VarName">"M_Compensation[5].InRange"</v>
                   <v n="VarType" t="TypeClass">Bool</v>
                   <v n="VarTypeAsString">"BOOL"</v>
                   <v n="Name">""</v>
-                  <n n="Boundaries" />
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">Bool</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
                   <v n="Id">152</v>
                   <v n="Comment">""</v>
                   <v n="VarUserDefTypeAsString">"BOOL"</v>
@@ -512,6 +736,62 @@
                   <v n="Name">""</v>
                   <n n="Boundaries" />
                   <v n="Id">157</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[6].LeftIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">447</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[6].RightIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">446</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[6].LeftOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">445</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[6].RightOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">444</v>
                   <v n="Comment">""</v>
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
@@ -576,6 +856,62 @@
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
                 <o>
+                  <v n="VarName">"M_Compensation[7].LeftIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">451</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[7].RightIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">450</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[7].LeftOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">449</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[7].RightOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">448</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
                   <v n="VarName">"M_Compensation[7].InRange"</v>
                   <v n="VarType" t="TypeClass">Bool</v>
                   <v n="VarTypeAsString">"BOOL"</v>
@@ -632,6 +968,62 @@
                   <v n="Name">""</v>
                   <n n="Boundaries" />
                   <v n="Id">169</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[8].LeftIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">455</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[8].RightIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">454</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[8].LeftOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">453</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[8].RightOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">452</v>
                   <v n="Comment">""</v>
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
@@ -696,6 +1088,62 @@
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
                 <o>
+                  <v n="VarName">"M_Compensation[9].LeftIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">459</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[9].RightIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">458</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[9].LeftOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">457</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[9].RightOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">456</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
                   <v n="VarName">"M_Compensation[9].InRange"</v>
                   <v n="VarType" t="TypeClass">Bool</v>
                   <v n="VarTypeAsString">"BOOL"</v>
@@ -752,6 +1200,62 @@
                   <v n="Name">""</v>
                   <n n="Boundaries" />
                   <v n="Id">181</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[10].LeftIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">463</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[10].RightIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">462</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[10].LeftOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">461</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[10].RightOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">460</v>
                   <v n="Comment">""</v>
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
@@ -816,6 +1320,62 @@
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
                 <o>
+                  <v n="VarName">"M_Compensation[11].LeftIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">467</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[11].RightIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">466</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[11].LeftOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">465</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[11].RightOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">464</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
                   <v n="VarName">"M_Compensation[11].InRange"</v>
                   <v n="VarType" t="TypeClass">Bool</v>
                   <v n="VarTypeAsString">"BOOL"</v>
@@ -872,6 +1432,62 @@
                   <v n="Name">""</v>
                   <n n="Boundaries" />
                   <v n="Id">193</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[12].LeftIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">471</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[12].RightIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">470</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[12].LeftOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">469</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[12].RightOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">468</v>
                   <v n="Comment">""</v>
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
@@ -936,6 +1552,62 @@
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
                 <o>
+                  <v n="VarName">"M_Compensation[13].LeftIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">475</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[13].RightIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">474</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[13].LeftOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">473</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[13].RightOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">472</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
                   <v n="VarName">"M_Compensation[13].InRange"</v>
                   <v n="VarType" t="TypeClass">Bool</v>
                   <v n="VarTypeAsString">"BOOL"</v>
@@ -992,6 +1664,62 @@
                   <v n="Name">""</v>
                   <n n="Boundaries" />
                   <v n="Id">205</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[14].LeftIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">479</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[14].RightIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">478</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[14].LeftOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">477</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[14].RightOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">476</v>
                   <v n="Comment">""</v>
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
@@ -1056,6 +1784,62 @@
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
                 <o>
+                  <v n="VarName">"M_Compensation[15].LeftIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">483</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[15].RightIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">482</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[15].LeftOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">481</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[15].RightOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">480</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
                   <v n="VarName">"M_Compensation[15].InRange"</v>
                   <v n="VarType" t="TypeClass">Bool</v>
                   <v n="VarTypeAsString">"BOOL"</v>
@@ -1112,6 +1896,62 @@
                   <v n="Name">""</v>
                   <n n="Boundaries" />
                   <v n="Id">217</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[16].LeftIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">487</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[16].RightIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">486</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[16].LeftOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">485</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[16].RightOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">484</v>
                   <v n="Comment">""</v>
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
@@ -1176,6 +2016,62 @@
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
                 <o>
+                  <v n="VarName">"M_Compensation[17].LeftIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">491</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[17].RightIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">490</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[17].LeftOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">489</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[17].RightOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">488</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
                   <v n="VarName">"M_Compensation[17].InRange"</v>
                   <v n="VarType" t="TypeClass">Bool</v>
                   <v n="VarTypeAsString">"BOOL"</v>
@@ -1230,8 +2126,68 @@
                   <v n="VarType" t="TypeClass">LReal</v>
                   <v n="VarTypeAsString">"LREAL"</v>
                   <v n="Name">""</v>
-                  <n n="Boundaries" />
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
                   <v n="Id">229</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[18].LeftIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">495</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[18].RightIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">494</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[18].LeftOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">493</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"M_Compensation[18].RightOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">492</v>
                   <v n="Comment">""</v>
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
@@ -1286,6 +2242,62 @@
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
                 <o>
+                  <v n="VarName">"PosDiff_LeftInLin"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">499</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"PosDiff_RightInLin"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">498</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"PosDiff_LeftOutLin"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">497</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"PosDiff_RightOutLin"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">496</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
                   <v n="VarName">"Threshold_UserTopPos"</v>
                   <v n="VarType" t="TypeClass">LReal</v>
                   <v n="VarTypeAsString">"LREAL"</v>
@@ -1314,7 +2326,7 @@
                   <v n="VarUserDefTypeAsString">"Invalid Type"</v>
                 </o>
                 <o>
-                  <v n="VarName">"Threshold_UserLeftPos"</v>
+                  <v n="VarName">"Threshold_UserTBLeftPos"</v>
                   <v n="VarType" t="TypeClass">LReal</v>
                   <v n="VarTypeAsString">"LREAL"</v>
                   <v n="Name">""</v>
@@ -1328,7 +2340,7 @@
                   <v n="VarUserDefTypeAsString">"Invalid Type"</v>
                 </o>
                 <o>
-                  <v n="VarName">"Threshold_UserRightPos"</v>
+                  <v n="VarName">"Threshold_UserTBRightPos"</v>
                   <v n="VarType" t="TypeClass">LReal</v>
                   <v n="VarTypeAsString">"LREAL"</v>
                   <v n="Name">""</v>
@@ -1370,7 +2382,7 @@
                   <v n="VarUserDefTypeAsString">"Invalid Type"</v>
                 </o>
                 <o>
-                  <v n="VarName">"Threshold_UserLeftVelo"</v>
+                  <v n="VarName">"Threshold_UserTBLeftVelo"</v>
                   <v n="VarType" t="TypeClass">LReal</v>
                   <v n="VarTypeAsString">"LREAL"</v>
                   <v n="Name">""</v>
@@ -1384,7 +2396,7 @@
                   <v n="VarUserDefTypeAsString">"Invalid Type"</v>
                 </o>
                 <o>
-                  <v n="VarName">"Threshold_UserRightVelo"</v>
+                  <v n="VarName">"Threshold_UserTBRightVelo"</v>
                   <v n="VarType" t="TypeClass">LReal</v>
                   <v n="VarTypeAsString">"LREAL"</v>
                   <v n="Name">""</v>
@@ -1394,6 +2406,118 @@
                     <v n="UpperBound">""</v>
                   </o>
                   <v n="Id">325</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"Threshold_UserInPos"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">507</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"Threshold_UserOutPos"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">506</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"Threshold_UserIOLeftPos"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">505</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"Threshold_UserIORightPos"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">504</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"Threshold_UserInVelo"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">503</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"Threshold_UserOutVelo"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">502</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"Threshold_UserIOLeftVelo"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">501</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"Threshold_UserIORightVelo"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">500</v>
                   <v n="Comment">""</v>
                   <v n="VarUserDefTypeAsString">"Invalid Type"</v>
                 </o>
@@ -1426,7 +2550,7 @@
                   <v n="VarUserDefTypeAsString">"Invalid Type"</v>
                 </o>
                 <o>
-                  <v n="VarName">"Threshold_LeftPos_SingleCarrier"</v>
+                  <v n="VarName">"Threshold_TBLeftPos_SingleCarrier"</v>
                   <v n="VarType" t="TypeClass">LReal</v>
                   <v n="VarTypeAsString">"LREAL"</v>
                   <v n="Name">""</v>
@@ -1440,7 +2564,7 @@
                   <v n="VarUserDefTypeAsString">"Invalid Type"</v>
                 </o>
                 <o>
-                  <v n="VarName">"Threshold_RightPos_SingleCarrier"</v>
+                  <v n="VarName">"Threshold_TBRightPos_SingleCarrier"</v>
                   <v n="VarType" t="TypeClass">LReal</v>
                   <v n="VarTypeAsString">"LREAL"</v>
                   <v n="Name">""</v>
@@ -1482,7 +2606,7 @@
                   <v n="VarUserDefTypeAsString">"Invalid Type"</v>
                 </o>
                 <o>
-                  <v n="VarName">"Threshold_LeftVelo_SingleCarrier"</v>
+                  <v n="VarName">"Threshold_TBLeftVelo_SingleCarrier"</v>
                   <v n="VarType" t="TypeClass">LReal</v>
                   <v n="VarTypeAsString">"LREAL"</v>
                   <v n="Name">""</v>
@@ -1496,7 +2620,7 @@
                   <v n="VarUserDefTypeAsString">"Invalid Type"</v>
                 </o>
                 <o>
-                  <v n="VarName">"Threshold_RightVelo_SingleCarrier"</v>
+                  <v n="VarName">"Threshold_TBRightVelo_SingleCarrier"</v>
                   <v n="VarType" t="TypeClass">LReal</v>
                   <v n="VarTypeAsString">"LREAL"</v>
                   <v n="Name">""</v>
@@ -1506,6 +2630,110 @@
                     <v n="UpperBound">""</v>
                   </o>
                   <v n="Id">361</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"Threshold_InPos_SingleCarrier"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">515</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"Threshold_OutPos_SingleCarrier"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <n n="Boundaries" />
+                  <v n="Id">517</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"Threshold_IOLeftPos_SingleCarrier"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <n n="Boundaries" />
+                  <v n="Id">519</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"Threshold_IORightPos_SingleCarrier"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">512</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"Threshold_InVelo_SingleCarrier"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">511</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"Threshold_OutVelo_SingleCarrier"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">510</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"Threshold_IOLeftVelo_SingleCarrier"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">509</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"Threshold_IORightVelo_SingleCarrier"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">508</v>
                   <v n="Comment">""</v>
                   <v n="VarUserDefTypeAsString">"Invalid Type"</v>
                 </o>
@@ -1538,7 +2766,7 @@
                   <v n="VarUserDefTypeAsString">"Invalid Type"</v>
                 </o>
                 <o>
-                  <v n="VarName">"Threshold_LeftPos_Debug"</v>
+                  <v n="VarName">"Threshold_TBLeftPos_Debug"</v>
                   <v n="VarType" t="TypeClass">LReal</v>
                   <v n="VarTypeAsString">"LREAL"</v>
                   <v n="Name">""</v>
@@ -1552,7 +2780,7 @@
                   <v n="VarUserDefTypeAsString">"Invalid Type"</v>
                 </o>
                 <o>
-                  <v n="VarName">"Threshold_RightPos_Debug"</v>
+                  <v n="VarName">"Threshold_TBRightPos_Debug"</v>
                   <v n="VarType" t="TypeClass">LReal</v>
                   <v n="VarTypeAsString">"LREAL"</v>
                   <v n="Name">""</v>
@@ -1562,6 +2790,62 @@
                     <v n="UpperBound">""</v>
                   </o>
                   <v n="Id">381</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"Threshold_InPos_Debug"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">523</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"Threshold_OutPos_Debug"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">522</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"Threshold_IOLeftPos_Debug"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">521</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"Threshold_IORightPos_Debug"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">520</v>
                   <v n="Comment">""</v>
                   <v n="VarUserDefTypeAsString">"Invalid Type"</v>
                 </o>
@@ -1896,6 +3180,62 @@
                     <v n="UpperBound">""</v>
                   </o>
                   <v n="Id">287</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.PositionBias_LeftIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">527</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.PositionBias_RightIn"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">526</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.PositionBias_LeftOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">525</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"LREAL"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.PositionBias_RightOut"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">524</v>
                   <v n="Comment">""</v>
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
