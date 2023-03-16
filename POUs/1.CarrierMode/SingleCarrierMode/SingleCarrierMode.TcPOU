@@ -15,20 +15,37 @@ VAR
 	BottomVelocityNew:LREAL:=1;
 	btn_BottomMove:BOOL;
 	btn_BottomStop:BOOL;
+	InPositionNew:LREAL:=100;
+	InVelocityNew:LREAL:=1;
+	btn_InMove:BOOL;
+	btn_InStop:BOOL;
+	OutPositionNew:LREAL:=100;
+	OutVelocityNew:LREAL:=1;
+	btn_OutMove:BOOL;
+	btn_OutStop:BOOL;
 	(*Var*)
 	fb_ton1:TON;
 	fb_ton2:TON;
 	fb_ton3:TON;
+	fb_ton4:TON;
+	fb_ton5:TON;
+	fb_ton6:TON;
 	(*Status*)
 	State:DINT;
 	Busy:BOOL;
 	TopBusy:BOOL;
 	BottomBusy:BOOL;
+	InBusy:BOOL;
+	OutBusy:BOOL;
 	InitDone:BOOL;
 	tm_state: DINT;
 	ts_state: DINT;
 	bm_state: DINT;
 	bs_state: DINT;
+	im_state: DINT;
+	is_state: DINT;
+	om_state: DINT;
+	os_state: DINT;
 	moni_State:DINT;
 	(*PowerOff*)
 	d_state: DINT;
@@ -42,6 +59,10 @@ END_VAR]]></Declaration>
 TopVelocityActual:=(Velo_LeftTopLin+Velo_RightTopLin)/2;
 BottomPositionActual:=(Pos_LeftBottomLin+Pos_RightBOttomLin)/2;
 BottomVelocityActual:=(Velo_LeftBottomLin+Velo_RightBOttomLin)/2;
+InPositionActual:=(Pos_LeftInLin+Pos_RightInLin)/2;
+InVelocityActual:=(Velo_LeftInLin+Velo_RightInLin)/2;
+OutPositionActual:=(Pos_LeftOutLin+Pos_RightOutLin)/2;
+OutVelocityActual:=(Velo_LeftOutLin+Velo_RightOutLin)/2;
 (*btn_Power On/Off*)
 IF btn_Power AND st_Power=0 THEN
 	btn_PowerOn:=TRUE;
@@ -58,172 +79,24 @@ IF btn_PowerOff THEN
 	A_PowerOff();
 END_IF
 
-(*********************************************************************Monitor All Carrirt Position***********************************************)
+(*************************Monitor All Carrirt Position*****************)
 A_MonitoringAllAxis();
-(*********************************************************************btn_TopMove*****************************************************************)
-IF btn_TopMove AND NOT bottomBusy THEN
-		TopBusy:=TRUE;
-		btn_BottomMove:=FALSE;
-		CASE tm_state OF
-			0:
-				FB_Move.Mode:=2;						(*单梁模式*)
-				FB_Move.CoupleState:=st_Couple;			
-				FB_Move.PowerState:=st_Power;			
-				FB_Move.TopMove:=TRUE;				
-				FB_Move.TopPosition:=TopPositionNew;		
-				FB_Move.TopVelocity:=TopVelocityNew;		
-				FB_Move();								
-				tm_state:=1;
-			1:
-				FB_Move();
-				LED_Run:=TRUE;
-				IF NOT FB_Move.TopDone THEN	
-					tm_state:=1;
-				ELSE					
-					tm_state:=88;
-				END_IF
-			88:
-				btn_TopMove:=FALSE;	
-				LED_Run:=FALSE;
-				tm_state:=0;
-				TopBusy:=FALSE;
-		END_CASE
-END_IF
-
-(*********************************************************************btn_BottomMove*****************************************************************)
-IF btn_BottomMove AND NOT TopBusy THEN
-		btn_TopMove:=FALSE;
-		BottomBusy:=TRUE;
-		CASE bm_state OF
-			0:
-				FB_Move.Mode:=2;						
-				FB_Move.CoupleState:=st_Couple;			
-				FB_Move.PowerState:=st_Power;			
-				FB_Move.BottomMove:=TRUE;			
-				FB_Move.BottomPosition:=BottomPositionNew;		
-				FB_Move.BottomVelocity:=BottomVelocityNew;		
-				FB_Move();
-				bm_state:=1;
-			1:
-				FB_Move();
-				IF NOT FB_Move.BottomDone THEN
-					LED_Run:=TRUE;
-					bm_state:=1;
-				ELSE
-					bm_state:=88;
-				END_IF
-			88:
-				BottomBusy:=FALSE;
-				btn_TopMove:=FALSE;
-				btn_BottomMove:=FALSE;
-				bm_state:=0;
-				LED_Run:=FALSE;
-		END_CASE
-END_IF
-(*******************************************************************btn_TopStop********************************************************************)
-
-IF btn_TopStop THEN
-	LED_Run:=FALSE;
-	TopMoveIndicator:=0;
-	FB_Move.TopReset:=TRUE;
-	TopBusy:=FALSE;
-	FB_Move();
-	btn_TopMove:=FALSE;	
-	tm_state:=0;
-	CASE ts_state OF
-			0:
-				FB_Stop.Mode:=2;
-				FB_Stop.CoupleState:=st_Couple;
-				FB_Stop.PowerState:=st_Power;
-				FB_Stop.TopStop:=TRUE;	
-				FB_Stop();	
-				ts_state:=1;
-			1:
-				FB_Stop();
-				IF NOT FB_Stop.TopDone THEN
-					ts_state:=1;
-				ELSE
-					ts_state:=88;
-				END_IF
-			88:
-				btn_TopStop:=FALSE;	
-				FB_Move.TopReset:=FALSE;	
-				ts_state:=0;
-		END_CASE
-END_IF
-(*******************************************************************btn_BottomStop********************************************************************)
-IF btn_BottomStop  THEN
-	LED_Run:=FALSE;
-	BottomMoveIndicator:=0;
-	FB_Move.BottomReset:=TRUE;
-	BottomBusy:=FALSE;
-	FB_Move();			
-	btn_BottomMove:=FALSE;			
-	bm_state:=0;							
-	CASE bs_state OF
-			0:
-				FB_Stop.Mode:=2;							
-				FB_Stop.CoupleState:=st_Couple;			
-				FB_Stop.PowerState:=st_Power;			
-				FB_Stop.BottomStop:=TRUE;				
-				FB_Stop();								
-				bs_state:=1;
-			1:
-				FB_Stop();
-				IF NOT FB_Stop.BottomDone THEN		
-					bs_state:=1;
-				ELSE									
-					bs_state:=88;
-				END_IF
-			88:
-				btn_BottomStop:=FALSE;					
-				FB_Move.BottomReset:=FALSE;				
-				bs_state:=0;
-		END_CASE
-END_IF
-(*********************************************************************ÏÞÎ»Åö´¥×´Ì¬»Ö¸´************************************************************)
-
-(*Èç¹û¼ì²âµ½ÏØÏÞÎ»¿ª¹ØÏÂ½µÑØ£¬»Ö¸´Move×´Ì¬*)
-FTrig_ReachLS(CLK:=Unreach_LS_Top AND Unreach_LS_Bottom);
+(*******************MOVE AND STOP*********************)
+A_SingleCarrierMove();
+A_SingleCarrierStop();
+(**************ÏÞÎ»Åö´¥×´Ì¬»Ö¸´*******************************)
+FTrig_ReachLS(CLK:=Unreach_LS_Far AND Unreach_LS_Near);
 IF FTrig_ReachLS.Q THEN		(*FTrig_ReachLS.QÌ«¿ì£¬Ö»ÄÜÊ¹btn_TopStopÎªTRUE*)
 	btn_TopStop:=TRUE;
 	btn_BottomStop:=TRUE;
 END_IF
 IF btn_TopStop THEN			(*Òò´Ë£¬´Ë´¦Îªµ±Ö®Ç°btn_TopStopÎªTRUEÊ±£¬ÈËÎªÈÃbtn_BottomStopÎªTRUE*)
 	btn_BottomStop:=TRUE;
-END_IF
-(*
-(*Èç¹û¼ì²âµ½TopÏÞÎ»¿ª¹ØFALSE£¬ÇÒÄ¿±êÎ»ÖÃ´óÓÚµ±Ç°Î»ÖÃÊ±£¬»òÕßÏà·´Ê±£¬»Ö¸´Move×´Ì¬*)
-IF NOT Unreach_LS_Top AND TopPositionNew-TopPositionActual>0.0005 AND btn_TopMove THEN
-	btn_TopStop:=TRUE;
-END_IF
-IF NOT Unreach_LS_Bottom AND TopPositionNew-TopPositionActual<0.0005 AND btn_TopMove THEN
-	btn_TopStop:=TRUE;
-END_IF
-IF NOT Unreach_LS_Top AND BottomPositionNew-BottomPositionActual>0.0005 AND btn_BottomMove THEN
-	btn_BottomStop:=TRUE;
-END_IF
-IF NOT Unreach_LS_Bottom AND BottomPositionNew-BottomPositionActual<0.0005 AND btn_BottomMove THEN
-	btn_BottomStop:=TRUE;
-END_IF
-*)]]></ST>
+END_IF]]></ST>
     </Implementation>
     <Action Name="A_MonitoringAllAxis" Id="{eb43239b-219b-4196-a91d-cc3c414c514e}">
       <Implementation>
-        <ST><![CDATA[(****************************************************************
-NAME:			A_MonitoringAllAxis
-DATA:			2017.3.20
-VERSION:		1.0.0
-DESCRIPTION:	
-				Ã¿´ÎÑ­»·¾ùÖ´ÐÐÖáÎ»ÖÃºÍÖáÔË¶¯µÄ¼ì²é
-				1.4ÖáÏà¶ÔÔË¶¯¼ì²é
-				2.4Öá¹âÕ¤³ßÎ»ÖÃ¡¢ËÙ¶È¶Ô±È¼ì²é
-				3.Ã¿Öá¹âÕ¤ºÍ±àÂëÆ÷Î»ÖÃ¶Ô±È¼ì²é
-HISTORY:
-				2017.3.20		NEW
-
-***************************************************************)
-IF  st_Power<>0 THEN
+        <ST><![CDATA[IF  st_Power<>0 THEN
 		Diff_TopPos_actual:=Pos_leftTopLin-Pos_RightTopLin;
 		Diff_TopVelo_actual:=Velo_leftTopLin-Velo_RightTopLin;
 IF ABS(Pos_leftTopLin-Pos_RightTopLin)>Threshold_TopPos_SingleCarrier THEN
@@ -256,7 +129,39 @@ ELSIF ABS(Velo_leftBottomLin-Velo_RightBottomLin)>Threshold_BottomVelo_SingleCar
 (*ÎÞLeftºÍRightËÙ¶ÈÎ»ÖÃµÄ¶Ô±È*)
 END_IF
 END_IF
-(*********************************************************************************3.Ã¿Öá¹âÕ¤ºÍ±àÂëÆ÷Î»ÖÃ¶Ô±È¼ì²é**********************************************************************)]]></ST>
+IF  st_Power<>0 THEN
+		Diff_InPos_actual:=Pos_leftInLin-Pos_RightInLin;
+		Diff_InVelo_actual:=Velo_leftInLin-Velo_RightInLin;
+IF ABS(Pos_leftInLin-Pos_RightInLin)>Threshold_InPos_SingleCarrier THEN
+		btn_InStop:=TRUE;
+		btn_OutStop:=TRUE;
+		FB_PlcEmergencyStop();
+		Error:=TRUE;
+		ErrorID:=18;
+		LED_Error:=TRUE;
+ELSIF ABS(Velo_leftInLin-Velo_RightInLin)>Threshold_InVelo_SingleCarrier  THEN
+		(*btn_InStop:=TRUE;
+		btn_OutStop:=TRUE;
+		FB_PlcEmergencyStop();*)
+		Error:=TRUE;
+		ErrorID:=19;
+(*Out Î»ÖÃºÍËÙ¶È±È¶Ô*)
+ELSIF ABS(Pos_LeftOutLin-Pos_RightOutLin)>Threshold_OutPos_SingleCarrier THEN
+		btn_InStop:=TRUE;
+		btn_OutStop:=TRUE;
+		FB_PlcEmergencyStop();
+		Error:=TRUE;
+		ErrorID:=20;
+		LED_Error:=TRUE;
+ELSIF ABS(Velo_leftOutLin-Velo_RightOutLin)>Threshold_OutVelo_SingleCarrier  THEN
+		(*btn_InStop:=TRUE;
+		btn_OutStop:=TRUE;
+		FB_PlcEmergencyStop();*)
+		Error:=TRUE;
+		ErrorID:=21;
+(*ÎÞLeftºÍRightËÙ¶ÈÎ»ÖÃµÄ¶Ô±È*)
+END_IF
+END_IF]]></ST>
       </Implementation>
     </Action>
     <Action Name="A_PowerOff" Id="{3f10ae79-5a18-4a8f-8e8f-36886ee92bba}">
@@ -277,10 +182,6 @@ END_IF
 			btn_TopStop:=FALSE;
 			btn_BottomMove:=FALSE;
 			btn_BottomStop:=FALSE;
-			LeftTopLinMoveIndicator:=0;
-			RightTopLinMoveIndicator:=0;
-			LeftBottomLinMoveIndicator:=0;
-			RightBottomLinMoveIndicator:=0;
 			fb_ton1.IN:=FALSE;
 			fb_ton2.IN:=FALSE;
 			fb_ton3.IN:=FALSE;
@@ -357,37 +258,285 @@ CASE State OF
 END_CASE]]></ST>
       </Implementation>
     </Action>
+    <Action Name="A_SingleCarrierMove" Id="{439b8bd9-efb5-4793-8e6b-237eac7f3b44}">
+      <Implementation>
+        <ST><![CDATA[(*********************************************************************btn_TopMove*****************************************************************)
+IF btn_TopMove AND NOT bottomBusy AND NOT InBusy AND NOT OutBusy THEN
+		TopBusy:=TRUE;
+		btn_BottomMove:=FALSE;
+		btn_InMove:=FALSE;
+		btn_OutMove:=FALSE;
+		CASE tm_state OF
+			0:
+				FB_Move.Mode:=1;						(*单梁模式*)
+				FB_Move.CoupleState:=st_Couple;			
+				FB_Move.PowerState:=st_Power;			
+				FB_Move.TopMove:=TRUE;				
+				FB_Move.TopPosition:=TopPositionNew;		
+				FB_Move.TopVelocity:=TopVelocityNew;		
+				FB_Move();								
+				tm_state:=1;
+			1:
+				FB_Move();
+				LED_Run:=TRUE;
+				IF NOT FB_Move.TopDone THEN	
+					tm_state:=1;
+				ELSE					
+					tm_state:=88;
+				END_IF
+			88:
+				btn_TopMove:=FALSE;	
+				LED_Run:=FALSE;
+				tm_state:=0;
+				TopBusy:=FALSE;
+		END_CASE
+END_IF
+
+(*********************************************************************btn_BottomMove*****************************************************************)
+IF btn_BottomMove AND NOT TopBusy AND NOT InBusy AND NOT OutBusy THEN
+		BottomBusy:=TRUE;
+		btn_TopMove:=FALSE;	
+		btn_InMove:=FALSE;
+		btn_OutMove:=FALSE;
+		CASE bm_state OF
+			0:
+				FB_Move.Mode:=1;						
+				FB_Move.CoupleState:=st_Couple;			
+				FB_Move.PowerState:=st_Power;			
+				FB_Move.BottomMove:=TRUE;			
+				FB_Move.BottomPosition:=BottomPositionNew;		
+				FB_Move.BottomVelocity:=BottomVelocityNew;		
+				FB_Move();
+				bm_state:=1;
+			1:
+				FB_Move();
+				IF NOT FB_Move.BottomDone THEN
+					LED_Run:=TRUE;
+					bm_state:=1;
+				ELSE
+					bm_state:=88;
+				END_IF
+			88:
+				BottomBusy:=FALSE;
+				btn_TopMove:=FALSE;
+				btn_BottomMove:=FALSE;
+				bm_state:=0;
+				LED_Run:=FALSE;
+		END_CASE
+END_IF
+(*********************************************************************btn_TopMove*****************************************************************)
+IF btn_InMove AND NOT bottomBusy AND NOT TopBusy AND NOT OutBusy THEN
+		InBusy:=TRUE;
+		btn_BottomMove:=FALSE;
+		btn_TopMove:=FALSE;
+		btn_OutMove:=FALSE;
+		CASE im_state OF
+			0:
+				FB_Move.Mode:=1;						(*单梁模式*)
+				FB_Move.CoupleState:=st_Couple;			
+				FB_Move.PowerState:=st_Power;			
+				FB_Move.InMove:=TRUE;				
+				FB_Move.InPosition:=InPositionNew;		
+				FB_Move.InVelocity:=InVelocityNew;		
+				FB_Move();								
+				im_state:=1;
+			1:
+				FB_Move();
+				LED_Run:=TRUE;
+				IF NOT FB_Move.InDone THEN	
+					im_state:=1;
+				ELSE					
+					im_state:=88;
+				END_IF
+			88:
+				btn_InMove:=FALSE;	
+				LED_Run:=FALSE;
+				im_state:=0;
+				InBusy:=FALSE;
+		END_CASE
+END_IF
+
+(*********************************************************************btn_BottomMove*****************************************************************)
+IF btn_OutMove AND NOT TopBusy AND NOT InBusy AND NOT BottomBusy THEN
+		OutBusy:=TRUE;
+		btn_TopMove:=FALSE;	
+		btn_InMove:=FALSE;
+		btn_BottomMove:=FALSE;
+		CASE om_state OF
+			0:
+				FB_Move.Mode:=1;						
+				FB_Move.CoupleState:=st_Couple;			
+				FB_Move.PowerState:=st_Power;			
+				FB_Move.OutMove:=TRUE;			
+				FB_Move.OutPosition:=OutPositionNew;		
+				FB_Move.OutVelocity:=OutVelocityNew;		
+				FB_Move();
+				om_state:=1;
+			1:
+				FB_Move();
+				IF NOT FB_Move.OutDone THEN
+					LED_Run:=TRUE;
+					om_state:=1;
+				ELSE
+					om_state:=88;
+				END_IF
+			88:
+				OutBusy:=FALSE;
+				btn_OutMove:=FALSE;
+				om_state:=0;
+				LED_Run:=FALSE;
+		END_CASE
+END_IF]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="A_SingleCarrierStop" Id="{520eb26f-2ad3-4864-baf8-9093a861faa1}">
+      <Implementation>
+        <ST><![CDATA[(*******************************************************************btn_TopStop********************************************************************)
+
+IF btn_TopStop THEN
+	LED_Run:=FALSE;
+	FB_Move.TopReset:=TRUE;
+	TopBusy:=FALSE;
+	FB_Move();
+	btn_TopMove:=FALSE;	
+	tm_state:=0;
+	CASE ts_state OF
+			0:
+				FB_Stop.Mode:=1;
+				FB_Stop.CoupleState:=st_Couple;
+				FB_Stop.PowerState:=st_Power;
+				FB_Stop.TopStop:=TRUE;	
+				FB_Stop();	
+				ts_state:=1;
+			1:
+				FB_Stop();
+				IF NOT FB_Stop.TopDone THEN
+					ts_state:=1;
+				ELSE
+					ts_state:=88;
+				END_IF
+			88:
+				btn_TopStop:=FALSE;	
+				FB_Move.TopReset:=FALSE;	
+				ts_state:=0;
+		END_CASE
+END_IF
+(*******************************************************************btn_BottomStop********************************************************************)
+IF btn_BottomStop  THEN
+	LED_Run:=FALSE;
+	BottomMoveIndicator:=0;
+	FB_Move.BottomReset:=TRUE;
+	BottomBusy:=FALSE;
+	FB_Move();			
+	btn_BottomMove:=FALSE;			
+	bm_state:=0;							
+	CASE bs_state OF
+			0:
+				FB_Stop.Mode:=1;							
+				FB_Stop.CoupleState:=st_Couple;			
+				FB_Stop.PowerState:=st_Power;			
+				FB_Stop.BottomStop:=TRUE;				
+				FB_Stop();								
+				bs_state:=1;
+			1:
+				FB_Stop();
+				IF NOT FB_Stop.BottomDone THEN		
+					bs_state:=1;
+				ELSE									
+					bs_state:=88;
+				END_IF
+			88:
+				btn_BottomStop:=FALSE;					
+				FB_Move.BottomReset:=FALSE;				
+				bs_state:=0;
+		END_CASE
+END_IF
+(*******************************************************************btn_InStop********************************************************************)
+
+IF btn_InStop THEN
+	LED_Run:=FALSE;
+	FB_Move.InReset:=TRUE;
+	InBusy:=FALSE;
+	FB_Move();
+	btn_InMove:=FALSE;	
+	im_state:=0;
+	CASE is_state OF
+			0:
+				FB_Stop.Mode:=1;
+				FB_Stop.CoupleState:=st_Couple;
+				FB_Stop.PowerState:=st_Power;
+				FB_Stop.InStop:=TRUE;	
+				FB_Stop();	
+				is_state:=1;
+			1:
+				FB_Stop();
+				IF NOT FB_Stop.InDone THEN
+					is_state:=1;
+				ELSE
+					is_state:=88;
+				END_IF
+			88:
+				btn_InStop:=FALSE;	
+				FB_Move.InReset:=FALSE;	
+				is_state:=0;
+		END_CASE
+END_IF
+(*******************************************************************btn_OutStop********************************************************************)
+IF btn_OutStop  THEN
+	LED_Run:=FALSE;
+	OutMoveIndicator:=0;
+	FB_Move.OutReset:=TRUE;
+	OutBusy:=FALSE;
+	FB_Move();			
+	btn_OutMove:=FALSE;			
+	om_state:=0;							
+	CASE os_state OF
+			0:
+				FB_Stop.Mode:=1;							
+				FB_Stop.CoupleState:=st_Couple;			
+				FB_Stop.PowerState:=st_Power;			
+				FB_Stop.OutStop:=TRUE;				
+				FB_Stop();								
+				os_state:=1;
+			1:
+				FB_Stop();
+				IF NOT FB_Stop.OutDone THEN		
+					os_state:=1;
+				ELSE									
+					os_state:=88;
+				END_IF
+			88:
+				btn_OutStop:=FALSE;					
+				FB_Move.OutReset:=FALSE;				
+				os_state:=0;
+		END_CASE
+END_IF]]></ST>
+      </Implementation>
+    </Action>
     <LineIds Name="SingleCarrierMode">
       <LineId Id="35" Count="3" />
+      <LineId Id="445" Count="2" />
+      <LineId Id="444" Count="0" />
       <LineId Id="334" Count="13" />
       <LineId Id="51" Count="0" />
       <LineId Id="350" Count="0" />
       <LineId Id="52" Count="1" />
-      <LineId Id="56" Count="0" />
-      <LineId Id="58" Count="11" />
-      <LineId Id="77" Count="15" />
-      <LineId Id="94" Count="1" />
-      <LineId Id="97" Count="11" />
-      <LineId Id="116" Count="16" />
-      <LineId Id="134" Count="1" />
-      <LineId Id="388" Count="0" />
-      <LineId Id="136" Count="57" />
+      <LineId Id="449" Count="0" />
+      <LineId Id="448" Count="0" />
+      <LineId Id="450" Count="0" />
       <LineId Id="198" Count="0" />
-      <LineId Id="389" Count="0" />
-      <LineId Id="199" Count="8" />
-      <LineId Id="391" Count="0" />
-      <LineId Id="208" Count="12" />
-      <LineId Id="390" Count="0" />
+      <LineId Id="200" Count="7" />
     </LineIds>
     <LineIds Name="SingleCarrierMode.A_MonitoringAllAxis">
-      <LineId Id="0" Count="12" />
       <LineId Id="47" Count="0" />
-      <LineId Id="49" Count="32" />
+      <LineId Id="49" Count="31" />
+      <LineId Id="83" Count="31" />
+      <LineId Id="82" Count="0" />
     </LineIds>
     <LineIds Name="SingleCarrierMode.A_PowerOff">
       <LineId Id="0" Count="13" />
-      <LineId Id="39" Count="1" />
-      <LineId Id="14" Count="9" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="17" Count="6" />
       <LineId Id="25" Count="1" />
       <LineId Id="42" Count="2" />
       <LineId Id="41" Count="0" />
@@ -401,6 +550,27 @@ END_CASE]]></ST>
       <LineId Id="50" Count="0" />
       <LineId Id="42" Count="0" />
       <LineId Id="44" Count="4" />
+    </LineIds>
+    <LineIds Name="SingleCarrierMode.A_SingleCarrierMove">
+      <LineId Id="2" Count="2" />
+      <LineId Id="63" Count="2" />
+      <LineId Id="6" Count="27" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="36" Count="24" />
+      <LineId Id="1" Count="0" />
+      <LineId Id="70" Count="57" />
+      <LineId Id="129" Count="3" />
+      <LineId Id="69" Count="0" />
+    </LineIds>
+    <LineIds Name="SingleCarrierMode.A_SingleCarrierStop">
+      <LineId Id="2" Count="3" />
+      <LineId Id="7" Count="54" />
+      <LineId Id="1" Count="0" />
+      <LineId Id="63" Count="58" />
+      <LineId Id="62" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

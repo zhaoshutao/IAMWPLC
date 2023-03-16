@@ -93,9 +93,6 @@
     <Compile Include="POUs\MAIN.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\MainPRG\FB_CheckCoupleStatus.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="POUs\RS232\BackgroundEL.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -117,7 +114,6 @@
     <Folder Include="POUs\CommonFB" />
     <Folder Include="POUs\CommonFB\ExternFB" />
     <Folder Include="POUs\CommonFB\MainFB" />
-    <Folder Include="POUs\MainPRG" />
     <Folder Include="POUs\0.UserMode" />
     <Folder Include="POUs\RS232" />
     <Folder Include="VISUs" />

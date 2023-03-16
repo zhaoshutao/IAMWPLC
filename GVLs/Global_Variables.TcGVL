@@ -297,11 +297,8 @@ VAR_GLOBAL
 (************************FB***********************)
 	FB_Power:FB_Power;
 	FB_PlcEmergencyStop: FB_PlcEmergencyStop;
-	FB_CheckCoupleStatus:FB_CheckCoupleStatus;
 	FB_Move:FB_Move;
 	FB_Stop:FB_Stop;
-	FB_DecoupleAxis:FB_DecoupleAxis;
-	FB_CoupleAxis: FB_CoupleAxis;
 
 	M_CompensationNumber:INT;
 	M_DisplayNumber:INT;

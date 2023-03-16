@@ -2,7 +2,8 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
   <POU Name="UserMode" Id="{dbb58c86-3204-4c0e-a297-03b24a68bd10}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM UserMode
-VAR
+VAR	
+	USE_SingleAxis_Compensation:BOOL:=TRUE;
 (*key Command*)
 	btn_Power:BOOL;
 	btn_PowerOn: BOOL;
@@ -15,15 +16,11 @@ VAR
 	UserTaperPositionNew:LREAL:=0;//target
 	UserTaperVelocityNew:LREAL:=1;//target
 	UserTaperPositionDisplay:LREAL;//current
-	//UserTaperPositionDisplay_FromRightTop:LREAL;
-	//UserTaperPositionDisplay_FromRightBottom:LREAL;
 	UserTaperVelocityDisplay:LREAL;//target
-	//Pos_LeftTopLin_NoTaper:LREAL;
-	//Pos_RightTopLin_NoTaper:LREAL;
-	//Pos_LeftBottomLin_NoTaper:LREAL;
-	//Pos_RightBottomLin_NoTaper:LREAL;
 	UserGapPositionDisplay_FromLeftTop:LREAL;
 	UserGapPositionDisplay_FromLeftBottom:LREAL;
+	UserGapPositionDisplay_FromLeftIn:LREAL;
+	UserGapPositionDisplay_FromLeftOut:LREAL;
 	//
 	UserRightGapPositionNew:LREAL;
 	UserRightGapVelocityNew:LREAL;
@@ -31,6 +28,8 @@ VAR
 	UserRightGapVelocityDisplay:LREAL;
 	UserRightGapPositionDisplay_FromRightTop:LREAL;
 	UserRightGapPositionDisplay_FromRightBottom:LREAL;
+	UserRightGapPositionDisplay_FromRightIn:LREAL;
+	UserRightGapPositionDisplay_FromRightOut:LREAL;
 	(**)
 	btn_UserGapMove:BOOL;
 	btn_UserGapStop:BOOL;
@@ -38,6 +37,9 @@ VAR
 	fb_ton1:TON;
 	fb_ton2:TON;
 	fb_ton3:TON;
+	fb_ton4:TON;
+	fb_ton5:TON;
+	fb_ton6:TON;
 	(*Status*)
 	State:DINT;
 	Busy:BOOL;
@@ -62,6 +64,10 @@ VAR
 	TargetRTPosLessThanCurrentRTPos:BOOL;
 	TargetLBPosLessThanCurrentLBPos:BOOL;
 	TargetRBPosLessThanCurrentRBPos:BOOL;
+	TargetLIPosLessThanCurrentLIPos:BOOL;
+	TargetRIPosLessThanCurrentRIPos:BOOL;
+	TargetLOPosLessThanCurrentLOPos:BOOL;
+	TargetROPosLessThanCurrentROPos:BOOL;
 	PositiveMoving:BOOL;
 	HysteresisMoving:BOOL;
 	NoneHysteresisMoving:BOOL;
@@ -96,11 +102,11 @@ VAR
 	inRange_UserGapPositionNew:BOOL;
 	//
 	min_UserGapVelocityNew:LREAL:=0;
-	max_UserGapVelocityNew:LREAL:=3;
+	max_UserGapVelocityNew:LREAL:=2;
 	inRange_UserGapVelocityNew:BOOL;
 	//
 	min_UserTaperPositionNew: LREAL:=0;;
-	max_UserTaperPositionNew: LREAL:=4;
+	max_UserTaperPositionNew: LREAL:=2;
 	inRange_UserTaperPositionNew: BOOL;
 	//
 	min_UserTaperVelocityNew: LREAL:=0;
@@ -127,10 +133,18 @@ VAR
 	Threshold_UserTopVelo_PLC: LREAL;
 	Threshold_UserBottomPos_PLC: LREAL;
 	Threshold_UserBottomVelo_PLC: LREAL;
-	Threshold_UserLeftPos_PLC: LREAL;
-	Threshold_UserLeftVelo_PLC: LREAL;
-	Threshold_UserRightPos_PLC: LREAL;
-	Threshold_UserRightVelo_PLC: LREAL;
+	Threshold_UserTBLeftPos_PLC: LREAL;
+	Threshold_UserTBLeftVelo_PLC: LREAL;
+	Threshold_UserTBRightPos_PLC: LREAL;
+	Threshold_UserTBRightVelo_PLC: LREAL;
+	Threshold_UserInPos_PLC: LREAL;
+	Threshold_UserInVelo_PLC: LREAL;
+	Threshold_UserOutPos_PLC: LREAL;
+	Threshold_UserOutVelo_PLC: LREAL;
+	Threshold_UserIOLeftPos_PLC: LREAL;
+	Threshold_UserIOLeftVelo_PLC: LREAL;
+	Threshold_UserIORightPos_PLC: LREAL;
+	Threshold_UserIORightVelo_PLC: LREAL;
 	testa: BOOL;
 	testb: BOOL;
 	Threshold_GapChangeFlag: LREAL;
@@ -161,9 +175,6 @@ IF btn_PowerOff THEN
 	A_PowerOff();
 END_IF
 
-(*检查couple状态，不允许couple*)
-A_CheckCoupleStatus();
-
 (*监控四轴位置速度等*)
 A_MonitoringAllAxis();
 
@@ -175,6 +186,7 @@ IF RegularMotionMode AND NOT SSMotionMode THEN
 	A_RegularMotion();
 END_IF
 
+(*
 (*Spectroscopy scanning Mode*)
 IF IsSSMotionMode THEN
 	SSMotionMode:=TRUE;
@@ -186,29 +198,12 @@ END_IF
 IF	SSMotionMode AND NOT RegularMotionMode THEN
 	A_SpectroscopyScanningMotion();
 END_IF
-
+*)
 (*CheckInputPosVelo*)
 A_CheckInputPosVelo();
 (*检查光栅读数是否在范围内*)
 A_CheckLinearEncoder();]]></ST>
     </Implementation>
-    <Action Name="A_CheckCoupleStatus" Id="{ec531655-4226-4156-a0f2-db7d67f06866}">
-      <Implementation>
-        <ST><![CDATA[IF NOT btn_PowerOff THEN
-	IF st_Power=1 AND st_Couple<>0THEN
-		Error:=TRUE;
-		ErrorID:=501;
-		LeftTopLinMoveIndicator:=0;
-		RightTopLinMoveIndicator:=0;
-		LeftBottomLinMoveIndicator:=0;
-		RightBottomLinMoveIndicator:=0;
-		FB_PlcEmergencyStop();
-		LED_Error:=TRUE;
-		ErrorDescription:='couple stutas error';
-	END_IF
-END_IF]]></ST>
-      </Implementation>
-    </Action>
     <Action Name="A_CheckInputPosVelo" Id="{8153d8d0-8d46-4560-8544-b339b78263b6}">
       <Implementation>
         <ST><![CDATA[//gap posiion
@@ -239,6 +234,7 @@ END_IF
 IF UserTaperVelocityNew>=min_UserTaperVelocityNew AND UserTaperVelocityNew<=max_UserTaperVelocityNew THEN
 	inRange_UserTaperVelocityNew:=TRUE;
 END_IF
+(*
 //SS Mode
 IF SS_StepSize<min_SS_StepSize OR SS_StepSize>max_SS_StepSize THEN
 	inRange_SS_StepSize:=FALSE;
@@ -264,7 +260,7 @@ END_IF
 IF StepEachTime_ms>=min_StepEachTime_ms AND StepEachTime_ms<=max_StepEachTime_ms THEN
 	inRange_StepEachTime_ms:=TRUE;
 END_IF
-
+*)
 ]]></ST>
       </Implementation>
     </Action>
@@ -361,6 +357,95 @@ IF Pos_RightBottomLin <UserMode.min_UserGapPositionNew/2 THEN
 	FB_PlcEmergencyStop();
 	LED_Error:=TRUE;
 END_IF
+//
+IF Pos_LeftInLin <=0 THEN
+	ErrorID:=1113;
+	Error:=TRUE;
+	ErrorDescription:='Pos_LeftInLin <=0';
+	FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+END_IF
+IF Pos_RightInLin <=0 THEN
+	ErrorID:=1114;
+	Error:=TRUE;
+	ErrorDescription:='Pos_RightInLin <=0';
+	FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+END_IF
+IF Pos_LeftOutLin <=0 THEN
+	ErrorID:=1115;
+	Error:=TRUE;
+	ErrorDescription:='Pos_LeftOutLin <=0';
+	FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+END_IF
+IF Pos_RightOutLin <=0 THEN
+	ErrorID:=1116;
+	Error:=TRUE;
+	ErrorDescription:='Pos_RightOutLin <=0';
+	FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+END_IF
+//
+IF Pos_LeftInLin >UserMode.max_UserGapPositionNew/2 THEN
+	ErrorID:=1117;
+	Error:=TRUE;
+	ErrorDescription:='Pos_LeftInLin >UserMode.max_UserGapPositionNew';
+	FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+END_IF
+IF Pos_RightInLin >UserMode.max_UserGapPositionNew/2 THEN
+	ErrorID:=1118;
+	Error:=TRUE;
+	ErrorDescription:='Pos_RightInLin>UserMode.max_UserGapPositionNew';
+	FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+END_IF
+IF Pos_LeftOutLin >UserMode.max_UserGapPositionNew/2 THEN
+	ErrorID:=1119;
+	Error:=TRUE;
+	ErrorDescription:='Pos_LeftOutLin >UserMode.max_UserGapPositionNew';
+	FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+END_IF
+IF Pos_RightOutLin >UserMode.max_UserGapPositionNew/2 THEN
+	ErrorID:=1120;
+	Error:=TRUE;
+	ErrorDescription:='Pos_RightOutLin >UserMode.max_UserGapPositionNew';
+	FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+END_IF
+
+//
+IF Pos_LeftInLin <UserMode.min_UserGapPositionNew/2 THEN
+	ErrorID:=1121;
+	Error:=TRUE;
+	ErrorDescription:='Pos_LeftInLin <UserMode.min_UserGapPositionNew/2';
+	FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+END_IF
+IF Pos_RightInLin <UserMode.min_UserGapPositionNew/2 THEN
+	ErrorID:=1122;
+	Error:=TRUE;
+	ErrorDescription:='Pos_RightInLin<UserMode.min_UserGapPositionNew/2';
+	FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+END_IF
+IF Pos_LeftOutLin <UserMode.min_UserGapPositionNew/2 THEN
+	ErrorID:=1123;
+	Error:=TRUE;
+	ErrorDescription:='Pos_LeftOutLin <UserMode.min_UserGapPositionNew';
+	FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+END_IF
+IF Pos_RightOutLin <UserMode.min_UserGapPositionNew/2 THEN
+	ErrorID:=1124;
+	Error:=TRUE;
+	ErrorDescription:='Pos_RightOutLin <UserMode.min_UserGapPositionNew';
+	FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+END_IF
+
 
 ]]></ST>
       </Implementation>
@@ -388,17 +473,25 @@ IF USE_SingleAxis_Compensation THEN
 							/(M_Compensation[i+1].Encoder-M_Compensation[i].Encoder))+M_Compensation[i].LeftTop;
 					LeftBottomLinPositionNew:=(((UserGapPositionNew/2-M_Compensation[i].Encoder)*(M_Compensation[i+1].LeftBottom-M_Compensation[i].LeftBottom))
 							/(M_Compensation[i+1].Encoder-M_Compensation[i].Encoder))+M_Compensation[i].LeftBottom;
+					LeftInLinPositionNew:=(((UserGapPositionNew/2-M_Compensation[i].Encoder)*(M_Compensation[i+1].LeftIn-M_Compensation[i].LeftIn))
+							/(M_Compensation[i+1].Encoder-M_Compensation[i].Encoder))+M_Compensation[i].LeftIn;
+					LeftOutLinPositionNew:=(((UserGapPositionNew/2-M_Compensation[i].Encoder)*(M_Compensation[i+1].LeftOut-M_Compensation[i].LeftOut))
+							/(M_Compensation[i+1].Encoder-M_Compensation[i].Encoder))+M_Compensation[i].LeftOut;
 					M_CompensationNumber:=i;
 					InitCompensationDatasDone:=TRUE;
 				ELSIF i=18 AND UserGapPositionNew/2=M_Compensation[i].Encoder THEN		(*Gap=14µÄÌØÊâÇé¿ö*)
 					(**)
 					LeftTopLinPositionNew:=M_Compensation[i].LeftTop;
 					LeftBottomLinPositionNew:=M_Compensation[i].LeftBottom;
+					LeftInLinPositionNew:=M_Compensation[i].LeftIn;
+					LeftOutLinPositionNew:=M_Compensation[i].LeftOut;
 					M_CompensationNumber:=i;
 					InitCompensationDatasDone:=TRUE;
 				ELSE
 					LeftTopLinPositionNew:=UserGapPositionNew/2;
 					LeftBottomLinPositionNew:=UserGapPositionNew/2;
+					LeftInLinPositionNew:=UserGapPositionNew/2;
+					LeftOutLinPositionNew:=UserGapPositionNew/2;
 					M_CompensationNumber:=i;
 					InitCompensationDatasDone:=TRUE;
 				END_IF
@@ -412,17 +505,25 @@ IF USE_SingleAxis_Compensation THEN
 						/(M_Compensation[j+1].Encoder-M_Compensation[j].Encoder))+M_Compensation[j].RightTop;
 				RightBottomLinPositionNew:=(((UserRightGapPositionNew/2-M_Compensation[j].Encoder)*(M_Compensation[j+1].RightBottom-M_Compensation[j].RightBottom))
 						/(M_Compensation[j+1].Encoder-M_Compensation[j].Encoder))+M_Compensation[j].RightBottom;
+				RightInLinPositionNew:=(((UserRightGapPositionNew/2-M_Compensation[j].Encoder)*(M_Compensation[j+1].RightIn-M_Compensation[j].RightIn))
+						/(M_Compensation[j+1].Encoder-M_Compensation[j].Encoder))+M_Compensation[j].RightIn;
+				RightOutLinPositionNew:=(((UserRightGapPositionNew/2-M_Compensation[j].Encoder)*(M_Compensation[j+1].RightOut-M_Compensation[j].RightOut))
+						/(M_Compensation[j+1].Encoder-M_Compensation[j].Encoder))+M_Compensation[j].RightOut;
 				M_CompensationNumber:=j;
 				InitCompensationDatasDone:=TRUE;
 			ELSIF j=18 AND UserRightGapPositionNew/2=M_Compensation[i].Encoder THEN		(*Gap=14µÄÌØÊâÇé¿ö*)
 				(**)
 				RightTopLinPositionNew:=M_Compensation[i].RightTop;
 				RightBottomLinPositionNew:=M_Compensation[i].RightBottom;
+				RightInLinPositionNew:=M_Compensation[i].RightIn;
+				RightOutLinPositionNew:=M_Compensation[i].RightOut;
 				M_CompensationNumber:=j;
 				InitCompensationDatasDone:=TRUE;
 			ELSE
 				RightTopLinPositionNew:=UserGapPositionNew/2;
 				RightBottomLinPositionNew:=UserGapPositionNew/2;
+				RightInLinPositionNew:=UserGapPositionNew/2;
+				RightOutLinPositionNew:=UserGapPositionNew/2;
 				M_CompensationNumber:=j;
 				InitCompensationDatasDone:=TRUE;
 			END_IF
@@ -437,8 +538,13 @@ IF USE_SingleAxis_Compensation THEN
 				UserGapPositionDisplay_FromLeftTop:=2*(((Pos_LeftTopLin-M_Compensation[k].LeftTop)*(M_Compensation[k+1].Encoder-M_Compensation[k].Encoder))
 											/(M_Compensation[k+1].LeftTop-M_Compensation[k].LeftTop)+M_Compensation[k].Encoder);
 				UserGapPositionDisplay_FromLeftBottom:=2*(((Pos_LeftBottomLin-M_Compensation[k].LeftBottom)*(M_Compensation[k+1].Encoder-M_Compensation[k].Encoder))
-											/(M_Compensation[k+1].LeftBottom-M_Compensation[k].LeftBottom)+M_Compensation[k].Encoder);
-				UserGapPositionDisplay:=DINT_TO_LREAL(LREAL_TO_DINT(((UserGapPositionDisplay_FromLeftTop+UserGapPositionDisplay_FromLeftBottom)/2)*100000))/100000;
+											/(M_Compensation[k+1].LeftBottom-M_Compensation[k].LeftBottom)+M_Compensation[k].Encoder);									
+				UserGapPositionDisplay_FromLeftIn:=2*(((Pos_LeftInLin-M_Compensation[k].LeftIn)*(M_Compensation[k+1].Encoder-M_Compensation[k].Encoder))
+											/(M_Compensation[k+1].LeftIn-M_Compensation[k].LeftIn)+M_Compensation[k].Encoder);
+				UserGapPositionDisplay_FromLeftOut:=2*(((Pos_LeftOutLin-M_Compensation[k].LeftOut)*(M_Compensation[k+1].Encoder-M_Compensation[k].Encoder))
+											/(M_Compensation[k+1].LeftOut-M_Compensation[k].LeftOut)+M_Compensation[k].Encoder);
+				UserGapPositionDisplay:=DINT_TO_LREAL(LREAL_TO_DINT(((UserGapPositionDisplay_FromLeftTop+UserGapPositionDisplay_FromLeftBottom
+																	+UserGapPositionDisplay_FromLeftIn+UserGapPositionDisplay_FromLeftOut)/4)*100000))/100000;
 			END_IF
 	END_FOR
 	//右轴显示位置反结算
@@ -447,8 +553,13 @@ IF USE_SingleAxis_Compensation THEN
 				UserRightGapPositionDisplay_FromRightTop:=2*(((Pos_RightTopLin-M_Compensation[m].RightTop)*(M_Compensation[m+1].Encoder-M_Compensation[m].Encoder))
 											/(M_Compensation[m+1].RightTop-M_Compensation[m].RightTop)+M_Compensation[m].Encoder);
 				UserRightGapPositionDisplay_FromRightBottom:=2*(((Pos_RightBottomLin-M_Compensation[m].RightBottom)*(M_Compensation[m+1].Encoder-M_Compensation[m].Encoder))
-											/(M_Compensation[m+1].RightBottom-M_Compensation[m].RightBottom)+M_Compensation[m].Encoder);
-				UserRightGapPositionDisplay:=(UserRightGapPositionDisplay_FromRightTop+UserRightGapPositionDisplay_FromRightBottom)/2;
+											/(M_Compensation[m+1].RightBottom-M_Compensation[m].RightBottom)+M_Compensation[m].Encoder);									
+				UserRightGapPositionDisplay_FromRightIn:=2*(((Pos_RightInLin-M_Compensation[m].RightIn)*(M_Compensation[m+1].Encoder-M_Compensation[m].Encoder))
+											/(M_Compensation[m+1].RightIn-M_Compensation[m].RightIn)+M_Compensation[m].Encoder);
+				UserRightGapPositionDisplay_FromRightOut:=2*(((Pos_RightOutLin-M_Compensation[m].RightOut)*(M_Compensation[m+1].Encoder-M_Compensation[m].Encoder))
+											/(M_Compensation[m+1].RightOut-M_Compensation[m].RightOut)+M_Compensation[m].Encoder);
+				UserRightGapPositionDisplay:=DINT_TO_LREAL(LREAL_TO_DINT(((UserRightGapPositionDisplay_FromRightTop+UserRightGapPositionDisplay_FromRightBottom
+												+UserRightGapPositionDisplay_FromRightIn+UserRightGapPositionDisplay_FromRightOut)/4)*100000))/100000;
 			END_IF
 	END_FOR
 	IF TaperOrNot THEN
@@ -460,9 +571,15 @@ LeftTopLinVelocityDisplay:=Velo_LeftTopLin;
 RightTopLinVelocityDisplay:=Velo_RightTopLin;
 LeftBottomLinVelocityDisplay:=Velo_LeftBottomLin;
 RightBottomLinVelocityDisplay:=Velo_RightBottomLin;
+LeftInLinVelocityDisplay:=Velo_LeftInLin;
+RightInLinVelocityDisplay:=Velo_RightInLin;
+LeftOutLinVelocityDisplay:=Velo_LeftOutLin;
+RightOutLinVelocityDisplay:=Velo_RightOutLin;
 //Gap velocity
 UserGapVelocityDisplay:=DINT_TO_LREAL(LREAL_TO_DINT(((LeftTopLinVelocityDisplay+RightTopLinVelocityDisplay+
-	LeftBottomLinVelocityDisplay+RightBottomLinVelocityDisplay)/2)*100000))/100000;
+	LeftBottomLinVelocityDisplay+RightBottomLinVelocityDisplay+
+	LeftInLinVelocityDisplay+RightInLinVelocityDisplay+
+	LeftOutLinVelocityDisplay+RightOutLinVelocityDisplay)/4)*100000))/100000;
 
 ]]></ST>
       </Implementation>
@@ -491,28 +608,54 @@ CASE moni_State OF
 		Diff_UserTopPos_actual:=ABS(Pos_leftTopLin-Pos_RightTopLin);
 		(*Bottom*)
 		Diff_UserBottomPos_actual:=ABS(Pos_LeftBottomLin-Pos_RightBottomLin);
-		(*Left*)
-		Diff_UserLeftPos_actual:=ABS(Pos_LeftTopLin-Pos_LeftBottomLin);
-		(*Right*)
-		Diff_UserRightPos_actual:=ABS(Pos_RightTopLin-Pos_RightBottomLin);
+		(*TBLeft*)
+		Diff_UserTBLeftPos_actual:=ABS(Pos_LeftTopLin-Pos_LeftBottomLin);
+		(*TBRight*)
+		Diff_UserTBRightPos_actual:=ABS(Pos_RightTopLin-Pos_RightBottomLin);
+		(*In*)
+		Diff_UserInPos_actual:=ABS(Pos_leftInLin-Pos_RightInLin);
+		(*Out*)
+		Diff_UserOutPos_actual:=ABS(Pos_LeftOutLin-Pos_RightOutLin);
+		(*IOLeft*)
+		Diff_UserIOLeftPos_actual:=ABS(Pos_LeftInLin-Pos_LeftOutLin);
+		(*IORight*)
+		Diff_UserIORightPos_actual:=ABS(Pos_RightInLin-Pos_RightOutLin);
 		(*Velocity*)
 		(*Top*)
 		Diff_UserTopVelo_actual:=ABS(Velo_leftTopLin-Velo_RightTopLin);
 		(*Bottom*)
 		Diff_UserBottomVelo_actual:=ABS(Velo_LeftBottomLin-Velo_RightBottomLin);
-		(*Left*)
-		Diff_UserLeftVelo_actual:=ABS(Velo_LeftTopLin-Velo_LeftBottomLin);
-		(*Right*)
-		Diff_UserRightVelo_actual:=ABS(Velo_RightTopLin-Velo_RightBottomLin);
+		(*TBLeft*)
+		Diff_UserTBLeftVelo_actual:=ABS(Velo_LeftTopLin-Velo_LeftBottomLin);
+		(*TBRight*)
+		Diff_UserTBRightVelo_actual:=ABS(Velo_RightTopLin-Velo_RightBottomLin);
+		(*In*)
+		Diff_UserInVelo_actual:=ABS(Velo_leftInLin-Velo_RightInLin);
+		(*Out*)
+		Diff_UserOutVelo_actual:=ABS(Velo_LeftOutLin-Velo_RightOutLin);
+		(*IOLeft*)
+		Diff_UserIOLeftVelo_actual:=ABS(Velo_LeftInLin-Velo_LeftOutLin);
+		(*IORight*)
+		Diff_UserIORightVelo_actual:=ABS(Velo_RightInLin-Velo_RightOutLin);
 		//阈值
 		Threshold_UserTopPos_PLC:=Threshold_UserTopPos+UserTaperPositionDisplay;//Top位置误差=gap运动细微误差+目标taper位置
 		Threshold_UserTopVelo_PLC:=Threshold_UserTopVelo+ABS(UserGapVelocityDisplay);//Top速度误差=gap运动细微误差+gap目标速度。因为可能出现一个轴运动完了，另一个轴还在运动的情况
 		Threshold_UserBottomPos_PLC:=Threshold_UserBottomPos+UserTaperPositionDisplay;//Bottom同上
 		Threshold_UserBottomVelo_PLC:=Threshold_UserBottomVelo+ABS(UserGapVelocityDisplay);//Bottom同上
-		Threshold_UserLeftPos_PLC:=Threshold_UserLeftPos+UserTaperPositionDisplay;
-		Threshold_UserLeftVelo_PLC:=Threshold_UserLeftVelo+ABS(UserGapVelocityDisplay);
-		Threshold_UserRightPos_PLC:=Threshold_UserRightPos+UserTaperPositionDisplay;
-		Threshold_UserRightVelo_PLC:=Threshold_UserRightVelo+ABS(UserGapVelocityDisplay);
+		Threshold_UserTBLeftPos_PLC:=Threshold_UserTBLeftPos+UserTaperPositionDisplay;
+		Threshold_UserTBLeftVelo_PLC:=Threshold_UserTBLeftVelo+ABS(UserGapVelocityDisplay);
+		Threshold_UserTBRightPos_PLC:=Threshold_UserTBRightPos+UserTaperPositionDisplay;
+		Threshold_UserTBRightVelo_PLC:=Threshold_UserTBRightVelo+ABS(UserGapVelocityDisplay);
+		//
+		
+		Threshold_UserInPos_PLC:=Threshold_UserInPos+UserTaperPositionDisplay;//Top位置误差=gap运动细微误差+目标taper位置
+		Threshold_UserInVelo_PLC:=Threshold_UserInVelo+ABS(UserGapVelocityDisplay);//Top速度误差=gap运动细微误差+gap目标速度。因为可能出现一个轴运动完了，另一个轴还在运动的情况
+		Threshold_UserOutPos_PLC:=Threshold_UserOutPos+UserTaperPositionDisplay;//Bottom同上
+		Threshold_UserOutVelo_PLC:=Threshold_UserOutVelo+ABS(UserGapVelocityDisplay);//Bottom同上
+		Threshold_UserIOLeftPos_PLC:=Threshold_UserIOLeftPos+UserTaperPositionDisplay;
+		Threshold_UserIOLeftVelo_PLC:=Threshold_UserIOLeftVelo+ABS(UserGapVelocityDisplay);
+		Threshold_UserIORightPos_PLC:=Threshold_UserIORightPos+UserTaperPositionDisplay;
+		Threshold_UserIORightVelo_PLC:=Threshold_UserIORightVelo+ABS(UserGapVelocityDisplay);
 		//比较
 		IF Diff_UserTopPos_actual >Threshold_UserTopPos_PLC THEN
 				Error:=TRUE;
@@ -536,26 +679,71 @@ CASE moni_State OF
 				ErrorDescription:='Diff_UserBottomVelo_actual>Threshold_UserBottomVelo_PLC';
 				moni_State:=-100;
 		(*Left Î»ÖÃºÍËÙ¶È±È¶Ô*)
-		ELSIF Diff_UserLeftPos_actual>Threshold_UserLeftPos_PLC  THEN
+		ELSIF Diff_UserTBLeftPos_actual>Threshold_UserTBLeftPos_PLC  THEN
 				Error:=TRUE;
 				ErrorID:=605;
-				ErrorDescription:='Diff_UserLeftPos_actual>Threshold_UserLeftPos_PLC';
+				ErrorDescription:='Diff_UserTBLeftPos_actual>Threshold_UserTBLeftPos_PLC';
 				moni_State:=-100;
-		ELSIF  Diff_UserLeftVelo_actual>Threshold_UserLeftVelo_PLC THEN
+		ELSIF  Diff_UserTBLeftVelo_actual>Threshold_UserTBLeftVelo_PLC THEN
 				Error:=TRUE;
 				ErrorID:=606;
-				ErrorDescription:='Diff_UserLeftVelo_actual>Threshold_UserLeftVelo_PLC';
+				ErrorDescription:='Diff_UserTBLeftVelo_actual>Threshold_UserTBLeftVelo_PLC';
 				moni_State:=-100;
 		(*Right Î»ÖÃºÍËÙ¶È±È¶Ô*)
-		ELSIF Diff_UserRightPos_actual>Threshold_UserRightPos_PLC  THEN
+		ELSIF Diff_UserTBRightPos_actual>Threshold_UserTBRightPos_PLC  THEN
 				Error:=TRUE;
 				ErrorID:=607;
-				ErrorDescription:='Diff_UserRightPos_actual>Threshold_UserRightPos_PLC';
+				ErrorDescription:='Diff_UserTBRightPos_actual>Threshold_UserTBRightPos_PLC';
 				moni_State:=-100;
-		ELSIF  Diff_UserRightVelo_actual>Threshold_UserRightVelo_PLC THEN
+		ELSIF  Diff_UserTBRightVelo_actual>Threshold_UserTBRightVelo_PLC THEN
 				Error:=TRUE;
 				ErrorID:=608;
-				ErrorDescription:='Diff_UserRightVelo_actual>Threshold_UserRightVelo_PLC';
+				ErrorDescription:='Diff_UserTBRightVelo_actual>Threshold_UserTBRightVelo_PLC';
+				moni_State:=-100;
+		END_IF
+		//
+		IF Diff_UserInPos_actual >Threshold_UserInPos_PLC THEN
+				Error:=TRUE;
+				ErrorID:=609;
+				ErrorDescription:='Diff_UserInPos_actual >Threshold_UserInPos_PLC';
+				moni_State:=-100;
+		ELSIF Diff_UserInVelo_actual>Threshold_UserInVelo_PLC  THEN
+				Error:=TRUE;
+				ErrorID:=610;
+				ErrorDescription:='Diff_UserInVelo_actual>Threshold_UserInVelo_PLC';
+				moni_State:=-100;
+		(*Out Î»ÖÃºÍËÙ¶È±È¶Ô*)
+		ELSIF Diff_UserOutPos_actual>Threshold_UserOutPos_PLC THEN
+				Error:=TRUE;
+				ErrorID:=611;
+				ErrorDescription:='Diff_UserOutPos_actual>Threshold_UserOutPos_PLC';
+				moni_State:=-100;
+		ELSIF Diff_UserOutVelo_actual>Threshold_UserOutVelo_PLC  THEN
+				Error:=TRUE;
+				ErrorID:=612;
+				ErrorDescription:='Diff_UserOutVelo_actual>Threshold_UserOutVelo_PLC';
+				moni_State:=-100;
+		(*Left Î»ÖÃºÍËÙ¶È±È¶Ô*)
+		ELSIF Diff_UserIOLeftPos_actual>Threshold_UserIOLeftPos_PLC  THEN
+				Error:=TRUE;
+				ErrorID:=613;
+				ErrorDescription:='Diff_UserIOLeftPos_actual>Threshold_UserIOLeftPos_PLC';
+				moni_State:=-100;
+		ELSIF  Diff_UserIOLeftVelo_actual>Threshold_UserIOLeftVelo_PLC THEN
+				Error:=TRUE;
+				ErrorID:=614;
+				ErrorDescription:='Diff_UserIOLeftVelo_actual>Threshold_UserIOLeftVelo_PLC';
+				moni_State:=-100;
+		(*Right Î»ÖÃºÍËÙ¶È±È¶Ô*)
+		ELSIF Diff_UserIORightPos_actual>Threshold_UserIORightPos_PLC  THEN
+				Error:=TRUE;
+				ErrorID:=615;
+				ErrorDescription:='Diff_UserIORightPos_actual>Threshold_UserIORightPos_PLC';
+				moni_State:=-100;
+		ELSIF  Diff_UserIORightVelo_actual>Threshold_UserIORightVelo_PLC THEN
+				Error:=TRUE;
+				ErrorID:=616;
+				ErrorDescription:='Diff_UserIORightVelo_actual>Threshold_UserIORightVelo_PLC';
 				moni_State:=-100;
 		END_IF
 -100:
@@ -583,10 +771,6 @@ END_IF]]></ST>
 			btn_PowerOn:=FALSE;
 			btn_UserGapMove:=FALSE;
 			btn_UserGapStop:=FALSE;
-			LeftTopLinMoveIndicator:=0;
-			RightTopLinMoveIndicator:=0;
-			LeftBottomLinMoveIndicator:=0;
-			RightBottomLinMoveIndicator:=0;
 			fb_ton1.IN:=FALSE;
 			fb_ton2.IN:=FALSE;
 			fb_ton3.IN:=FALSE;
@@ -775,6 +959,30 @@ IF m_state=0 AND n_state=0 THEN
 	ELSE
 			TargetRBPosLessThanCurrentRBPos:=FALSE;
 	END_IF
+	IF LeftInLinPositionNew-Pos_LeftInLin<-LEDriftErrorThreshold THEN
+			TargetPosLessThanCurrentPos:=TRUE;
+			TargetLIPosLessThanCurrentLIPos:=TRUE;
+	ELSE
+				TargetLIPosLessThanCurrentLIPos:=FALSE;
+	END_IF
+	IF RightInLinPositionNew-Pos_RightInLin<-LEDriftErrorThreshold THEN
+			TargetPosLessThanCurrentPos:=TRUE;
+			TargetRIPosLessThanCurrentRIPos:=TRUE;
+	ELSE
+			TargetRIPosLessThanCurrentRIPos:=FALSE;
+	END_IF
+	IF LeftOutLinPositionNew-Pos_LeftOutLin<-LEDriftErrorThreshold THEN
+			TargetPosLessThanCurrentPos:=TRUE;
+			TargetLOPosLessThanCurrentLOPos:=TRUE;
+	ELSE
+			TargetLOPosLessThanCurrentLOPos:=FALSE;
+	END_IF
+	IF RightOutLinPositionNew-Pos_RightOutLin<-LEDriftErrorThreshold THEN
+			TargetPosLessThanCurrentPos:=TRUE;
+			TargetROPosLessThanCurrentROPos:=TRUE;
+	ELSE
+			TargetROPosLessThanCurrentROPos:=FALSE;
+	END_IF
 END_IF
 
 (*Move*)
@@ -784,7 +992,7 @@ IF InitPowerDone AND InitCompensationDatasDone THEN
 		IF NOT TargetPosLessThanCurrentPos AND NOT HysteresisMoving THEN
 			CASE m_state OF
 				0:
-					FB_Move.Mode:=5;						//1.gap;2.single;3.taper;4.debug;5.BCGap&UserMode
+					FB_Move.Mode:=3;						
 					FB_Move.CoupleState:=st_Couple;			
 					FB_Move.PowerState:=st_Power;							
 					FB_Move.BCLeftTopPosition:=LeftTopLinPositionNew;
@@ -795,6 +1003,14 @@ IF InitPowerDone AND InitCompensationDatasDone THEN
 					FB_Move.BCLeftBottomVelocity:=UserGapVelocityNew/2;
 					FB_Move.BCRightBottomPosition:=RightBottomLinPositionNew;
 					FB_Move.BCRightBottomVelocity:=UserGapVelocityNew/2;		
+					FB_Move.BCLeftInPosition:=LeftInLinPositionNew;
+					FB_Move.BCLeftInVelocity:=UserGapVelocityNew/2;
+					FB_Move.BCRightInPosition:=RightInLinPositionNew;
+					FB_Move.BCRightInVelocity:=UserGapVelocityNew/2;
+					FB_Move.BCLeftOutPosition:=LeftOutLinPositionNew;
+					FB_Move.BCLeftOutVelocity:=UserGapVelocityNew/2;
+					FB_Move.BCRightOutPosition:=RightOutLinPositionNew;
+					FB_Move.BCRightOutVelocity:=UserGapVelocityNew/2;	
 					IF btn_UserGapMove THEN
 						FB_Move.BCGapMove:=TRUE;
 						m_state:=1;
@@ -818,7 +1034,7 @@ IF InitPowerDone AND InitCompensationDatasDone THEN
 		ELSE
 			CASE n_state OF
 				0:
-					FB_Move.Mode:=5;						//1.gap;2.single;3.taper;4.debug;5.BCGap&UserMode;5:userMode_2
+					FB_Move.Mode:=3;						//1.gap;2.single;3.taper;4.debug;5.BCGap&UserMode;5:userMode_2
 					FB_Move.CoupleState:=st_Couple;			
 					FB_Move.PowerState:=st_Power;			
 					
@@ -847,10 +1063,39 @@ IF InitPowerDone AND InitCompensationDatasDone THEN
 						FB_Move.BCRightBottomPosition:=RightBottomLinPositionNew;
 					END_IF					
 					//
+					//
+					IF TargetLIPosLessThanCurrentLIPos THEN			
+						FB_Move.BCLeftInPosition:=LeftInLinPositionNew-HysteresisError/2;
+					ELSE
+						FB_Move.BCLeftInPosition:=LeftInLinPositionNew;	
+					END_IF
+					//
+					IF TargetRIPosLessThanCurrentRIPos THEN 
+						FB_Move.BCRightInPosition:=RightInLinPositionNew-HysteresisError/2;
+					ELSE					
+						FB_Move.BCRightInPosition:=RightInLinPositionNew;
+					END_IF
+					//
+					IF TargetLOPosLessThanCurrentLOPos THEN
+						FB_Move.BCLeftOutPosition:=LeftOutLinPositionNew-HysteresisError/2;
+					ELSE
+						FB_Move.BCLeftOutPosition:=LeftOutLinPositionNew;
+					END_IF
+					//
+					IF TargetROPosLessThanCurrentROPos THEN
+						FB_Move.BCRightOutPosition:=RightOutLinPositionNew-HysteresisError/2;
+					ELSE
+						FB_Move.BCRightOutPosition:=RightOutLinPositionNew;
+					END_IF					
+					//
 					FB_Move.BCLeftTopVelocity:=UserGapVelocityNew/2;
 					FB_Move.BCRightTopVelocity:=UserGapVelocityNew/2;
 					FB_Move.BCLeftBottomVelocity:=UserGapVelocityNew/2;
 					FB_Move.BCRightBottomVelocity:=UserGapVelocityNew/2;
+					FB_Move.BCLeftInVelocity:=UserGapVelocityNew/2;
+					FB_Move.BCRightInVelocity:=UserGapVelocityNew/2;
+					FB_Move.BCLeftOutVelocity:=UserGapVelocityNew/2;
+					FB_Move.BCRightOutVelocity:=UserGapVelocityNew/2;
 						
 					IF btn_UserGapMove THEN							
 						n_state:=1;
@@ -878,7 +1123,7 @@ IF InitPowerDone AND InitCompensationDatasDone THEN
 					*)
 				2:
 					FB_Move.BCGapReset:=FALSE;
-					FB_Move.Mode:=5;						//1.gap;2.single;3.taper;4.debug;5.BCGap&UserMode
+					FB_Move.Mode:=3;						//1.gap;2.single;3.taper;4.debug;5.BCGap&UserMode
 					FB_Move.CoupleState:=st_Couple;			
 					FB_Move.PowerState:=st_Power;			
 					FB_Move.BCGapMove:=TRUE;
@@ -887,11 +1132,19 @@ IF InitPowerDone AND InitCompensationDatasDone THEN
 					FB_Move.BCRightTopPosition:=RightTopLinPositionNew;
 					FB_Move.BCLeftBottomPosition:=LeftBottomLinPositionNew;
 					FB_Move.BCRightBottomPosition:=RightBottomLinPositionNew;
+					FB_Move.BCLeftInPosition:=LeftInLinPositionNew;	
+					FB_Move.BCRightInPosition:=RightInLinPositionNew;
+					FB_Move.BCLeftOutPosition:=LeftOutLinPositionNew;
+					FB_Move.BCRightOutPosition:=RightOutLinPositionNew;
 					//
 					FB_Move.BCLeftTopVelocity:=UserGapVelocityNew/2;
 					FB_Move.BCRightTopVelocity:=UserGapVelocityNew/2;
 					FB_Move.BCLeftBottomVelocity:=UserGapVelocityNew/2;
 					FB_Move.BCRightBottomVelocity:=UserGapVelocityNew/2;
+					FB_Move.BCLeftInVelocity:=UserGapVelocityNew/2;
+					FB_Move.BCRightInVelocity:=UserGapVelocityNew/2;
+					FB_Move.BCLeftOutVelocity:=UserGapVelocityNew/2;
+					FB_Move.BCRightOutVelocity:=UserGapVelocityNew/2;
 					FB_Move();							
 					n_state:=3;
 				3:
@@ -926,7 +1179,7 @@ IF btn_UserGapStop THEN
 	n_state:=0;										(*m_state:=0;*)
 	CASE s_state OF
 			0:
-				FB_Stop.Mode:=5;							(*1£ºgapÄ£Ê½£»2£ºµ¥ÁºÄ£Ê½£»3£ºtaperÄ£Ê½£»4£ºDebugÄ£Ê½£»5£ºBCGapÄ£Ê½*)
+				FB_Stop.Mode:=3;							(*1£ºgapÄ£Ê½£»2£ºµ¥ÁºÄ£Ê½£»3£ºtaperÄ£Ê½£»4£ºDebugÄ£Ê½£»5£ºBCGapÄ£Ê½*)
 				FB_Stop.CoupleState:=st_Couple;			(*ñîºÏ×´Ì¬ÊäÈë*)
 				FB_Stop.PowerState:=st_Power;				(*µçÔ´×´Ì¬ÊäÈë*)
 				FB_Stop.BCGapStop:=TRUE;				(*Execute TRUE*)
@@ -947,7 +1200,7 @@ IF btn_UserGapStop THEN
 END_IF
 
 (*触发限位开关后，相当于点击了Stop按钮*)
-FTrig_ReachLS(CLK:=Unreach_LS_Top AND Unreach_LS_Bottom);
+FTrig_ReachLS(CLK:=Unreach_LS_Far AND Unreach_LS_Near);
 IF FTrig_ReachLS.Q THEN
 	btn_UserGapStop:=TRUE;
 END_IF]]></ST>
@@ -955,7 +1208,8 @@ END_IF]]></ST>
     </Action>
     <Action Name="A_SpectroscopyScanningMotion" Id="{6676a965-5ff1-46e4-b651-02d2762b99bc}">
       <Implementation>
-        <ST><![CDATA[(*输入保护*)
+        <ST><![CDATA[(*
+(*输入保护*)
 IF SS_Move AND SSMotionMode AND NOT RegularMotionMode THEN
 	IF NOT inRange_SS_StepSize THEN
 		SS_Stop:=TRUE;
@@ -1115,11 +1369,16 @@ IF SS_Stop THEN
 END_IF
 
 (*触发限位开关后，相当于点击了Stop按钮*)
-FTrig_ReachLS(CLK:=Unreach_LS_Top AND Unreach_LS_Bottom);
+FTrig_ReachLS(CLK:=Unreach_LS_Far AND Unreach_LS_Near);
 IF FTrig_ReachLS.Q THEN
 	SS_Stop:=TRUE;
 END_IF
-]]></ST>
+*)]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="ACT" Id="{7e3291ed-a082-43aa-a6d4-d5a94588fafc}">
+      <Implementation>
+        <ST><![CDATA[]]></ST>
       </Implementation>
     </Action>
     <LineIds Name="UserMode">
@@ -1132,9 +1391,6 @@ END_IF
       <LineId Id="51" Count="0" />
       <LineId Id="56" Count="1" />
       <LineId Id="54" Count="0" />
-      <LineId Id="546" Count="0" />
-      <LineId Id="59" Count="0" />
-      <LineId Id="538" Count="0" />
       <LineId Id="542" Count="0" />
       <LineId Id="72" Count="0" />
       <LineId Id="71" Count="0" />
@@ -1146,6 +1402,7 @@ END_IF
       <LineId Id="548" Count="0" />
       <LineId Id="530" Count="0" />
       <LineId Id="549" Count="0" />
+      <LineId Id="1314" Count="0" />
       <LineId Id="545" Count="0" />
       <LineId Id="445" Count="0" />
       <LineId Id="1149" Count="1" />
@@ -1161,12 +1418,6 @@ END_IF
       <LineId Id="1012" Count="0" />
       <LineId Id="1011" Count="0" />
     </LineIds>
-    <LineIds Name="UserMode.A_CheckCoupleStatus">
-      <LineId Id="2" Count="9" />
-      <LineId Id="13" Count="0" />
-      <LineId Id="12" Count="0" />
-      <LineId Id="1" Count="0" />
-    </LineIds>
     <LineIds Name="UserMode.A_CheckInputPosVelo">
       <LineId Id="23" Count="0" />
       <LineId Id="1" Count="6" />
@@ -1178,6 +1429,7 @@ END_IF
       <LineId Id="24" Count="0" />
       <LineId Id="26" Count="4" />
       <LineId Id="25" Count="0" />
+      <LineId Id="60" Count="0" />
       <LineId Id="31" Count="0" />
       <LineId Id="35" Count="4" />
       <LineId Id="34" Count="0" />
@@ -1208,6 +1460,7 @@ END_IF
       <LineId Id="30" Count="0" />
       <LineId Id="69" Count="28" />
       <LineId Id="62" Count="0" />
+      <LineId Id="106" Count="88" />
       <LineId Id="99" Count="0" />
       <LineId Id="104" Count="0" />
     </LineIds>
@@ -1226,31 +1479,48 @@ END_IF
       <LineId Id="245" Count="0" />
       <LineId Id="20" Count="3" />
       <LineId Id="26" Count="1" />
+      <LineId Id="329" Count="2" />
+      <LineId Id="328" Count="0" />
       <LineId Id="30" Count="1" />
       <LineId Id="43" Count="2" />
+      <LineId Id="332" Count="1" />
       <LineId Id="47" Count="0" />
       <LineId Id="59" Count="3" />
+      <LineId Id="334" Count="1" />
       <LineId Id="64" Count="0" />
       <LineId Id="72" Count="4" />
       <LineId Id="213" Count="0" />
       <LineId Id="215" Count="2" />
       <LineId Id="220" Count="1" />
-      <LineId Id="224" Count="5" />
+      <LineId Id="224" Count="1" />
+      <LineId Id="337" Count="2" />
+      <LineId Id="336" Count="0" />
+      <LineId Id="226" Count="3" />
       <LineId Id="231" Count="0" />
+      <LineId Id="340" Count="1" />
       <LineId Id="233" Count="3" />
       <LineId Id="238" Count="0" />
+      <LineId Id="342" Count="1" />
       <LineId Id="240" Count="4" />
       <LineId Id="214" Count="0" />
       <LineId Id="164" Count="1" />
       <LineId Id="254" Count="0" />
       <LineId Id="300" Count="0" />
       <LineId Id="278" Count="1" />
-      <LineId Id="281" Count="4" />
+      <LineId Id="281" Count="3" />
+      <LineId Id="346" Count="2" />
+      <LineId Id="344" Count="0" />
+      <LineId Id="285" Count="0" />
+      <LineId Id="349" Count="0" />
       <LineId Id="299" Count="0" />
       <LineId Id="277" Count="0" />
       <LineId Id="302" Count="2" />
       <LineId Id="313" Count="1" />
-      <LineId Id="308" Count="2" />
+      <LineId Id="308" Count="1" />
+      <LineId Id="352" Count="2" />
+      <LineId Id="350" Count="0" />
+      <LineId Id="310" Count="0" />
+      <LineId Id="355" Count="0" />
       <LineId Id="312" Count="0" />
       <LineId Id="301" Count="0" />
       <LineId Id="325" Count="0" />
@@ -1258,13 +1528,19 @@ END_IF
       <LineId Id="326" Count="0" />
       <LineId Id="317" Count="0" />
       <LineId Id="319" Count="3" />
+      <LineId Id="356" Count="3" />
       <LineId Id="318" Count="0" />
       <LineId Id="327" Count="0" />
       <LineId Id="323" Count="1" />
+      <LineId Id="360" Count="1" />
       <LineId Id="129" Count="1" />
     </LineIds>
     <LineIds Name="UserMode.A_MonitoringAllAxis">
-      <LineId Id="0" Count="34" />
+      <LineId Id="0" Count="24" />
+      <LineId Id="112" Count="7" />
+      <LineId Id="25" Count="8" />
+      <LineId Id="120" Count="7" />
+      <LineId Id="34" Count="0" />
       <LineId Id="109" Count="0" />
       <LineId Id="71" Count="0" />
       <LineId Id="73" Count="0" />
@@ -1273,6 +1549,9 @@ END_IF
       <LineId Id="80" Count="0" />
       <LineId Id="79" Count="0" />
       <LineId Id="82" Count="1" />
+      <LineId Id="128" Count="0" />
+      <LineId Id="130" Count="7" />
+      <LineId Id="129" Count="0" />
       <LineId Id="77" Count="0" />
       <LineId Id="110" Count="0" />
       <LineId Id="36" Count="0" />
@@ -1294,10 +1573,15 @@ END_IF
       <LineId Id="58" Count="1" />
       <LineId Id="106" Count="2" />
       <LineId Id="111" Count="0" />
-      <LineId Id="62" Count="7" />
+      <LineId Id="138" Count="0" />
+      <LineId Id="182" Count="0" />
+      <LineId Id="184" Count="42" />
+      <LineId Id="183" Count="0" />
+      <LineId Id="63" Count="6" />
     </LineIds>
     <LineIds Name="UserMode.A_PowerOff">
-      <LineId Id="0" Count="27" />
+      <LineId Id="0" Count="13" />
+      <LineId Id="18" Count="9" />
       <LineId Id="38" Count="0" />
       <LineId Id="28" Count="8" />
     </LineIds>
@@ -1353,18 +1637,33 @@ END_IF
       <LineId Id="2" Count="0" />
       <LineId Id="294" Count="1" />
       <LineId Id="298" Count="23" />
-      <LineId Id="296" Count="1" />
-      <LineId Id="33" Count="24" />
+      <LineId Id="296" Count="0" />
+      <LineId Id="343" Count="22" />
+      <LineId Id="342" Count="0" />
+      <LineId Id="297" Count="0" />
+      <LineId Id="33" Count="18" />
+      <LineId Id="367" Count="6" />
+      <LineId Id="366" Count="0" />
+      <LineId Id="52" Count="5" />
       <LineId Id="216" Count="0" />
-      <LineId Id="58" Count="56" />
+      <LineId Id="58" Count="43" />
+      <LineId Id="374" Count="24" />
+      <LineId Id="102" Count="3" />
+      <LineId Id="399" Count="3" />
+      <LineId Id="106" Count="8" />
       <LineId Id="218" Count="0" />
-      <LineId Id="115" Count="83" />
+      <LineId Id="115" Count="25" />
+      <LineId Id="403" Count="3" />
+      <LineId Id="141" Count="4" />
+      <LineId Id="407" Count="3" />
+      <LineId Id="146" Count="52" />
       <LineId Id="1" Count="0" />
       <LineId Id="204" Count="0" />
       <LineId Id="200" Count="3" />
       <LineId Id="199" Count="0" />
     </LineIds>
     <LineIds Name="UserMode.A_SpectroscopyScanningMotion">
+      <LineId Id="307" Count="0" />
       <LineId Id="171" Count="0" />
       <LineId Id="186" Count="1" />
       <LineId Id="189" Count="0" />
@@ -1434,6 +1733,9 @@ END_IF
       <LineId Id="94" Count="25" />
       <LineId Id="87" Count="0" />
       <LineId Id="79" Count="0" />
+    </LineIds>
+    <LineIds Name="UserMode.ACT">
+      <LineId Id="1" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

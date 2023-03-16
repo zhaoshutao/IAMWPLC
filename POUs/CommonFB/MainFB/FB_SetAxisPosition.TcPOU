@@ -41,7 +41,6 @@ VAR
 	LeftOutLin_MC_SetPosition: MC_SetPosition;
 	RightOutLin_MC_SetPosition: MC_SetPosition;
 	fb_ton: TON;
-	FB_Couple_Axis: FB_CoupleAxis;
 	FB_PlcEmergencyStop: FB_PlcEmergencyStop;
 
 END_VAR]]></Declaration>

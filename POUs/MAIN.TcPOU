@@ -2857,13 +2857,13 @@ END_IF
 		Plc_EmergencyStop:=FALSE;
 END_CASE
 
-////Save_R_TRIG(CLK:=SaveParameter , Q=> );
-//Read_R_TRIG(CLK:=LoadParameter , Q=> );
-//IF Save_R_TRIG.Q THEN  //将plc数据以文件形式保存在工控机中
-//	 RecipeManCommands.CreateRecipe(RecipeDefinitionName:='Recipes' , RecipeName:='Parameters' );
-//	 RecipeManCommands.ReadAndSaveRecipe(RecipeDefinitionName:='Recipes' , RecipeName:='Parameters' );
-//	 SaveParameter:=FALSE;
-//END_IF
+Save_R_TRIG(CLK:=SaveParameter , Q=> );
+Read_R_TRIG(CLK:=LoadParameter , Q=> );
+IF Save_R_TRIG.Q THEN  //将plc数据以文件形式保存在工控机中
+	 RecipeManCommands.CreateRecipe(RecipeDefinitionName:='Recipes' , RecipeName:='ParametersIAMW' );
+	 RecipeManCommands.ReadAndSaveRecipe(RecipeDefinitionName:='Recipes' , RecipeName:='ParametersIAMW' );
+	 SaveParameter:=FALSE;
+END_IF
 //IF Read_R_TRIG.Q THEN  //将工控机中的文件数据读取到plc中
 //     ReturnDwordLoad:=RecipeManCommands.LoadAndWriteRecipe(RecipeDefinitionName:='Recipes' , RecipeName:='Parameters');
 //     LoadParameter:=FALSE;
