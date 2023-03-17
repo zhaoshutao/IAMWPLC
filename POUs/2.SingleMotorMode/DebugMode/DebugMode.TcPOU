@@ -13,38 +13,38 @@ VAR
 (*Key Command*)
 	btn_PowerOn: BOOL;
 	btn_PowerOff: BOOL;
-	LeftTopLinPositionNew:LREAL;
-	LeftTopLinVelocityNew:LREAL:=1;
+	LeftTopLinPositionNew:LREAL:=10;
+	LeftTopLinVelocityNew:LREAL:=0.2;
 	btn_LeftTopLinMove:BOOL;
 	btn_LeftTopLinStop:BOOL;
-	RightTopLinPositionNew:LREAL;
-	RightTopLinVelocityNew:LREAL:=1;
+	RightTopLinPositionNew:LREAL:=10;
+	RightTopLinVelocityNew:LREAL:=0.2;
 	btn_RightTopLinMove:BOOL;
 	btn_RightTopLinStop:BOOL;
-	LeftBottomLinPositionNew:LREAL;
-	LeftBottomLinVelocityNew:LREAL:=1;
+	LeftBottomLinPositionNew:LREAL:=10;
+	LeftBottomLinVelocityNew:LREAL:=0.2;
 	btn_LeftBottomLinMove:BOOL;
 	btn_LeftBottomLinStop:BOOL;
-	RightBottomLinPositionNew:LREAL;
-	RightBottomLinVelocityNew:LREAL:=1;
+	RightBottomLinPositionNew:LREAL:=10;
+	RightBottomLinVelocityNew:LREAL:=0.2;
 	btn_RightBottomLinMove:BOOL;
 	btn_RightBottomLinStop:BOOL;
 	
 	
-	LeftInLinPositionNew:LREAL;
-	LeftInLinVelocityNew:LREAL:=1;
+	LeftInLinPositionNew:LREAL:=10;
+	LeftInLinVelocityNew:LREAL:=0.2;
 	btn_LeftInLinMove:BOOL;
 	btn_LeftInLinStop:BOOL;
-	RightInLinPositionNew:LREAL;
-	RightInLinVelocityNew:LREAL:=1;
+	RightInLinPositionNew:LREAL:=10;
+	RightInLinVelocityNew:LREAL:=0.2;
 	btn_RightInLinMove:BOOL;
 	btn_RightInLinStop:BOOL;
-	LeftOutLinPositionNew:LREAL;
-	LeftOutLinVelocityNew:LREAL:=1;
+	LeftOutLinPositionNew:LREAL:=10;
+	LeftOutLinVelocityNew:LREAL:=0.2;
 	btn_LeftOutLinMove:BOOL;
 	btn_LeftOutLinStop:BOOL;
-	RightOutLinPositionNew:LREAL;
-	RightOutLinVelocityNew:LREAL:=1;
+	RightOutLinPositionNew:LREAL:=10;
+	RightOutLinVelocityNew:LREAL:=0.2;
 	btn_RightOutLinMove:BOOL;
 	btn_RightOutLinStop:BOOL;
 (*LeftTopLin*)

@@ -107,6 +107,10 @@ END_VAR]]></Declaration>
 		A_TopStop();
 	ELSIF Mode=1 AND BottomStop THEN
 		A_BottomStop();
+	ELSIF Mode=1 AND InStop THEN
+		A_InStop();
+	ELSIF Mode=1 AND OutStop THEN
+		A_OutStop();
 	ELSIF Mode=2 AND LeftTopStop THEN
 		A_LeftTopStop();
 	ELSIF Mode=2 AND RightTopStop THEN
@@ -115,6 +119,14 @@ END_VAR]]></Declaration>
 		A_LeftBottomStop();
 	ELSIF Mode=2 AND RightBottomStop THEN
 		A_RightBottomStop();
+	ELSIF Mode=2 AND LeftInStop THEN
+		A_LeftInStop();
+	ELSIF Mode=2 AND RightInStop THEN
+		A_RightInStop();
+	ELSIF Mode=2 AND LeftOutStop THEN
+		A_LeftOutStop();
+	ELSIF Mode=2 AND RightOutStop THEN
+		A_RightOutStop();
 	ELSIF Mode=3 AND BCGapStop THEN
 		A_BCGapStop();
 	ELSE
@@ -3008,7 +3020,12 @@ END_IF]]></ST>
     <LineIds Name="FB_Stop">
       <LineId Id="72" Count="0" />
       <LineId Id="75" Count="3" />
-      <LineId Id="81" Count="14" />
+      <LineId Id="196" Count="2" />
+      <LineId Id="195" Count="0" />
+      <LineId Id="81" Count="7" />
+      <LineId Id="200" Count="6" />
+      <LineId Id="199" Count="0" />
+      <LineId Id="89" Count="6" />
     </LineIds>
     <LineIds Name="FB_Stop.A_BCGapStop">
       <LineId Id="0" Count="7" />

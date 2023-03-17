@@ -8,19 +8,19 @@ VAR
 	btn_PowerOn: BOOL;
 	btn_PowerOff: BOOL;
 	TopPositionNew:LREAL:=100;
-	TopVelocityNew:LREAL:=1;
+	TopVelocityNew:LREAL:=0.5;
 	btn_TopMove:BOOL;
 	btn_TopStop:BOOL;
 	BottomPositionNew:LREAL:=100;
-	BottomVelocityNew:LREAL:=1;
+	BottomVelocityNew:LREAL:=0.5;
 	btn_BottomMove:BOOL;
 	btn_BottomStop:BOOL;
 	InPositionNew:LREAL:=100;
-	InVelocityNew:LREAL:=1;
+	InVelocityNew:LREAL:=0.5;
 	btn_InMove:BOOL;
 	btn_InStop:BOOL;
 	OutPositionNew:LREAL:=100;
-	OutVelocityNew:LREAL:=1;
+	OutVelocityNew:LREAL:=0.5;
 	btn_OutMove:BOOL;
 	btn_OutStop:BOOL;
 	(*Var*)
