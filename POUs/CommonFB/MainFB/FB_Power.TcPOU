@@ -66,9 +66,9 @@ ELSIF NOT LeftTopLin_MC_Power.Status AND NOT RightTopLin_MC_Power.Status
 		AND NOT LeftOutLin_MC_Power.Status AND NOT RightOutLin_MC_Power.Status THEN
 	PowerState:=0;
 ELSE
-	PowerState:=0;
-	Error:=TRUE;
-	ErrorID:=77;
+	//PowerState:=-1;
+	//Error:=TRUE;
+	//ErrorID:=77;
 	(*FB_PlcEmergencyStop();*)
 END_IF]]></ST>
       </Implementation>
@@ -2288,12 +2288,8 @@ CASE OnState OF
 		A_PowerMC();
 		IF LeftTopLin_MC_Power.Error OR RightTopLin_MC_Power.Error
 			OR LeftBottomLin_MC_Power.Error OR RightBottomLin_MC_Power.Error
-			OR NOT LeftTopLin_MC_Power.Active OR NOT RightTopLin_MC_Power.Active
-			OR NOT LeftBottomLin_MC_Power.Active OR NOT RightBottomLin_MC_Power.Active
 			OR LeftInLin_MC_Power.Error OR RightInLin_MC_Power.Error
-			OR LeftOutLin_MC_Power.Error OR RightOutLin_MC_Power.Error
-			OR NOT LeftInLin_MC_Power.Active OR NOT RightInLin_MC_Power.Active
-			OR NOT LeftOutLin_MC_Power.Active OR NOT RightOutLin_MC_Power.Active THEN		(*FB Error*)
+			OR LeftOutLin_MC_Power.Error OR RightOutLin_MC_Power.Error THEN	
 			ErrorID:=1;
 			OnState:=99;
 		ELSIF LeftTopLin_MC_Power.Status OR RightTopLin_MC_Power.Status
@@ -2416,9 +2412,8 @@ END_CASE]]></ST>
       <LineId Id="34" Count="21" />
     </LineIds>
     <LineIds Name="FB_Power.A_PowerOn">
-      <LineId Id="0" Count="8" />
-      <LineId Id="89" Count="2" />
-      <LineId Id="88" Count="0" />
+      <LineId Id="0" Count="6" />
+      <LineId Id="89" Count="1" />
       <LineId Id="9" Count="3" />
       <LineId Id="92" Count="1" />
       <LineId Id="13" Count="3" />

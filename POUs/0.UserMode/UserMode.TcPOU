@@ -14,7 +14,7 @@ VAR
 	UserGapPositionDisplay:LREAL;//current
 	UserGapVelocityDisplay:LREAL;//current
 	UserTaperPositionNew:LREAL:=0;//target
-	UserTaperVelocityNew:LREAL:=1;//target
+	UserTaperVelocityNew:LREAL:=0.1;//target
 	UserTaperPositionDisplay:LREAL;//current
 	UserTaperVelocityDisplay:LREAL;//target
 	UserGapPositionDisplay_FromLeftTop:LREAL;
@@ -147,8 +147,8 @@ VAR
 	Threshold_UserIORightVelo_PLC: LREAL;
 	testa: BOOL;
 	testb: BOOL;
-	Threshold_GapChangeFlag: LREAL;
-	Threshold_TaperChangeFlag: LREAL;
+	Threshold_GapChangeFlag: LREAL:=0.001;
+	Threshold_TaperChangeFlag: LREAL:=0.005;
 	TaperAndGapSafetyfactor: LREAL:=1;
 END_VAR
 ]]></Declaration>
@@ -462,7 +462,7 @@ IF USE_SingleAxis_Compensation THEN
 	//左轴目标位置解算
 	IF NOT TaperOrNot THEN
 		UserTaperPositionNew:=0;
-		UserTaperPositionDisplay:=0;
+		//UserTaperPositionDisplay:=0;
 	END_IF
 	UserRightGapPositionNew:=UserGapPositionNew+UserTaperPositionNew;
 	//左轴目标位置解算
@@ -564,6 +564,7 @@ IF USE_SingleAxis_Compensation THEN
 	END_FOR
 	IF TaperOrNot THEN
 		UserTaperPositionDisplay:=DINT_TO_LREAL(LREAL_TO_DINT((UserRightGapPositionDisplay-UserGapPositionDisplay)*100000))/100000;
+		UserTaperVelocityDisplay:=DINT_TO_LREAL(LREAL_TO_DINT((Velo_RightTopLin+Velo_RightBottomLin+Velo_RightInLin+Velo_RightOutLin)/4*100000))/100000;
 	END_IF
 END_IF
 (*速度可以不用解算，直接用即可*)
@@ -996,21 +997,33 @@ IF InitPowerDone AND InitCompensationDatasDone THEN
 					FB_Move.CoupleState:=st_Couple;			
 					FB_Move.PowerState:=st_Power;							
 					FB_Move.BCLeftTopPosition:=LeftTopLinPositionNew;
-					FB_Move.BCLeftTopVelocity:=UserGapVelocityNew/2;
 					FB_Move.BCRightTopPosition:=RightTopLinPositionNew;
-					FB_Move.BCRightTopVelocity:=UserGapVelocityNew/2;
 					FB_Move.BCLeftBottomPosition:=LeftBottomLinPositionNew;
-					FB_Move.BCLeftBottomVelocity:=UserGapVelocityNew/2;
-					FB_Move.BCRightBottomPosition:=RightBottomLinPositionNew;
-					FB_Move.BCRightBottomVelocity:=UserGapVelocityNew/2;		
+					FB_Move.BCRightBottomPosition:=RightBottomLinPositionNew;		
 					FB_Move.BCLeftInPosition:=LeftInLinPositionNew;
-					FB_Move.BCLeftInVelocity:=UserGapVelocityNew/2;
 					FB_Move.BCRightInPosition:=RightInLinPositionNew;
-					FB_Move.BCRightInVelocity:=UserGapVelocityNew/2;
 					FB_Move.BCLeftOutPosition:=LeftOutLinPositionNew;
-					FB_Move.BCLeftOutVelocity:=UserGapVelocityNew/2;
-					FB_Move.BCRightOutPosition:=RightOutLinPositionNew;
-					FB_Move.BCRightOutVelocity:=UserGapVelocityNew/2;	
+					FB_Move.BCRightOutPosition:=RightOutLinPositionNew;	
+					IF NOT TaperOrNot THEN
+						FB_Move.BCLeftTopVelocity:=UserGapVelocityNew/2;
+						FB_Move.BCRightTopVelocity:=UserGapVelocityNew/2;
+						FB_Move.BCLeftBottomVelocity:=UserGapVelocityNew/2;
+						FB_Move.BCRightBottomVelocity:=UserGapVelocityNew/2;
+						FB_Move.BCLeftInVelocity:=UserGapVelocityNew/2;
+						FB_Move.BCRightInVelocity:=UserGapVelocityNew/2;
+						FB_Move.BCLeftOutVelocity:=UserGapVelocityNew/2;
+						FB_Move.BCRightOutVelocity:=UserGapVelocityNew/2;
+					ELSE
+						FB_Move.BCLeftTopVelocity:=UserTaperVelocityNew;
+						FB_Move.BCRightTopVelocity:=UserTaperVelocityNew;
+						FB_Move.BCLeftBottomVelocity:=UserTaperVelocityNew;
+						FB_Move.BCRightBottomVelocity:=UserTaperVelocityNew;
+						FB_Move.BCLeftInVelocity:=UserTaperVelocityNew;
+						FB_Move.BCRightInVelocity:=UserTaperVelocityNew;
+						FB_Move.BCLeftOutVelocity:=UserTaperVelocityNew;
+						FB_Move.BCRightOutVelocity:=UserTaperVelocityNew;	
+					END_IF
+
 					IF btn_UserGapMove THEN
 						FB_Move.BCGapMove:=TRUE;
 						m_state:=1;
@@ -1088,14 +1101,25 @@ IF InitPowerDone AND InitCompensationDatasDone THEN
 						FB_Move.BCRightOutPosition:=RightOutLinPositionNew;
 					END_IF					
 					//
-					FB_Move.BCLeftTopVelocity:=UserGapVelocityNew/2;
-					FB_Move.BCRightTopVelocity:=UserGapVelocityNew/2;
-					FB_Move.BCLeftBottomVelocity:=UserGapVelocityNew/2;
-					FB_Move.BCRightBottomVelocity:=UserGapVelocityNew/2;
-					FB_Move.BCLeftInVelocity:=UserGapVelocityNew/2;
-					FB_Move.BCRightInVelocity:=UserGapVelocityNew/2;
-					FB_Move.BCLeftOutVelocity:=UserGapVelocityNew/2;
-					FB_Move.BCRightOutVelocity:=UserGapVelocityNew/2;
+					IF NOT TaperOrNot THEN
+						FB_Move.BCLeftTopVelocity:=UserGapVelocityNew/2;
+						FB_Move.BCRightTopVelocity:=UserGapVelocityNew/2;
+						FB_Move.BCLeftBottomVelocity:=UserGapVelocityNew/2;
+						FB_Move.BCRightBottomVelocity:=UserGapVelocityNew/2;
+						FB_Move.BCLeftInVelocity:=UserGapVelocityNew/2;
+						FB_Move.BCRightInVelocity:=UserGapVelocityNew/2;
+						FB_Move.BCLeftOutVelocity:=UserGapVelocityNew/2;
+						FB_Move.BCRightOutVelocity:=UserGapVelocityNew/2;
+					ELSE
+						FB_Move.BCLeftTopVelocity:=UserTaperVelocityNew;
+						FB_Move.BCRightTopVelocity:=UserTaperVelocityNew;
+						FB_Move.BCLeftBottomVelocity:=UserTaperVelocityNew;
+						FB_Move.BCRightBottomVelocity:=UserTaperVelocityNew;
+						FB_Move.BCLeftInVelocity:=UserTaperVelocityNew;
+						FB_Move.BCRightInVelocity:=UserTaperVelocityNew;
+						FB_Move.BCLeftOutVelocity:=UserTaperVelocityNew;
+						FB_Move.BCRightOutVelocity:=UserTaperVelocityNew;	
+					END_IF
 						
 					IF btn_UserGapMove THEN							
 						n_state:=1;
@@ -1137,14 +1161,25 @@ IF InitPowerDone AND InitCompensationDatasDone THEN
 					FB_Move.BCLeftOutPosition:=LeftOutLinPositionNew;
 					FB_Move.BCRightOutPosition:=RightOutLinPositionNew;
 					//
-					FB_Move.BCLeftTopVelocity:=UserGapVelocityNew/2;
-					FB_Move.BCRightTopVelocity:=UserGapVelocityNew/2;
-					FB_Move.BCLeftBottomVelocity:=UserGapVelocityNew/2;
-					FB_Move.BCRightBottomVelocity:=UserGapVelocityNew/2;
-					FB_Move.BCLeftInVelocity:=UserGapVelocityNew/2;
-					FB_Move.BCRightInVelocity:=UserGapVelocityNew/2;
-					FB_Move.BCLeftOutVelocity:=UserGapVelocityNew/2;
-					FB_Move.BCRightOutVelocity:=UserGapVelocityNew/2;
+					IF NOT TaperOrNot THEN
+						FB_Move.BCLeftTopVelocity:=UserGapVelocityNew/2;
+						FB_Move.BCRightTopVelocity:=UserGapVelocityNew/2;
+						FB_Move.BCLeftBottomVelocity:=UserGapVelocityNew/2;
+						FB_Move.BCRightBottomVelocity:=UserGapVelocityNew/2;
+						FB_Move.BCLeftInVelocity:=UserGapVelocityNew/2;
+						FB_Move.BCRightInVelocity:=UserGapVelocityNew/2;
+						FB_Move.BCLeftOutVelocity:=UserGapVelocityNew/2;
+						FB_Move.BCRightOutVelocity:=UserGapVelocityNew/2;
+					ELSE
+						FB_Move.BCLeftTopVelocity:=UserTaperVelocityNew;
+						FB_Move.BCRightTopVelocity:=UserTaperVelocityNew;
+						FB_Move.BCLeftBottomVelocity:=UserTaperVelocityNew;
+						FB_Move.BCRightBottomVelocity:=UserTaperVelocityNew;
+						FB_Move.BCLeftInVelocity:=UserTaperVelocityNew;
+						FB_Move.BCRightInVelocity:=UserTaperVelocityNew;
+						FB_Move.BCLeftOutVelocity:=UserTaperVelocityNew;
+						FB_Move.BCRightOutVelocity:=UserTaperVelocityNew;	
+					END_IF
 					FB_Move();							
 					n_state:=3;
 				3:
@@ -1525,6 +1560,7 @@ END_IF
       <LineId Id="301" Count="0" />
       <LineId Id="325" Count="0" />
       <LineId Id="315" Count="0" />
+      <LineId Id="362" Count="0" />
       <LineId Id="326" Count="0" />
       <LineId Id="317" Count="0" />
       <LineId Id="319" Count="3" />
@@ -1641,21 +1677,34 @@ END_IF
       <LineId Id="343" Count="22" />
       <LineId Id="342" Count="0" />
       <LineId Id="297" Count="0" />
-      <LineId Id="33" Count="18" />
-      <LineId Id="367" Count="6" />
+      <LineId Id="33" Count="11" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="367" Count="0" />
+      <LineId Id="369" Count="0" />
+      <LineId Id="371" Count="0" />
+      <LineId Id="373" Count="0" />
+      <LineId Id="423" Count="0" />
+      <LineId Id="426" Count="6" />
+      <LineId Id="424" Count="0" />
+      <LineId Id="433" Count="0" />
+      <LineId Id="435" Count="6" />
+      <LineId Id="434" Count="0" />
+      <LineId Id="425" Count="0" />
       <LineId Id="366" Count="0" />
       <LineId Id="52" Count="5" />
       <LineId Id="216" Count="0" />
       <LineId Id="58" Count="43" />
       <LineId Id="374" Count="24" />
-      <LineId Id="102" Count="3" />
-      <LineId Id="399" Count="3" />
+      <LineId Id="102" Count="0" />
+      <LineId Id="442" Count="17" />
       <LineId Id="106" Count="8" />
       <LineId Id="218" Count="0" />
       <LineId Id="115" Count="25" />
       <LineId Id="403" Count="3" />
-      <LineId Id="141" Count="4" />
-      <LineId Id="407" Count="3" />
+      <LineId Id="141" Count="1" />
+      <LineId Id="460" Count="17" />
       <LineId Id="146" Count="52" />
       <LineId Id="1" Count="0" />
       <LineId Id="204" Count="0" />

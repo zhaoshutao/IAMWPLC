@@ -118,7 +118,7 @@ A_MonitoringAllAxis();
 (*********A_PosDiffDetection********************************)
 A_PosDiffDetection();
 (*********btn_PowerOn***************************************)
-IF btn_Power THEN
+IF btn_Power AND st_Power=0 THEN
 	btn_PowerOn:=TRUE;
 	btn_Power:=FALSE;
 END_IF
@@ -130,13 +130,8 @@ END_IF
 IF btn_PowerOn THEN
 	A_PowerOn();
 END_IF
-IF NOT btn_PowerOff THEN
-	IF st_Power=1 THEN
-		Error:=TRUE;
-		ErrorID:=101;
-		FB_PlcEmergencyStop();
-		LED_Error:=TRUE;
-	END_IF
+IF btn_PowerOff THEN
+	A_PowerOff();
 END_IF
 
 (**************btn_PowerOff*******************************)
@@ -160,22 +155,7 @@ IF FTrig_ReachLS.Q THEN
 	btn_LeftOutLinStop:=TRUE;
 	btn_RightOutLinStop:=TRUE;
 END_IF
-
-(*
-(*Èç¹û¼ì²âµ½TopÏÞÎ»¿ª¹ØFALSE£¬ÇÒÄ¿±êÎ»ÖÃ´óÓÚµ±Ç°Î»ÖÃÊ±£¬»òÕßÏà·´Ê±£¬»Ö¸´Move×´Ì¬*)
-IF NOT Unreach_LS_Far AND LeftTopLinPositionNew-Pos_LeftTopLin>0.0005 AND btn_LeftTopLinMove THEN
-	btn_LeftTopLinStop:=TRUE;
-END_IF
-IF NOT Unreach_LS_Near AND RightTopLinPositionNew-Pos_RightTopLin<0.0005 AND btn_RightTopLinMove THEN
-	btn_RightTopLinStop:=TRUE;
-END_IF
-IF NOT Unreach_LS_Far AND LeftBottomLinPositionNew-Pos_LeftBottomLin>0.0005 AND btn_LeftBottomLinMove THEN
-	btn_LeftBottomLinStop:=TRUE;
-END_IF
-IF NOT Unreach_LS_Near AND RightBottomLinPositionNew-Pos_RightBottomLin<0.0005 AND btn_RightBottomLinMove THEN
-	btn_RightBottomLinStop:=TRUE;
-END_IF
-*)]]></ST>
+]]></ST>
     </Implementation>
     <Action Name="A_DebugMove" Id="{688a6355-0b41-43f8-8d7d-2cc411073576}">
       <Implementation>
@@ -864,6 +844,42 @@ END_IF
 			RightBottomLinBusy:=FALSE;
 			RightBottomLin_m_state:=0;
 			RightBottomLin_s_state:=0;
+			
+			btn_LeftInLinMove:=FALSE;
+			btn_LeftInLinStop:=FALSE;
+			fb_ton5_1.IN:=FALSE;
+			fb_ton5_2.IN:=FALSE;
+			LeftInLinState:=0;
+			LeftInLinBusy:=FALSE;
+			LeftInLin_m_state:=0;
+			LeftInLin_s_state:=0;
+
+			btn_RightInLinMove:=FALSE;
+			btn_RightInLinStop:=FALSE;
+			fb_ton6_1.IN:=FALSE;
+			fb_ton6_2.IN:=FALSE;
+			RightInLinState:=0;
+			RightInLinBusy:=FALSE;
+			RightInLin_m_state:=0;
+			RightInLin_s_state:=0;
+
+			btn_LeftOutLinMove:=FALSE;
+			btn_LeftOutLinStop:=FALSE;
+			fb_ton7_1.IN:=FALSE;
+			fb_ton7_2.IN:=FALSE;
+			LeftBottomLinState:=0;
+			LeftOutLinBusy:=FALSE;
+			LeftOutLin_m_state:=0;
+			LeftOutLin_s_state:=0;
+
+			btn_RightOutLinMove:=FALSE;
+			btn_RightOutLinStop:=FALSE;
+			fb_ton8_1.IN:=FALSE;
+			fb_ton8_2.IN:=FALSE;
+			RightOutLinState:=0;
+			RightOutLinBusy:=FALSE;
+			RightOutLin_m_state:=0;
+			RightOutLin_s_state:=0;
 
 		LED_Error:=FALSE;
 		LED_Run:=FALSE;
@@ -900,6 +916,7 @@ CASE PowerState OF
 		InitDone:=TRUE;
 		FB_power.On:=FALSE;
 		fb_ton.IN:=FALSE;
+		LED_Error:=FALSE;
 	99:
 		btn_PowerOn:=FALSE;
 		PowerState:=99;
@@ -914,10 +931,13 @@ END_CASE]]></ST>
     </Action>
     <LineIds Name="DebugMode">
       <LineId Id="65" Count="3" />
-      <LineId Id="445" Count="7" />
+      <LineId Id="445" Count="0" />
+      <LineId Id="683" Count="2" />
+      <LineId Id="449" Count="3" />
       <LineId Id="444" Count="0" />
       <LineId Id="69" Count="3" />
-      <LineId Id="74" Count="7" />
+      <LineId Id="686" Count="1" />
+      <LineId Id="81" Count="0" />
       <LineId Id="314" Count="4" />
       <LineId Id="563" Count="0" />
       <LineId Id="347" Count="0" />
@@ -927,8 +947,6 @@ END_CASE]]></ST>
       <LineId Id="349" Count="5" />
       <LineId Id="567" Count="3" />
       <LineId Id="355" Count="1" />
-      <LineId Id="571" Count="0" />
-      <LineId Id="366" Count="13" />
       <LineId Id="572" Count="0" />
     </LineIds>
     <LineIds Name="DebugMode.A_DebugMove">
@@ -970,10 +988,15 @@ END_CASE]]></ST>
       <LineId Id="19" Count="0" />
     </LineIds>
     <LineIds Name="DebugMode.A_PowerOff">
-      <LineId Id="0" Count="58" />
+      <LineId Id="0" Count="53" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="60" Count="34" />
+      <LineId Id="54" Count="4" />
     </LineIds>
     <LineIds Name="DebugMode.A_PowerOn">
-      <LineId Id="15" Count="36" />
+      <LineId Id="15" Count="26" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="42" Count="9" />
     </LineIds>
   </POU>
 </TcPlcObject>
