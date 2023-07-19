@@ -11,8 +11,6 @@ VAR
 	PowerState: INT;(*PowerOnState*)
 	ton_t: TON;
 (*Key Command*)
-	btn_PowerOn: BOOL;
-	btn_PowerOff: BOOL;
 	LeftTopLinPositionNew:LREAL:=10;
 	LeftTopLinVelocityNew:LREAL:=0.2;
 	btn_LeftTopLinMove:BOOL;
@@ -110,7 +108,6 @@ VAR
 	(*¼ì²âµ½ÏÞÎ»£¬»Ö¸´Move×´Ì¬*)
 	FTrig_ReachLS: F_TRIG;
 	FTrig_btn_GapMove: F_TRIG;
-	btn_Power: BOOL;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[(*********Monitor All Carrirt Position**********************)
@@ -118,6 +115,9 @@ A_MonitoringAllAxis();
 (*********A_PosDiffDetection********************************)
 A_PosDiffDetection();
 (*********btn_PowerOn***************************************)
+IF st_Power=1 THEN
+	InitDone:=TRUE;
+END_IF
 IF btn_Power AND st_Power=0 THEN
 	btn_PowerOn:=TRUE;
 	btn_Power:=FALSE;
@@ -932,6 +932,7 @@ END_CASE]]></ST>
     <LineIds Name="DebugMode">
       <LineId Id="65" Count="3" />
       <LineId Id="445" Count="0" />
+      <LineId Id="798" Count="2" />
       <LineId Id="683" Count="2" />
       <LineId Id="449" Count="3" />
       <LineId Id="444" Count="0" />

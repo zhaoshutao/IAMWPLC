@@ -2,15 +2,17 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
   <POU Name="UserMode" Id="{dbb58c86-3204-4c0e-a297-03b24a68bd10}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM UserMode
-VAR	
-	USE_SingleAxis_Compensation:BOOL:=TRUE;
-(*key Command*)
-	btn_Power:BOOL;
-	btn_PowerOn: BOOL;
-	btn_PowerOff: BOOL;
-(*GapMode*)
+VAR_INPUT
 	UserGapPositionNew:LREAL:=20;//target
 	UserGapVelocityNew:LREAL:=1;//target
+		(**)
+	btn_UserGapMove:BOOL;
+	btn_UserGapStop:BOOL;
+END_VAR
+VAR	
+	USE_SingleAxis_Compensation:BOOL:=TRUE;
+(*GapMode*)
+
 	UserGapPositionDisplay:LREAL;//current
 	UserGapVelocityDisplay:LREAL;//current
 	UserTaperPositionNew:LREAL:=0;//target
@@ -30,9 +32,7 @@ VAR
 	UserRightGapPositionDisplay_FromRightBottom:LREAL;
 	UserRightGapPositionDisplay_FromRightIn:LREAL;
 	UserRightGapPositionDisplay_FromRightOut:LREAL;
-	(**)
-	btn_UserGapMove:BOOL;
-	btn_UserGapStop:BOOL;
+
 	(*Var*)
 	fb_ton1:TON;
 	fb_ton2:TON;
@@ -150,6 +150,7 @@ VAR
 	Threshold_GapChangeFlag: LREAL:=0.001;
 	Threshold_TaperChangeFlag: LREAL:=0.005;
 	TaperAndGapSafetyfactor: LREAL:=1;
+
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -201,8 +202,8 @@ END_IF
 *)
 (*CheckInputPosVelo*)
 A_CheckInputPosVelo();
-(*检查光栅读数是否在范围内*)
-A_CheckLinearEncoder();]]></ST>
+
+]]></ST>
     </Implementation>
     <Action Name="A_CheckInputPosVelo" Id="{8153d8d0-8d46-4560-8544-b339b78263b6}">
       <Implementation>
@@ -261,192 +262,6 @@ IF StepEachTime_ms>=min_StepEachTime_ms AND StepEachTime_ms<=max_StepEachTime_ms
 	inRange_StepEachTime_ms:=TRUE;
 END_IF
 *)
-]]></ST>
-      </Implementation>
-    </Action>
-    <Action Name="A_CheckLinearEncoder" Id="{04ef6a41-e2ba-498d-aa00-f823237bb5de}">
-      <Implementation>
-        <ST><![CDATA[//如果没有使用光栅、或者光栅参数没设置好，则不检查光栅位置
-IF NOT USELinearEncoder OR NOT PositionBiasDone THEN
-	RETURN;
-END_IF
-IF Pos_LeftTopLin <=0 THEN
-	ErrorID:=1101;
-	Error:=TRUE;
-	ErrorDescription:='Pos_LeftTopLin <=0';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-IF Pos_RightTopLin <=0 THEN
-	ErrorID:=1102;
-	Error:=TRUE;
-	ErrorDescription:='Pos_RightTopLin <=0';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-IF Pos_LeftBottomLin <=0 THEN
-	ErrorID:=1103;
-	Error:=TRUE;
-	ErrorDescription:='Pos_LeftBottomLin <=0';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-IF Pos_RightBottomLin <=0 THEN
-	ErrorID:=1104;
-	Error:=TRUE;
-	ErrorDescription:='Pos_RightBottomLin <=0';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-//
-IF Pos_LeftTopLin >UserMode.max_UserGapPositionNew/2 THEN
-	ErrorID:=1105;
-	Error:=TRUE;
-	ErrorDescription:='Pos_LeftTopLin >UserMode.max_UserGapPositionNew';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-IF Pos_RightTopLin >UserMode.max_UserGapPositionNew/2 THEN
-	ErrorID:=1106;
-	Error:=TRUE;
-	ErrorDescription:='Pos_RightTopLin>UserMode.max_UserGapPositionNew';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-IF Pos_LeftBottomLin >UserMode.max_UserGapPositionNew/2 THEN
-	ErrorID:=1107;
-	Error:=TRUE;
-	ErrorDescription:='Pos_LeftBottomLin >UserMode.max_UserGapPositionNew';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-IF Pos_RightBottomLin >UserMode.max_UserGapPositionNew/2 THEN
-	ErrorID:=1108;
-	Error:=TRUE;
-	ErrorDescription:='Pos_RightBottomLin >UserMode.max_UserGapPositionNew';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-
-//
-IF Pos_LeftTopLin <UserMode.min_UserGapPositionNew/2 THEN
-	ErrorID:=1109;
-	Error:=TRUE;
-	ErrorDescription:='Pos_LeftTopLin <UserMode.min_UserGapPositionNew/2';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-IF Pos_RightTopLin <UserMode.min_UserGapPositionNew/2 THEN
-	ErrorID:=1110;
-	Error:=TRUE;
-	ErrorDescription:='Pos_RightTopLin<UserMode.min_UserGapPositionNew/2';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-IF Pos_LeftBottomLin <UserMode.min_UserGapPositionNew/2 THEN
-	ErrorID:=1111;
-	Error:=TRUE;
-	ErrorDescription:='Pos_LeftBottomLin <UserMode.min_UserGapPositionNew';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-IF Pos_RightBottomLin <UserMode.min_UserGapPositionNew/2 THEN
-	ErrorID:=1112;
-	Error:=TRUE;
-	ErrorDescription:='Pos_RightBottomLin <UserMode.min_UserGapPositionNew';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-//
-IF Pos_LeftInLin <=0 THEN
-	ErrorID:=1113;
-	Error:=TRUE;
-	ErrorDescription:='Pos_LeftInLin <=0';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-IF Pos_RightInLin <=0 THEN
-	ErrorID:=1114;
-	Error:=TRUE;
-	ErrorDescription:='Pos_RightInLin <=0';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-IF Pos_LeftOutLin <=0 THEN
-	ErrorID:=1115;
-	Error:=TRUE;
-	ErrorDescription:='Pos_LeftOutLin <=0';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-IF Pos_RightOutLin <=0 THEN
-	ErrorID:=1116;
-	Error:=TRUE;
-	ErrorDescription:='Pos_RightOutLin <=0';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-//
-IF Pos_LeftInLin >UserMode.max_UserGapPositionNew/2 THEN
-	ErrorID:=1117;
-	Error:=TRUE;
-	ErrorDescription:='Pos_LeftInLin >UserMode.max_UserGapPositionNew';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-IF Pos_RightInLin >UserMode.max_UserGapPositionNew/2 THEN
-	ErrorID:=1118;
-	Error:=TRUE;
-	ErrorDescription:='Pos_RightInLin>UserMode.max_UserGapPositionNew';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-IF Pos_LeftOutLin >UserMode.max_UserGapPositionNew/2 THEN
-	ErrorID:=1119;
-	Error:=TRUE;
-	ErrorDescription:='Pos_LeftOutLin >UserMode.max_UserGapPositionNew';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-IF Pos_RightOutLin >UserMode.max_UserGapPositionNew/2 THEN
-	ErrorID:=1120;
-	Error:=TRUE;
-	ErrorDescription:='Pos_RightOutLin >UserMode.max_UserGapPositionNew';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-
-//
-IF Pos_LeftInLin <UserMode.min_UserGapPositionNew/2 THEN
-	ErrorID:=1121;
-	Error:=TRUE;
-	ErrorDescription:='Pos_LeftInLin <UserMode.min_UserGapPositionNew/2';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-IF Pos_RightInLin <UserMode.min_UserGapPositionNew/2 THEN
-	ErrorID:=1122;
-	Error:=TRUE;
-	ErrorDescription:='Pos_RightInLin<UserMode.min_UserGapPositionNew/2';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-IF Pos_LeftOutLin <UserMode.min_UserGapPositionNew/2 THEN
-	ErrorID:=1123;
-	Error:=TRUE;
-	ErrorDescription:='Pos_LeftOutLin <UserMode.min_UserGapPositionNew';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-IF Pos_RightOutLin <UserMode.min_UserGapPositionNew/2 THEN
-	ErrorID:=1124;
-	Error:=TRUE;
-	ErrorDescription:='Pos_RightOutLin <UserMode.min_UserGapPositionNew';
-	FB_PlcEmergencyStop();
-	LED_Error:=TRUE;
-END_IF
-
-
 ]]></ST>
       </Implementation>
     </Action>
@@ -1411,11 +1226,6 @@ END_IF
 *)]]></ST>
       </Implementation>
     </Action>
-    <Action Name="ACT" Id="{7e3291ed-a082-43aa-a6d4-d5a94588fafc}">
-      <Implementation>
-        <ST><![CDATA[]]></ST>
-      </Implementation>
-    </Action>
     <LineIds Name="UserMode">
       <LineId Id="767" Count="1" />
       <LineId Id="770" Count="0" />
@@ -1450,7 +1260,7 @@ END_IF
       <LineId Id="655" Count="0" />
       <LineId Id="570" Count="0" />
       <LineId Id="656" Count="0" />
-      <LineId Id="1012" Count="0" />
+      <LineId Id="1491" Count="0" />
       <LineId Id="1011" Count="0" />
     </LineIds>
     <LineIds Name="UserMode.A_CheckInputPosVelo">
@@ -1476,28 +1286,6 @@ END_IF
       <LineId Id="54" Count="0" />
       <LineId Id="40" Count="0" />
       <LineId Id="32" Count="0" />
-    </LineIds>
-    <LineIds Name="UserMode.A_CheckLinearEncoder">
-      <LineId Id="61" Count="0" />
-      <LineId Id="105" Count="0" />
-      <LineId Id="59" Count="1" />
-      <LineId Id="1" Count="0" />
-      <LineId Id="4" Count="3" />
-      <LineId Id="2" Count="1" />
-      <LineId Id="9" Count="5" />
-      <LineId Id="8" Count="0" />
-      <LineId Id="16" Count="5" />
-      <LineId Id="15" Count="0" />
-      <LineId Id="23" Count="5" />
-      <LineId Id="22" Count="0" />
-      <LineId Id="29" Count="0" />
-      <LineId Id="31" Count="26" />
-      <LineId Id="30" Count="0" />
-      <LineId Id="69" Count="28" />
-      <LineId Id="62" Count="0" />
-      <LineId Id="106" Count="88" />
-      <LineId Id="99" Count="0" />
-      <LineId Id="104" Count="0" />
     </LineIds>
     <LineIds Name="UserMode.A_InitCompensationData">
       <LineId Id="206" Count="0" />
@@ -1782,9 +1570,6 @@ END_IF
       <LineId Id="94" Count="25" />
       <LineId Id="87" Count="0" />
       <LineId Id="79" Count="0" />
-    </LineIds>
-    <LineIds Name="UserMode.ACT">
-      <LineId Id="1" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

@@ -51,7 +51,9 @@ VAR_GLOBAL
 	Range_UserTBTaperVelo:LREAL:=1.01;
 	Range_UserIOTaperPos:LREAL:=4.01;
 	Range_UserIOTaperVelo:LREAL:=1.01;
-
+(*UserMode*)
+	//UserGapPositionNew:LREAL:=20;//target
+	//UserGapVelocityNew:LREAL:=1;//target
 (*DebugMode Threshold*)
 	Threshold_TopPos_Debug: LREAL:=4;
 	Threshold_BottomPos_Debug: LREAL:=4;
@@ -299,9 +301,24 @@ VAR_GLOBAL
 	FB_PlcEmergencyStop: FB_PlcEmergencyStop;
 	FB_Move:FB_Move;
 	FB_Stop:FB_Stop;
+	(*SingleCarrierMode All Move/Stop*)
+	FB_Move_Top:FB_Move;
+	FB_Stop_Top:FB_Stop;
+	FB_Move_Bottom:FB_Move;
+	FB_Stop_Bottom:FB_Stop;
+	FB_Move_In:FB_Move;
+	FB_Stop_In:FB_Stop;
+	FB_Move_Out:FB_Move;
+	FB_Stop_Out:FB_Stop;
 
 	M_CompensationNumber:INT;
 	M_DisplayNumber:INT;
+	
+	(*key Command*)
+	btn_Power:BOOL;
+	btn_PowerOn: BOOL;
+	btn_PowerOff: BOOL;
+	
 	(*Conpensation Position Target*)
 	LeftTopLinPositionNew:LREAL;
 	LeftBottomLinPositionNew:LREAL;

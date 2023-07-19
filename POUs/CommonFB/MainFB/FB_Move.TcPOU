@@ -378,16 +378,12 @@ A_MoveMC();
 CASE BottomState OF
 
 	0:
-		IF LeftTopLin.Status.Moving OR RightTopLin.Status.Moving
-			 OR LeftBottomLin.Status.Moving OR RightBottomLin.Status.Moving THEN	(*ÖáÕýÔÚÔËÐÐ£¬Ñ­»·¸Ã²½µÈ´ý*)
-			TopState:=88;
-		ELSIF  LeftBottom_MC_MoveAbsolute.Error OR RightBottomLin_MC_MoveAbsolute.Error THEN		(*¼ì²éMC Error*)
+		IF  LeftBottom_MC_MoveAbsolute.Error OR RightBottomLin_MC_MoveAbsolute.Error THEN		(*¼ì²éMC Error*)
 			ErrorID:=2;
 			BottomState:=99;
-		ELSIF leftTopLin.Status.NotMoving AND  leftBottomLin.Status.NotMoving
-			 AND RightTopLin.Status.NotMoving AND RightBottomLin.Status.NotMoving THEN	(*Öá¶¼´¦ÓÚÍ£Ö¹×´Ì¬Ê±£¬×ªÏÂÒ»²½*)
-			BottomState:=1;
 		END_IF
+		BottomState:=1;
+
 	1:
 		LeftBottom_MC_MoveAbsolute.Position:=BottomPosition;
 		LeftBottom_MC_MoveAbsolute.Velocity:=BottomVelocity;
@@ -398,14 +394,7 @@ CASE BottomState OF
 		fb_ton2.IN:=TRUE;
 		BottomState:=2;
 	2:
-		IF leftTopLin.Status.Moving OR RightTopLin.Status.Moving THEN	(*ÉÏÁº¶¯,ESTOP*)
-			ErrorID:=3;
-			BottomState:=-100;
-		//ELSIF  (LeftBottomLin.Status.Moving AND  RightBottomLin.Status.NotMoving)
-		//		OR (RightBottomLin.Status.Moving AND  LeftBottomLin.Status.NotMoving) THEN
-		//	ErrorID:=4;
-		//	BottomState:=-100;
-		ELSIF NOT LeftBottom_MC_MoveAbsolute.Done THEN		(*ÔË¶¯ÖÐ£¬¼ì²éDoneÐÅºÅ£¬Ã»ÓÐÔòÑ­»·£¬³¬Ê±±¨´í*)
+		IF NOT LeftBottom_MC_MoveAbsolute.Done THEN		(*ÔË¶¯ÖÐ£¬¼ì²éDoneÐÅºÅ£¬Ã»ÓÐÔòÑ­»·£¬³¬Ê±±¨´í*)
 			BottomState:=2;
 		ELSIF LeftBottom_MC_MoveAbsolute.Done THEN		(*ÔË¶¯Íê³É£¬×ªÏÂÒ»²½*)
 				BottomState:=88;
@@ -483,14 +472,7 @@ CASE InState OF
 		fb_ton3.IN:=TRUE;
 		InState:=2;
 	2:
-		IF leftBottomLin.Status.Moving OR RightBottomLin.Status.Moving THEN	(*ÏÂÁº¶¯,ESIn*)
-			ErrorID:=3;
-			InState:=-100;
-		//ELSIF  (LeftInLin.Status.Moving AND  RightInLin.Status.NotMoving)
-		//		OR (RightInLin.Status.Moving AND  LeftInLin.Status.NotMoving) THEN			(*Ò»Öá¶¯£¬ÁíÒ»Öá²»¶¯£¬½ô¼±×´Ì¬*)
-		//	ErrorID:=4;
-		//	InState:=-100;
-		ELSIF NOT LeftIn_MC_MoveAbsolute.Done OR NOT RightInLin_MC_MoveAbsolute.Done THEN		(*ÔË¶¯ÖÐ£¬¼ì²éDoneÐÅºÅ£¬Ã»ÓÐÔòÑ­»·£¬³¬Ê±±¨´í*)
+		IF NOT LeftIn_MC_MoveAbsolute.Done OR NOT RightInLin_MC_MoveAbsolute.Done THEN		(*ÔË¶¯ÖÐ£¬¼ì²éDoneÐÅºÅ£¬Ã»ÓÐÔòÑ­»·£¬³¬Ê±±¨´í*)
 			InState:=2;
 		ELSIF LeftIn_MC_MoveAbsolute.Done AND RightInLin_MC_MoveAbsolute.Done THEN		(*ÔË¶¯Íê³É£¬×ªÏÂÒ»²½*)
 				InState:=88;
@@ -3643,16 +3625,12 @@ A_MoveMC();
 CASE OutState OF
 
 	0:
-		IF LeftTopLin.Status.Moving OR RightTopLin.Status.Moving
-			 OR LeftOutLin.Status.Moving OR RightOutLin.Status.Moving THEN	(*ÖáÕýÔÚÔËÐÐ£¬Ñ­»·¸Ã²½µÈ´ý*)
-			TopState:=88;
-		ELSIF  LeftOut_MC_MoveAbsolute.Error OR RightOutLin_MC_MoveAbsolute.Error THEN		(*¼ì²éMC Error*)
+		IF  LeftOut_MC_MoveAbsolute.Error OR RightOutLin_MC_MoveAbsolute.Error THEN		(*¼ì²éMC Error*)
 			ErrorID:=2;
 			OutState:=99;
-		ELSIF leftTopLin.Status.NotMoving AND  leftOutLin.Status.NotMoving
-			 AND RightTopLin.Status.NotMoving AND RightOutLin.Status.NotMoving THEN	(*Öá¶¼´¦ÓÚÍ£Ö¹×´Ì¬Ê±£¬×ªÏÂÒ»²½*)
-			OutState:=1;
 		END_IF
+		OutState:=1;
+
 	1:
 		LeftOut_MC_MoveAbsolute.Position:=OutPosition;
 		LeftOut_MC_MoveAbsolute.Velocity:=OutVelocity;
@@ -3663,14 +3641,7 @@ CASE OutState OF
 		fb_ton4.IN:=TRUE;
 		OutState:=2;
 	2:
-		IF leftTopLin.Status.Moving OR RightTopLin.Status.Moving THEN	(*ÉÏÁº¶¯,ESTOP*)
-			ErrorID:=3;
-			OutState:=-100;
-		//ELSIF  (LeftOutLin.Status.Moving AND  RightOutLin.Status.NotMoving)
-		//		OR (RightOutLin.Status.Moving AND  LeftOutLin.Status.NotMoving) THEN
-		//	ErrorID:=4;
-		//	OutState:=-100;
-		ELSIF NOT LeftOut_MC_MoveAbsolute.Done THEN		(*ÔË¶¯ÖÐ£¬¼ì²éDoneÐÅºÅ£¬Ã»ÓÐÔòÑ­»·£¬³¬Ê±±¨´í*)
+		IF NOT LeftOut_MC_MoveAbsolute.Done THEN		(*ÔË¶¯ÖÐ£¬¼ì²éDoneÐÅºÅ£¬Ã»ÓÐÔòÑ­»·£¬³¬Ê±±¨´í*)
 			OutState:=2;
 		ELSIF LeftOut_MC_MoveAbsolute.Done THEN		(*ÔË¶¯Íê³É£¬×ªÏÂÒ»²½*)
 				OutState:=88;
@@ -4036,14 +4007,7 @@ CASE TopState OF
 		fb_ton1.IN:=TRUE;
 		TopState:=2;
 	2:
-		IF leftBottomLin.Status.Moving OR RightBottomLin.Status.Moving THEN	(*ÏÂÁº¶¯,ESTOP*)
-			ErrorID:=3;
-			TopState:=-100;
-		//ELSIF  (LeftTopLin.Status.Moving AND  RightTopLin.Status.NotMoving)
-		//		OR (RightTopLin.Status.Moving AND  LeftTopLin.Status.NotMoving) THEN			(*Ò»Öá¶¯£¬ÁíÒ»Öá²»¶¯£¬½ô¼±×´Ì¬*)
-		//	ErrorID:=4;
-		//	TopState:=-100;
-		ELSIF NOT LeftTop_MC_MoveAbsolute.Done OR NOT RightTopLin_MC_MoveAbsolute.Done THEN		(*ÔË¶¯ÖÐ£¬¼ì²éDoneÐÅºÅ£¬Ã»ÓÐÔòÑ­»·£¬³¬Ê±±¨´í*)
+		IF NOT LeftTop_MC_MoveAbsolute.Done OR NOT RightTopLin_MC_MoveAbsolute.Done THEN		(*ÔË¶¯ÖÐ£¬¼ì²éDoneÐÅºÅ£¬Ã»ÓÐÔòÑ­»·£¬³¬Ê±±¨´í*)
 			TopState:=2;
 		ELSIF LeftTop_MC_MoveAbsolute.Done AND RightTopLin_MC_MoveAbsolute.Done THEN		(*ÔË¶¯Íê³É£¬×ªÏÂÒ»²½*)
 				TopState:=88;
@@ -4143,10 +4107,14 @@ END_IF
     </LineIds>
     <LineIds Name="FB_Move.A_BottomMove">
       <LineId Id="0" Count="3" />
-      <LineId Id="10" Count="17" />
+      <LineId Id="10" Count="3" />
+      <LineId Id="17" Count="2" />
+      <LineId Id="100" Count="0" />
+      <LineId Id="22" Count="5" />
       <LineId Id="94" Count="1" />
       <LineId Id="93" Count="0" />
-      <LineId Id="28" Count="10" />
+      <LineId Id="28" Count="2" />
+      <LineId Id="38" Count="0" />
       <LineId Id="45" Count="16" />
       <LineId Id="96" Count="0" />
       <LineId Id="62" Count="8" />
@@ -4167,7 +4135,8 @@ END_IF
       <LineId Id="24" Count="3" />
       <LineId Id="94" Count="1" />
       <LineId Id="93" Count="0" />
-      <LineId Id="28" Count="10" />
+      <LineId Id="28" Count="2" />
+      <LineId Id="38" Count="0" />
       <LineId Id="45" Count="16" />
       <LineId Id="96" Count="0" />
       <LineId Id="62" Count="8" />
@@ -4212,10 +4181,15 @@ END_IF
     </LineIds>
     <LineIds Name="FB_Move.A_OutMove">
       <LineId Id="0" Count="3" />
-      <LineId Id="10" Count="17" />
+      <LineId Id="10" Count="3" />
+      <LineId Id="17" Count="2" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="100" Count="0" />
+      <LineId Id="23" Count="4" />
       <LineId Id="94" Count="1" />
       <LineId Id="93" Count="0" />
-      <LineId Id="28" Count="10" />
+      <LineId Id="28" Count="2" />
+      <LineId Id="38" Count="0" />
       <LineId Id="45" Count="16" />
       <LineId Id="96" Count="0" />
       <LineId Id="62" Count="8" />
@@ -4269,7 +4243,8 @@ END_IF
       <LineId Id="24" Count="3" />
       <LineId Id="94" Count="1" />
       <LineId Id="93" Count="0" />
-      <LineId Id="28" Count="10" />
+      <LineId Id="28" Count="2" />
+      <LineId Id="38" Count="0" />
       <LineId Id="45" Count="16" />
       <LineId Id="96" Count="0" />
       <LineId Id="62" Count="8" />
