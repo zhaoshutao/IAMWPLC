@@ -150,6 +150,7 @@ VAR
 	Threshold_GapChangeFlag: LREAL:=0.001;
 	Threshold_TaperChangeFlag: LREAL:=0.005;
 	TaperAndGapSafetyfactor: LREAL:=1;
+	TaperAndGapSafetyScale:LREAL:=0.42;//IAU=0.41,IVU=0.32,CPMU=0.33,IAMW=0.42
 
 END_VAR
 ]]></Declaration>
@@ -377,7 +378,7 @@ IF USE_SingleAxis_Compensation THEN
 												+UserRightGapPositionDisplay_FromRightIn+UserRightGapPositionDisplay_FromRightOut)/4)*100000))/100000;
 			END_IF
 	END_FOR
-	IF TaperOrNot THEN
+	IF TaperOrNot OR MAIN.Global_ChainProtection_Triggered THEN
 		UserTaperPositionDisplay:=DINT_TO_LREAL(LREAL_TO_DINT((UserRightGapPositionDisplay-UserGapPositionDisplay)*100000))/100000;
 		UserTaperVelocityDisplay:=DINT_TO_LREAL(LREAL_TO_DINT((Velo_RightTopLin+Velo_RightBottomLin+Velo_RightInLin+Velo_RightOutLin)/4*100000))/100000;
 	END_IF
@@ -722,24 +723,28 @@ IF btn_UserGapMove AND NOT SSMotionMode AND RegularMotionMode THEN
 	END_IF
 END_IF
 (*若GAP将有变化，首先检测TAPER是否超出阈值，若超出，则报错，提示必须先将TAPER回归到0，才可以改变GAP*)
-IF ABS(UserGapPositionNew-UserGapPositionDisplay)>Threshold_GapChangeFlag AND btn_UserGapMove THEN
-	IF UserTaperPositionDisplay>Threshold_TaperChangeFlag THEN
-		btn_UserGapStop:=TRUE;
-		btn_UserGapMove:=FALSE;
-		Error:=TRUE;
-		ErrorId:=809;
-		ErrorDescription:='Please Move Taper to zero first before move gap';
-		RETURN;
+IF NOT MAIN.Global_ChainProtection_Triggered THEN//在触发联锁保护后，taper保护关闭
+	IF ABS(UserGapPositionNew-UserGapPositionDisplay)>Threshold_GapChangeFlag AND btn_UserGapMove THEN
+		IF UserTaperPositionDisplay>Threshold_TaperChangeFlag THEN
+			btn_UserGapStop:=TRUE;
+			btn_UserGapMove:=FALSE;
+			Error:=TRUE;
+			ErrorId:=809;
+			ErrorDescription:='Please Move Taper to zero first before move gap';
+			RETURN;
+		END_IF
 	END_IF
 END_IF
 (*Taper和gap连锁限制性保护。比如11mm时候如果taper，入口端gap变小，会有压真空盒的问题。设置保护*)
-IF UserGapPositionNew-TaperAndGapSafetyfactor*0.41*UserTaperPositionNew<=min_UserGapPositionNew AND btn_UserGapMove THEN
-		btn_UserGapStop:=TRUE;
-		btn_UserGapMove:=FALSE;
-		Error:=TRUE;
-		ErrorId:=810;
-		ErrorDescription:='Target taper is too big at current Gap';
-		RETURN;
+IF NOT MAIN.Global_ChainProtection_Triggered THEN//在触发联锁保护后，taper保护关闭
+	IF UserGapPositionNew-TaperAndGapSafetyfactor*TaperAndGapSafetyScale*UserTaperPositionNew<=min_UserGapPositionNew AND btn_UserGapMove THEN
+			btn_UserGapStop:=TRUE;
+			btn_UserGapMove:=FALSE;
+			Error:=TRUE;
+			ErrorId:=810;
+			ErrorDescription:='Target taper is too big at current Gap';
+			RETURN;
+	END_IF
 END_IF
 (*分别比较四轴目标位置与当前位置的差，如果目标位置比当前位置低，则需要运动到更低-回程差一半；再运动至最终目标位置*)
 (*
@@ -1450,13 +1455,19 @@ END_IF
       <LineId Id="279" Count="0" />
       <LineId Id="229" Count="0" />
       <LineId Id="240" Count="0" />
-      <LineId Id="322" Count="2" />
+      <LineId Id="322" Count="0" />
+      <LineId Id="480" Count="0" />
+      <LineId Id="323" Count="1" />
       <LineId Id="328" Count="4" />
       <LineId Id="326" Count="1" />
+      <LineId Id="479" Count="0" />
       <LineId Id="325" Count="0" />
-      <LineId Id="333" Count="1" />
+      <LineId Id="333" Count="0" />
+      <LineId Id="481" Count="0" />
+      <LineId Id="334" Count="0" />
       <LineId Id="337" Count="4" />
       <LineId Id="335" Count="1" />
+      <LineId Id="482" Count="0" />
       <LineId Id="288" Count="5" />
       <LineId Id="2" Count="0" />
       <LineId Id="294" Count="1" />
