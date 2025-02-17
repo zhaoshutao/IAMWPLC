@@ -80,6 +80,25 @@ VAR_GLOBAL
 	Threshold_OutVelo_SingleCarrier: LREAL:=2;
 	Threshold_IOLeftVelo_SingleCarrier: LREAL:=2;
 	Threshold_IORightVelo_SingleCarrier: LREAL:=2;
+	
+	moveDoneLeftTop: BOOL;
+	moveDoneRightTop: BOOL;
+	moveDoneLeftBottom: BOOL;
+	moveDoneRightBottom: BOOL;
+	moveDoneLeftIn: BOOL;
+	moveDoneRightIn: BOOL;
+	moveDoneLeftOut: BOOL;
+	moveDoneRightOut: BOOL;
+	moveDoneAllAxis: BOOL;
+	moveStatusLeftTop: BOOL;
+	moveStatusRightTop: BOOL;
+	moveStatusLeftBottom: BOOL;
+	moveStatusRightBottom: BOOL;
+	moveStatusLeftIn: BOOL;
+	moveStatusRightIn: BOOL;
+	moveStatusLeftOut: BOOL;
+	moveStatusRightOut: BOOL;
+	moveStatusAllAxis: BOOL;
 (*Compensation Value*)
 	M_Compensation:ARRAY[1..18] OF Struct_M_Compensation
 :=[
