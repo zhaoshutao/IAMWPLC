@@ -212,7 +212,7 @@ END_VAR]]></Declaration>
 		A_LeftOutMove();
 	ELSIF Mode=2 AND RightOutMove THEN
 		A_RightOutMove();
-	ELSIF Mode=3 AND BCGapMove THEN//Mode:=3,userMode
+	ELSIF Mode=5 AND BCGapMove THEN//Mode:=5,userMode
 		A_BCGapMove();
 	END_IF
 END_IF]]></ST>

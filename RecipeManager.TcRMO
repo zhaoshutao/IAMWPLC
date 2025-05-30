@@ -6,16 +6,16 @@
         <o xml:space="preserve" t="RecipeManObject">
           <o n="LMGuids" t="LanguageModelGuidHelper">
             <d n="NamesAndGuids" t="Hashtable" ckt="String" cvt="Guid">
+              <v>RECIPEFACTORYFB_INIT</v>
+              <v>9701c596-8ac5-4544-b1e7-092805c269e8</v>
               <v>GVL_RECIPEMANAGEMENT_3300</v>
               <v>3f2c537f-514a-45f4-b2a3-85271f15fce0</v>
-              <v>RECIPEFACTORY</v>
-              <v>21fac012-0871-415c-bff9-418e71ceb55a</v>
               <v>RECIPEMANAGEMENTINITFB_INIT</v>
               <v>a19fceff-70a1-437d-8676-8ed6bc63c683</v>
               <v>RECIPEFACTORYFREERECIPE</v>
               <v>d9474b39-00cf-4946-adcd-d1ad2b1f9a0a</v>
-              <v>RECIPEFACTORYFB_INIT</v>
-              <v>9701c596-8ac5-4544-b1e7-092805c269e8</v>
+              <v>RECIPEFACTORY</v>
+              <v>21fac012-0871-415c-bff9-418e71ceb55a</v>
               <v>RECIPEMANAGEMENTINITFB_REINIT</v>
               <v>5c13c7ce-efc4-4913-ad21-7188b9088354</v>
               <v>RECIPEMANAGEMENTINIT</v>
@@ -55,7 +55,7 @@
       <XmlArchive>
         <Data>
           <o xml:space="preserve" t="RecipeDefinitionObject">
-            <v n="UniqueIdGenerator">"570"</v>
+            <v n="UniqueIdGenerator">"622"</v>
             <o n="Recipes" t="RecipeList">
               <l n="Recipes" t="ArrayList" />
             </o>
@@ -68,6 +68,26 @@
                   <v n="Name">""</v>
                   <n n="Boundaries" />
                   <v n="Id">236</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"RecipeSavedDate"</v>
+                  <v n="VarType" t="TypeClass">String</v>
+                  <v n="VarTypeAsString">"STRING"</v>
+                  <v n="Name">""</v>
+                  <n n="Boundaries" />
+                  <v n="Id">574</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"RecipeDescription"</v>
+                  <v n="VarType" t="TypeClass">String</v>
+                  <v n="VarTypeAsString">"STRING"</v>
+                  <v n="Name">""</v>
+                  <n n="Boundaries" />
+                  <v n="Id">578</v>
                   <v n="Comment">""</v>
                   <v n="VarUserDefTypeAsString">"Invalid Type"</v>
                 </o>
@@ -88,6 +108,16 @@
                   <v n="Name">""</v>
                   <n n="Boundaries" />
                   <v n="Id">411</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"TaperFunctionSolidOn"</v>
+                  <v n="VarType" t="TypeClass">Bool</v>
+                  <v n="VarTypeAsString">"BOOL"</v>
+                  <v n="Name">""</v>
+                  <n n="Boundaries" />
+                  <v n="Id">582</v>
                   <v n="Comment">""</v>
                   <v n="VarUserDefTypeAsString">"Invalid Type"</v>
                 </o>
@@ -2922,21 +2952,7 @@
                   <v n="VarUserDefTypeAsString">"BOOL"</v>
                 </o>
                 <o>
-                  <v n="VarName">"UserMode.min_UserGapPositionNew"</v>
-                  <v n="VarType" t="TypeClass">LReal</v>
-                  <v n="VarTypeAsString">"LREAL"</v>
-                  <v n="Name">""</v>
-                  <o n="Boundaries" t="RecipeVariableBoundaries">
-                    <v n="Type" t="TypeClass">LReal</v>
-                    <v n="LowerBound">""</v>
-                    <v n="UpperBound">""</v>
-                  </o>
-                  <v n="Id">268</v>
-                  <v n="Comment">""</v>
-                  <v n="VarUserDefTypeAsString">"LREAL"</v>
-                </o>
-                <o>
-                  <v n="VarName">"UserMode.max_UserGapPositionNew"</v>
+                  <v n="VarName">"min_UserGapPositionNew"</v>
                   <v n="VarType" t="TypeClass">LReal</v>
                   <v n="VarTypeAsString">"LREAL"</v>
                   <v n="Name">""</v>
@@ -2950,7 +2966,17 @@
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
                 <o>
-                  <v n="VarName">"UserMode.min_UserGapVelocityNew"</v>
+                  <v n="VarName">"max_UserGapPositionNew"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <n n="Boundaries" />
+                  <v n="Id">612</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"min_ThresholdGapSoft2LEProtection"</v>
                   <v n="VarType" t="TypeClass">LReal</v>
                   <v n="VarTypeAsString">"LREAL"</v>
                   <v n="Name">""</v>
@@ -2959,12 +2985,40 @@
                     <v n="LowerBound">""</v>
                     <v n="UpperBound">""</v>
                   </o>
-                  <v n="Id">270</v>
+                  <v n="Id">615</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"max_ThresholdGapSoft2LEProtection"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">616</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"min_UserGapVelocityNew"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">617</v>
                   <v n="Comment">""</v>
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
                 <o>
-                  <v n="VarName">"UserMode.max_UserGapVelocityNew"</v>
+                  <v n="VarName">"max_UserGapVelocityNew"</v>
                   <v n="VarType" t="TypeClass">LReal</v>
                   <v n="VarTypeAsString">"LREAL"</v>
                   <v n="Name">""</v>
@@ -2973,12 +3027,12 @@
                     <v n="LowerBound">""</v>
                     <v n="UpperBound">""</v>
                   </o>
-                  <v n="Id">271</v>
+                  <v n="Id">618</v>
                   <v n="Comment">""</v>
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
                 <o>
-                  <v n="VarName">"UserMode.min_UserTaperPositionNew"</v>
+                  <v n="VarName">"min_UserTaperPositionNew"</v>
                   <v n="VarType" t="TypeClass">LReal</v>
                   <v n="VarTypeAsString">"LREAL"</v>
                   <v n="Name">""</v>
@@ -2987,12 +3041,12 @@
                     <v n="LowerBound">""</v>
                     <v n="UpperBound">""</v>
                   </o>
-                  <v n="Id">272</v>
+                  <v n="Id">619</v>
                   <v n="Comment">""</v>
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
                 <o>
-                  <v n="VarName">"UserMode.max_UserTaperPositionNew"</v>
+                  <v n="VarName">"max_UserTaperPositionNew"</v>
                   <v n="VarType" t="TypeClass">LReal</v>
                   <v n="VarTypeAsString">"LREAL"</v>
                   <v n="Name">""</v>
@@ -3001,12 +3055,12 @@
                     <v n="LowerBound">""</v>
                     <v n="UpperBound">""</v>
                   </o>
-                  <v n="Id">273</v>
+                  <v n="Id">620</v>
                   <v n="Comment">""</v>
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
                 <o>
-                  <v n="VarName">"UserMode.min_UserTaperVelocityNew"</v>
+                  <v n="VarName">"min_UserTaperVelocityNew"</v>
                   <v n="VarType" t="TypeClass">LReal</v>
                   <v n="VarTypeAsString">"LREAL"</v>
                   <v n="Name">""</v>
@@ -3015,12 +3069,12 @@
                     <v n="LowerBound">""</v>
                     <v n="UpperBound">""</v>
                   </o>
-                  <v n="Id">274</v>
+                  <v n="Id">621</v>
                   <v n="Comment">""</v>
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
                 <o>
-                  <v n="VarName">"UserMode.max_UserTaperVelocityNew"</v>
+                  <v n="VarName">"max_UserTaperVelocityNew"</v>
                   <v n="VarType" t="TypeClass">LReal</v>
                   <v n="VarTypeAsString">"LREAL"</v>
                   <v n="Name">""</v>
@@ -3029,7 +3083,7 @@
                     <v n="LowerBound">""</v>
                     <v n="UpperBound">""</v>
                   </o>
-                  <v n="Id">275</v>
+                  <v n="Id">622</v>
                   <v n="Comment">""</v>
                   <v n="VarUserDefTypeAsString">"LREAL"</v>
                 </o>
@@ -3170,6 +3224,356 @@
                     <v n="UpperBound">""</v>
                   </o>
                   <v n="Id">561</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"UserMode.TaperAndGapSafetyScale"</v>
+                  <v n="VarType" t="TypeClass">LReal</v>
+                  <v n="VarTypeAsString">"LREAL"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">LReal</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">585</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.GearNumeratorConfigured_LeftTop"</v>
+                  <v n="VarType" t="TypeClass">UDInt</v>
+                  <v n="VarTypeAsString">"UDINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UDInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">589</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.GearNumeratorConfigured_RightTop"</v>
+                  <v n="VarType" t="TypeClass">UDInt</v>
+                  <v n="VarTypeAsString">"UDINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UDInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">588</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.GearNumeratorConfigured_LeftBottom"</v>
+                  <v n="VarType" t="TypeClass">UDInt</v>
+                  <v n="VarTypeAsString">"UDINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UDInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">587</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.GearNumeratorConfigured_RightBottom"</v>
+                  <v n="VarType" t="TypeClass">UDInt</v>
+                  <v n="VarTypeAsString">"UDINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UDInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">586</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.GearNumeratorConfigured_LeftIn"</v>
+                  <v n="VarType" t="TypeClass">UDInt</v>
+                  <v n="VarTypeAsString">"UDINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UDInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">593</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.GearNumeratorConfigured_RightIn"</v>
+                  <v n="VarType" t="TypeClass">UDInt</v>
+                  <v n="VarTypeAsString">"UDINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UDInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">592</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.GearNumeratorConfigured_LeftOut"</v>
+                  <v n="VarType" t="TypeClass">UDInt</v>
+                  <v n="VarTypeAsString">"UDINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UDInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">591</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.GearNumeratorConfigured_RightOut"</v>
+                  <v n="VarType" t="TypeClass">UDInt</v>
+                  <v n="VarTypeAsString">"UDINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UDInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">590</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.GearDenominatorConfigured_LeftTop"</v>
+                  <v n="VarType" t="TypeClass">UDInt</v>
+                  <v n="VarTypeAsString">"UDINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UDInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">597</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.GearDenominatorConfigured_RightTop"</v>
+                  <v n="VarType" t="TypeClass">UDInt</v>
+                  <v n="VarTypeAsString">"UDINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UDInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">596</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.GearDenominatorConfigured_LeftBottom"</v>
+                  <v n="VarType" t="TypeClass">UDInt</v>
+                  <v n="VarTypeAsString">"UDINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UDInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">595</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.GearDenominatorConfigured_RightBottom"</v>
+                  <v n="VarType" t="TypeClass">UDInt</v>
+                  <v n="VarTypeAsString">"UDINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UDInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">594</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.GearDenominatorConfigured_LeftIn"</v>
+                  <v n="VarType" t="TypeClass">UDInt</v>
+                  <v n="VarTypeAsString">"UDINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UDInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">601</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.GearDenominatorConfigured_RightIn"</v>
+                  <v n="VarType" t="TypeClass">UDInt</v>
+                  <v n="VarTypeAsString">"UDINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UDInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">600</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.GearDenominatorConfigured_LeftOut"</v>
+                  <v n="VarType" t="TypeClass">UDInt</v>
+                  <v n="VarTypeAsString">"UDINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UDInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">599</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.GearDenominatorConfigured_RightOut"</v>
+                  <v n="VarType" t="TypeClass">UDInt</v>
+                  <v n="VarTypeAsString">"UDINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UDInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">598</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.Feedback2directionConfigured_LeftTop"</v>
+                  <v n="VarType" t="TypeClass">UInt</v>
+                  <v n="VarTypeAsString">"UINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">605</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.Feedback2directionConfigured_RightTop"</v>
+                  <v n="VarType" t="TypeClass">UInt</v>
+                  <v n="VarTypeAsString">"UINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">604</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.Feedback2directionConfigured_LeftBottom"</v>
+                  <v n="VarType" t="TypeClass">UInt</v>
+                  <v n="VarTypeAsString">"UINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">603</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.Feedback2directionConfigured_RightBottom"</v>
+                  <v n="VarType" t="TypeClass">UInt</v>
+                  <v n="VarTypeAsString">"UINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">602</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.Feedback2directionConfigured_LeftIn"</v>
+                  <v n="VarType" t="TypeClass">UInt</v>
+                  <v n="VarTypeAsString">"UINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">609</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.Feedback2directionConfigured_RightIn"</v>
+                  <v n="VarType" t="TypeClass">UInt</v>
+                  <v n="VarTypeAsString">"UINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">608</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.Feedback2directionConfigured_LeftOut"</v>
+                  <v n="VarType" t="TypeClass">UInt</v>
+                  <v n="VarTypeAsString">"UINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">607</v>
+                  <v n="Comment">""</v>
+                  <v n="VarUserDefTypeAsString">"Invalid Type"</v>
+                </o>
+                <o>
+                  <v n="VarName">"MAIN.Feedback2directionConfigured_RightOut"</v>
+                  <v n="VarType" t="TypeClass">UInt</v>
+                  <v n="VarTypeAsString">"UINT"</v>
+                  <v n="Name">""</v>
+                  <o n="Boundaries" t="RecipeVariableBoundaries">
+                    <v n="Type" t="TypeClass">UInt</v>
+                    <v n="LowerBound">""</v>
+                    <v n="UpperBound">""</v>
+                  </o>
+                  <v n="Id">606</v>
                   <v n="Comment">""</v>
                   <v n="VarUserDefTypeAsString">"Invalid Type"</v>
                 </o>

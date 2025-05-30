@@ -51,6 +51,15 @@
     <Compile Include="DUTs\Struct_M_lakeshore.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DUTs\ST_P180.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\ST_P182.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\ST_P183.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="GVLs\Global_Variables.TcGVL">
       <SubType>Code</SubType>
     </Compile>
@@ -120,9 +129,8 @@
   </ItemGroup>
   <ItemGroup>
     <PlaceholderReference Include="RecipeManagement">
-      <DefaultResolution>Recipe Management, 3.3.1.0 (System)</DefaultResolution>
+      <DefaultResolution>Recipe Management, * (System)</DefaultResolution>
       <Namespace>Recipe_Management</Namespace>
-      <SystemLibrary>true</SystemLibrary>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc2_Drive">
       <DefaultResolution>Tc2_Drive, * (Beckhoff Automation GmbH)</DefaultResolution>

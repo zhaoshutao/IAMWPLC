@@ -127,7 +127,7 @@ END_VAR]]></Declaration>
 		A_LeftOutStop();
 	ELSIF Mode=2 AND RightOutStop THEN
 		A_RightOutStop();
-	ELSIF Mode=3 AND BCGapStop THEN
+	ELSIF Mode=5 AND BCGapStop THEN
 		A_BCGapStop();
 	ELSE
 		FB_PlcEmergencyStop();
