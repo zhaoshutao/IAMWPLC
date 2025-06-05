@@ -352,6 +352,9 @@ END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[(*加载Ricipe参数*)
 A_InitRecipeParameters();
+IF NOT loadParametersDone THEN
+	RETURN;
+END_IF
 (*Restart TwinCAT*)
 IF Global_Variables.m_restartTC THEN
 (*首先关闭opcIocShell.exe*)	
@@ -431,10 +434,10 @@ ELSE
 END_IF
 
 (*IOC Start*)
-IF SafePLCRunOK OR simulation THEN
+//IF SafePLCRunOK OR simulation THEN
 	bExe_load_Prog:=TRUE;
 	A_LoadOpcIocShellExe();
-END_IF
+//END_IF
 (*检查光栅读数是否在范围内*)
 A_CheckLinearEncoder();
 (*RestartDrivers*)
@@ -12494,14 +12497,14 @@ END_IF
 	Velo_LeftOutLin:=DINT_TO_LREAL(LREAL_TO_DINT(LeftOutLin.NcToPlc.ActVelo*100000))/100000;
 	Velo_RightOutLin:=DINT_TO_LREAL(LREAL_TO_DINT(RightOutLin.NcToPlc.ActVelo*100000))/100000;
 
-	PosDiff_LeftTopLin_actual:=LeftTopLin.NcToPlc.PosDiff;
-	PosDiff_RightTopLin_actual:=RightTopLin.NcToPlc.PosDiff;
-	PosDiff_LeftBottomLin_actual:=LeftBottomLin.NcToPlc.PosDiff;
-	PosDiff_RightBottomLin_actual:=RightBottomLin.NcToPlc.PosDiff;
-	PosDiff_LeftInLin_actual:=LeftInLin.NcToPlc.PosDiff;
-	PosDiff_RightInLin_actual:=RightInLin.NcToPlc.PosDiff;
-	PosDiff_LeftOutLin_actual:=LeftOutLin.NcToPlc.PosDiff;
-	PosDiff_RightOutLin_actual:=RightOutLin.NcToPlc.PosDiff;
+	PosDiff_LeftTopLin_actual:=DINT_TO_LREAL(LREAL_TO_DINT(LeftTopLin.NcToPlc.PosDiff*100000))/100000;
+	PosDiff_RightTopLin_actual:=DINT_TO_LREAL(LREAL_TO_DINT(RightTopLin.NcToPlc.PosDiff*100000))/100000;
+	PosDiff_LeftBottomLin_actual:=DINT_TO_LREAL(LREAL_TO_DINT(LeftBottomLin.NcToPlc.PosDiff*100000))/100000;
+	PosDiff_RightBottomLin_actual:=DINT_TO_LREAL(LREAL_TO_DINT(RightBottomLin.NcToPlc.PosDiff*100000))/100000;
+	PosDiff_LeftInLin_actual:=DINT_TO_LREAL(LREAL_TO_DINT(LeftInLin.NcToPlc.PosDiff*100000))/100000;
+	PosDiff_RightInLin_actual:=DINT_TO_LREAL(LREAL_TO_DINT(RightInLin.NcToPlc.PosDiff*100000))/100000;
+	PosDiff_LeftOutLin_actual:=DINT_TO_LREAL(LREAL_TO_DINT(LeftOutLin.NcToPlc.PosDiff*100000))/100000;
+	PosDiff_RightOutLin_actual:=DINT_TO_LREAL(LREAL_TO_DINT(RightOutLin.NcToPlc.PosDiff*100000))/100000;
 
 	LeftTopLin.ReadStatus();
 	RightTopLin.ReadStatus();
@@ -14851,7 +14854,12 @@ END_CASE]]></ST>
       </Implementation>
     </Action>
     <LineIds Name="MAIN">
-      <LineId Id="2277" Count="3" />
+      <LineId Id="2277" Count="0" />
+      <LineId Id="4067" Count="0" />
+      <LineId Id="4075" Count="1" />
+      <LineId Id="4074" Count="0" />
+      <LineId Id="4071" Count="0" />
+      <LineId Id="2280" Count="0" />
       <LineId Id="2374" Count="0" />
       <LineId Id="2379" Count="0" />
       <LineId Id="2282" Count="1" />

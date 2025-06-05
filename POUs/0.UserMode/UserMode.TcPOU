@@ -134,6 +134,7 @@ VAR
 	Threshold_TaperChangeFlag: LREAL:=0.005;
 	TaperAndGapSafetyfactor: LREAL:=1;
 	TaperAndGapSafetyScale:LREAL:=0.42;//IAU=0.41,IVU=0.32,CPMU=0.33,IAMW=0.42
+	TaperAndGapSafetyMinGapMargin:LREAL:=0.4;
 
 		//Global Chain protection-MPS
 	Global_ChainProtection_MPS_StorageRingReady:BOOL;
@@ -1545,13 +1546,16 @@ IF NOT (Global_ChainProtection_MPS_Triggered OR Global_ChainProtection_EPS_Trigg
 END_IF
 (*Taper和gap连锁限制性保护。比如11mm时候如果taper，入口端gap变小，会有压真空盒的问题。设置保护*)
 IF NOT (Global_ChainProtection_MPS_Triggered OR Global_ChainProtection_EPS_Triggered)  THEN//在触发联锁保护后，taper保护关闭
-	IF UserGapPositionNew-TaperAndGapSafetyfactor*TaperAndGapSafetyScale*UserTaperPositionNew<=min_UserGapPositionNew AND btn_UserGapMove THEN
+	IF taperOrNot THEN 	
+		IF UserGapPositionNew-TaperAndGapSafetyfactor*TaperAndGapSafetyScale*UserTaperPositionNew<=(min_UserGapPositionNew+TaperAndGapSafetyMinGapMargin)
+		 AND btn_UserGapMove THEN
 			btn_UserGapStop:=TRUE;
 			btn_UserGapMove:=FALSE;
 			Error:=TRUE;
 			ErrorId:=810;
 			ErrorDescription:='Target taper is too big at current Gap';
 			RETURN;
+		END_IF
 	END_IF
 END_IF
 (*分别比较四轴目标位置与当前位置的差，如果目标位置比当前位置低，则需要运动到更低-回程差一半；再运动至最终目标位置*)
@@ -2351,7 +2355,12 @@ END_IF
       <LineId Id="44" Count="4" />
     </LineIds>
     <LineIds Name="UserMode.A_RegularMotion">
-      <LineId Id="490" Count="55" />
+      <LineId Id="490" Count="19" />
+      <LineId Id="899" Count="0" />
+      <LineId Id="898" Count="0" />
+      <LineId Id="510" Count="5" />
+      <LineId Id="900" Count="0" />
+      <LineId Id="516" Count="29" />
       <LineId Id="812" Count="22" />
       <LineId Id="788" Count="0" />
       <LineId Id="546" Count="30" />
