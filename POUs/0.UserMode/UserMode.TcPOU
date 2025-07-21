@@ -418,56 +418,56 @@ END_IF
 //
 IF moveStatusAnyAxis THEN
 	IF NOT TaperOrNot THEN
-		IF LeftTopLinPositionNew<min_UserGapPositionNew/2 OR LeftTopLinPositionNew>max_UserGapPositionNew/2 THEN
+		IF LeftTopLinPositionNew<min_UserLEProtectionGapPosition/2 OR LeftTopLinPositionNew>max_UserLEProtectionGapPosition/2 THEN
 			btn_UserGapStop:=TRUE;
 			Error:=TRUE;
 			ErrorId:=809;
 			ErrorDescription:='target LeftTop position out of range in moving process!';
 			FB_PlcEmergencyStop();
 		END_IF
-		IF RightTopLinPositionNew<min_UserGapPositionNew/2 OR RightTopLinPositionNew>max_UserGapPositionNew/2 THEN
+		IF RightTopLinPositionNew<min_UserLEProtectionGapPosition/2 OR RightTopLinPositionNew>max_UserLEProtectionGapPosition/2 THEN
 			btn_UserGapStop:=TRUE;
 			Error:=TRUE;
 			ErrorId:=810;
 			ErrorDescription:='target RightTop velocity out of range in moving process!';
 			FB_PlcEmergencyStop();
 		END_IF
-		IF LeftBottomLinPositionNew<min_UserGapPositionNew/2 OR LeftBottomLinPositionNew>max_UserGapPositionNew/2 THEN
+		IF LeftBottomLinPositionNew<min_UserLEProtectionGapPosition/2 OR LeftBottomLinPositionNew>max_UserLEProtectionGapPosition/2 THEN
 			btn_UserGapStop:=TRUE;
 			Error:=TRUE;
 			ErrorId:=812;
 			ErrorDescription:='target LeftBottom Position out of range in moving process!';
 			FB_PlcEmergencyStop();
 		END_IF
-		IF RightBottomLinPositionNew<min_UserGapPositionNew/2 OR RightBottomLinPositionNew>max_UserGapPositionNew/2 THEN
+		IF RightBottomLinPositionNew<min_UserLEProtectionGapPosition/2 OR RightBottomLinPositionNew>max_UserLEProtectionGapPosition/2 THEN
 			btn_UserGapStop:=TRUE;
 			Error:=TRUE;
 			ErrorId:=813;
 			ErrorDescription:='target RightBottom Position out of range in moving process!';
 			FB_PlcEmergencyStop();
 		END_IF
-		IF LeftInLinPositionNew<min_UserGapPositionNew/2 OR LeftInLinPositionNew>max_UserGapPositionNew/2 THEN
+		IF LeftInLinPositionNew<min_UserLEProtectionGapPosition/2 OR LeftInLinPositionNew>max_UserLEProtectionGapPosition/2 THEN
 			btn_UserGapStop:=TRUE;
 			Error:=TRUE;
 			ErrorId:=809;
 			ErrorDescription:='target LeftIn position out of range in moving process!';
 			FB_PlcEmergencyStop();
 		END_IF
-		IF RightInLinPositionNew<min_UserGapPositionNew/2 OR RightInLinPositionNew>max_UserGapPositionNew/2 THEN
+		IF RightInLinPositionNew<min_UserLEProtectionGapPosition/2 OR RightInLinPositionNew>max_UserLEProtectionGapPosition/2 THEN
 			btn_UserGapStop:=TRUE;
 			Error:=TRUE;
 			ErrorId:=810;
 			ErrorDescription:='target RightIn velocity out of range in moving process!';
 			FB_PlcEmergencyStop();
 		END_IF
-		IF LeftOutLinPositionNew<min_UserGapPositionNew/2 OR LeftOutLinPositionNew>max_UserGapPositionNew/2 THEN
+		IF LeftOutLinPositionNew<min_UserLEProtectionGapPosition/2 OR LeftOutLinPositionNew>max_UserLEProtectionGapPosition/2 THEN
 			btn_UserGapStop:=TRUE;
 			Error:=TRUE;
 			ErrorId:=812;
 			ErrorDescription:='target LeftOut Position out of range in moving process!';
 			FB_PlcEmergencyStop();
 		END_IF
-		IF RightOutLinPositionNew<min_UserGapPositionNew/2 OR RightOutLinPositionNew>max_UserGapPositionNew/2 THEN
+		IF RightOutLinPositionNew<min_UserLEProtectionGapPosition/2 OR RightOutLinPositionNew>max_UserLEProtectionGapPosition/2 THEN
 			btn_UserGapStop:=TRUE;
 			Error:=TRUE;
 			ErrorId:=813;
