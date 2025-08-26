@@ -654,7 +654,10 @@ Unreach_LS_Near:=LS_LeftTop_Near AND LS_RightTop_Near AND LS_LeftBottom_Near AND
     </Action>
     <Action Name="A_CheckLinearEncoder" Id="{04ef6a41-e2ba-498d-aa00-f823237bb5de}" FolderPath="Check\">
       <Implementation>
-        <ST><![CDATA[//如果没有使用光栅、或者光栅参数没设置好，则不检查光栅位置
+        <ST><![CDATA[//LEProtectionPosition
+min_UserLEProtectionGapPosition:=min_UserGapPositionNew-min_ThresholdGapSoft2LEProtection;//回程误差有0.1mm
+max_UserLEProtectionGapPosition:=max_UserGapPositionNew+max_ThresholdGapSoft2LEProtection;
+//如果没有使用光栅、或者光栅参数没设置好，则不检查光栅位置
 IF NOT USELinearEncoder OR NOT PositionBiasDone THEN
 	RETURN;
 END_IF
@@ -718,8 +721,6 @@ END_IF
 //
 //Gap方向
 //
-min_UserLEProtectionGapPosition:=min_UserGapPositionNew-min_ThresholdGapSoft2LEProtection;//回程误差有0.1mm
-max_UserLEProtectionGapPosition:=max_UserGapPositionNew+max_ThresholdGapSoft2LEProtection;
 //
 IF Pos_LeftTopLin >max_UserLEProtectionGapPosition/2 THEN
 	ErrorID:=1105;
@@ -1081,10 +1082,6 @@ CASE m_GetDriveStatusState OF
 			OR GearDenominatorGet_RightTop<>GearDenominatorConfigured_RightTop
 			OR GearDenominatorGet_LeftBottom<>GearDenominatorConfigured_LeftBottom 
 			OR GearDenominatorGet_RightBottom<>GearDenominatorConfigured_RightBottom
-			OR Feedback2directionGet_LeftTop<>Feedback2directionConfigured_LeftTop 
-			OR Feedback2directionGet_RightTop<>Feedback2directionConfigured_RightTop
-			OR Feedback2directionGet_LeftBottom<>Feedback2directionConfigured_LeftBottom 
-			OR Feedback2directionGet_RightBottom<Feedback2directionConfigured_RightBottom 
 			OR GearNumeratorGet_LeftIn<>GearNumeratorConfigured_LeftIn 
 			OR GearNumeratorGet_RightIn<>GearNumeratorConfigured_RightIn
 			OR GearNumeratorGet_LeftOut<>GearNumeratorConfigured_LeftOut 
@@ -1092,19 +1089,34 @@ CASE m_GetDriveStatusState OF
 			OR GearDenominatorGet_LeftIn<>GearDenominatorConfigured_LeftIn 
 			OR GearDenominatorGet_RightIn<>GearDenominatorConfigured_RightIn
 			OR GearDenominatorGet_LeftOut<>GearDenominatorConfigured_LeftOut 
-			OR GearDenominatorGet_RightOut<>GearDenominatorConfigured_RightOut
-			OR Feedback2directionGet_LeftIn<>Feedback2directionConfigured_LeftIn 
-			OR Feedback2directionGet_RightIn<>Feedback2directionConfigured_RightIn
-			OR Feedback2directionGet_LeftOut<>Feedback2directionConfigured_LeftOut 
-			OR Feedback2directionGet_RightOut<Feedback2directionConfigured_RightOut THEN
+			OR GearDenominatorGet_RightOut<>GearDenominatorConfigured_RightOut THEN 
 				bDriveDiagMessageAndNumber:=FALSE;
 				A_GetDriverStatusMC();
 				GetDriveStatusStateDone:=FALSE;
 				GetDriveStatusStateError:=TRUE;
 				Error:=TRUE;
 				ErrorId:=1302;
-				ErrorDescription:='gearOrfb2direction Error';
+				ErrorDescription:='gear Parameters Error';
 				Plc_EmergencyStop:=FALSE;
+		END_IF
+		IF USELinearEncoder THEN
+			IF 	Feedback2directionGet_LeftTop<>Feedback2directionConfigured_LeftTop 
+				OR Feedback2directionGet_RightTop<>Feedback2directionConfigured_RightTop
+				OR Feedback2directionGet_LeftBottom<>Feedback2directionConfigured_LeftBottom 
+				OR Feedback2directionGet_RightBottom<Feedback2directionConfigured_RightBottom 
+				OR Feedback2directionGet_LeftIn<>Feedback2directionConfigured_LeftIn 
+				OR Feedback2directionGet_RightIn<>Feedback2directionConfigured_RightIn
+				OR Feedback2directionGet_LeftOut<>Feedback2directionConfigured_LeftOut 
+				OR Feedback2directionGet_RightOut<Feedback2directionConfigured_RightOut THEN
+					bDriveDiagMessageAndNumber:=FALSE;
+					A_GetDriverStatusMC();
+					GetDriveStatusStateDone:=FALSE;
+					GetDriveStatusStateError:=TRUE;
+					Error:=TRUE;
+					ErrorId:=1303;
+					ErrorDescription:='fb2direction Error';
+					Plc_EmergencyStop:=FALSE;	
+			END_IF
 		END_IF
 		m_GetDriveStatusState:=0;
 	-100:
@@ -14957,10 +14969,14 @@ END_CASE]]></ST>
       <LineId Id="100" Count="0" />
     </LineIds>
     <LineIds Name="MAIN.A_CheckLinearEncoder">
+      <LineId Id="405" Count="0" />
+      <LineId Id="404" Count="0" />
+      <LineId Id="403" Count="0" />
       <LineId Id="195" Count="32" />
       <LineId Id="320" Count="26" />
       <LineId Id="319" Count="0" />
-      <LineId Id="228" Count="33" />
+      <LineId Id="228" Count="2" />
+      <LineId Id="233" Count="28" />
       <LineId Id="348" Count="26" />
       <LineId Id="347" Count="0" />
       <LineId Id="262" Count="0" />
@@ -15000,10 +15016,20 @@ END_CASE]]></ST>
       <LineId Id="471" Count="1" />
       <LineId Id="365" Count="3" />
       <LineId Id="473" Count="1" />
-      <LineId Id="369" Count="18" />
-      <LineId Id="476" Count="10" />
-      <LineId Id="475" Count="0" />
-      <LineId Id="388" Count="18" />
+      <LineId Id="369" Count="14" />
+      <LineId Id="476" Count="7" />
+      <LineId Id="388" Count="8" />
+      <LineId Id="487" Count="0" />
+      <LineId Id="495" Count="2" />
+      <LineId Id="488" Count="0" />
+      <LineId Id="498" Count="0" />
+      <LineId Id="493" Count="1" />
+      <LineId Id="490" Count="0" />
+      <LineId Id="500" Count="6" />
+      <LineId Id="499" Count="0" />
+      <LineId Id="491" Count="0" />
+      <LineId Id="489" Count="0" />
+      <LineId Id="397" Count="9" />
       <LineId Id="39" Count="0" />
     </LineIds>
     <LineIds Name="MAIN.A_GetTemperatureSensorsData">
