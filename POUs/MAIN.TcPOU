@@ -348,6 +348,58 @@ VAR
 	RestartDriver_State:DINT;
 	RestartDriver_Done:BOOL;
 	
+	//LEHeartBeatMonitor
+	FirstScan:BOOL;
+	DeadZone : LREAL := 0; 
+	AlarmTime : TIME := T#10S;
+	
+    Pos_LeftTopLin_Last : LREAL; 
+    StableTimer_LeftTopLin : TON; 
+    StableTime_LeftTopLin : TIME; 
+    Delta_LeftTopLin : LREAL; 
+	Alarm_LeftTopLin:BOOL;
+	
+	Pos_RightTopLin_Last : LREAL; 
+    StableTimer_RightTopLin : TON; 
+    StableTime_RightTopLin : TIME; 
+    Delta_RightTopLin : LREAL; 
+	Alarm_RightTopLin:BOOL;
+		
+    Pos_LeftBottomLin_Last : LREAL; 
+    StableTimer_LeftBottomLin : TON; 
+    StableTime_LeftBottomLin : TIME; 
+    Delta_LeftBottomLin : LREAL; 
+	Alarm_LeftBottomLin:BOOL;
+	
+	Pos_RightBottomLin_Last : LREAL; 
+    StableTimer_RightBottomLin : TON; 
+    StableTime_RightBottomLin : TIME; 
+    Delta_RightBottomLin : LREAL; 
+	Alarm_RightBottomLin:BOOL;
+	
+	Pos_LeftInLin_Last : LREAL; 
+    StableTimer_LeftInLin : TON; 
+    StableTime_LeftInLin : TIME; 
+    Delta_LeftInLin : LREAL; 
+	Alarm_LeftInLin:BOOL;
+	
+	Pos_RightInLin_Last : LREAL; 
+    StableTimer_RightInLin : TON; 
+    StableTime_RightInLin : TIME; 
+    Delta_RightInLin : LREAL; 
+	Alarm_RightInLin:BOOL;
+		
+    Pos_LeftOutLin_Last : LREAL; 
+    StableTimer_LeftOutLin : TON; 
+    StableTime_LeftOutLin : TIME; 
+    Delta_LeftOutLin : LREAL; 
+	Alarm_LeftOutLin:BOOL;
+	
+	Pos_RightOutLin_Last : LREAL; 
+    StableTimer_RightOutLin : TON; 
+    StableTime_RightOutLin : TIME; 
+    Delta_RightOutLin : LREAL; 
+	Alarm_RightOutLin:BOOL;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[(*加载Ricipe参数*)
@@ -442,6 +494,8 @@ END_IF
 A_CheckLinearEncoder();
 (*RestartDrivers*)
 A_RestartDrivers();
+
+A_LEHeartBeatMonitor();
 ]]></ST>
     </Implementation>
     <Folder Name="Axis" Id="{1f5db9b2-f074-43bd-a7a5-f28b002c6ac6}" />
@@ -12624,6 +12678,258 @@ NT_StartProcess_Kill(
 ]]></ST>
       </Implementation>
     </Action>
+    <Action Name="A_LEHeartBeatMonitor" Id="{c15e81d3-3944-4229-9ecc-53c2921ba7f3}" FolderPath="Check\">
+      <Implementation>
+        <ST><![CDATA[//monitor only while power on and not simulation or not use LE
+IF NOT st_Power THEN
+	RETURN;
+END_IF
+IF simulation THEN
+	RETURN;
+END_IF
+IF NOT USELinearEncoder THEN
+	RETURN;
+END_IF
+// 初始化
+IF FirstScan THEN
+    Pos_LeftTopLin_Last := Pos_LeftTopLin;
+    Pos_RightTopLin_Last := Pos_RightTopLin;
+    Pos_LeftBottomLin_Last := Pos_LeftBottomLin;
+    Pos_RightBottomLin_Last := Pos_RightBottomLin;
+	Pos_LeftInLin_Last := Pos_LeftInLin;
+    Pos_RightInLin_Last := Pos_RightInLin;
+    Pos_LeftOutLin_Last := Pos_LeftOutLin;
+    Pos_RightOutLin_Last := Pos_RightOutLin;
+    FirstScan := FALSE;
+END_IF;
+
+// 计算前后位置差
+Delta_LeftTopLin := ABS(Pos_LeftTopLin - Pos_LeftTopLin_Last);
+Delta_RightTopLin := ABS(Pos_RightTopLin - Pos_RightTopLin_Last);
+Delta_LeftBottomLin := ABS(Pos_LeftBottomLin - Pos_LeftBottomLin_Last);
+Delta_RightBottomLin := ABS(Pos_RightBottomLin - Pos_RightBottomLin_Last);
+Delta_LeftInLin := ABS(Pos_LeftInLin - Pos_LeftInLin_Last);
+Delta_RightInLin := ABS(Pos_RightInLin - Pos_RightInLin_Last);
+Delta_LeftOutLin := ABS(Pos_LeftOutLin - Pos_LeftOutLin_Last);
+Delta_RightOutLin := ABS(Pos_RightOutLin - Pos_RightOutLin_Last);
+//LeftTop monitor
+IF Delta_LeftTopLin > DeadZone THEN
+    // 有变动，光栅正常，计数器归零，更新位置
+    StableTimer_LeftTopLin(IN := FALSE, PT := AlarmTime);
+    Alarm_LeftTopLin := FALSE;
+    Pos_LeftTopLin_Last := Pos_LeftTopLin;  // 
+    StableTime_LeftTopLin := T#0S;
+ELSE
+    //一点变动没有了，光栅异常，开始计时
+    StableTimer_LeftTopLin(
+        IN := TRUE,
+        PT := AlarmTime,
+        ET => StableTime_LeftTopLin
+    );
+    
+    // 10s还保持不变，报警，安全PLC启动
+    IF StableTimer_LeftTopLin.Q THEN
+        Alarm_LeftTopLin := TRUE;  // 
+		ErrorID:=5001;
+		ErrorDescription:='5001';
+		Error:=TRUE;
+		FB_PlcEmergencyStop();
+		LED_Error:=TRUE;
+    ELSE
+        Alarm_LeftTopLin := FALSE;
+    END_IF;
+END_IF
+//RightTop monitor
+IF Delta_RightTopLin > DeadZone THEN
+    // 有变动，光栅正常，计数器归零，更新位置
+    StableTimer_RightTopLin(IN := FALSE, PT := AlarmTime);
+    Alarm_RightTopLin := FALSE;
+    Pos_RightTopLin_Last := Pos_RightTopLin;  // 
+    StableTime_RightTopLin := T#0S;
+ELSE
+    //一点变动没有了，光栅异常，开始计时
+    StableTimer_RightTopLin(
+        IN := TRUE,
+        PT := AlarmTime,
+        ET => StableTime_RightTopLin
+    );
+    
+    // 10s还保持不变，报警，安全PLC启动
+    IF StableTimer_RightTopLin.Q THEN
+        Alarm_RightTopLin := TRUE;  // 
+		ErrorID:=5002;
+		ErrorDescription:='5001';
+		Error:=TRUE;
+		FB_PlcEmergencyStop();
+		LED_Error:=TRUE;
+    ELSE
+        Alarm_RightTopLin := FALSE;
+    END_IF;
+END_IF
+//LeftBottom monitor
+IF Delta_LeftBottomLin > DeadZone THEN
+    // 有变动，光栅正常，计数器归零，更新位置
+    StableTimer_LeftBottomLin(IN := FALSE, PT := AlarmTime);
+    Alarm_LeftBottomLin := FALSE;
+    Pos_LeftBottomLin_Last := Pos_LeftBottomLin;  // 
+    StableTime_LeftBottomLin := T#0S;
+ELSE
+    //一点变动没有了，光栅异常，开始计时
+    StableTimer_LeftBottomLin(
+        IN := TRUE,
+        PT := AlarmTime,
+        ET => StableTime_LeftBottomLin
+    );
+    
+    // 10s还保持不变，报警，安全PLC启动
+    IF StableTimer_LeftBottomLin.Q THEN
+        Alarm_LeftBottomLin := TRUE;  // 
+		ErrorID:=5003;
+		ErrorDescription:='5001';
+		Error:=TRUE;
+		FB_PlcEmergencyStop();
+		LED_Error:=TRUE;
+    ELSE
+        Alarm_LeftBottomLin := FALSE;
+    END_IF;
+END_IF
+//RightBottom monitor
+IF Delta_RightBottomLin > DeadZone THEN
+    // 有变动，光栅正常，计数器归零，更新位置
+    StableTimer_RightBottomLin(IN := FALSE, PT := AlarmTime);
+    Alarm_RightBottomLin := FALSE;
+    Pos_RightBottomLin_Last := Pos_RightBottomLin;  // 
+    StableTime_RightBottomLin := T#0S;
+ELSE
+    //一点变动没有了，光栅异常，开始计时
+    StableTimer_RightBottomLin(
+        IN := TRUE,
+        PT := AlarmTime,
+        ET => StableTime_RightBottomLin
+    );
+    
+    // 10s还保持不变，报警，安全PLC启动
+    IF StableTimer_RightBottomLin.Q THEN
+        Alarm_RightBottomLin := TRUE;  // 
+		ErrorID:=5004;
+		ErrorDescription:='5001';
+		Error:=TRUE;
+		FB_PlcEmergencyStop();
+		LED_Error:=TRUE;
+    ELSE
+        Alarm_RightBottomLin := FALSE;
+    END_IF;
+END_IF
+//LeftIn monitor
+IF Delta_LeftInLin > DeadZone THEN
+    // 有变动，光栅正常，计数器归零，更新位置
+    StableTimer_LeftInLin(IN := FALSE, PT := AlarmTime);
+    Alarm_LeftInLin := FALSE;
+    Pos_LeftInLin_Last := Pos_LeftInLin;  // 
+    StableTime_LeftInLin := T#0S;
+ELSE
+    //一点变动没有了，光栅异常，开始计时
+    StableTimer_LeftInLin(
+        IN := TRUE,
+        PT := AlarmTime,
+        ET => StableTime_LeftInLin
+    );
+    
+    // 10s还保持不变，报警，安全PLC启动
+    IF StableTimer_LeftInLin.Q THEN
+        Alarm_LeftInLin := TRUE;  // 
+		ErrorID:=5005;
+		ErrorDescription:='5005';
+		Error:=TRUE;
+		FB_PlcEmergencyStop();
+		LED_Error:=TRUE;
+    ELSE
+        Alarm_LeftInLin := FALSE;
+    END_IF;
+END_IF
+//RightIn monitor
+IF Delta_RightInLin > DeadZone THEN
+    // 有变动，光栅正常，计数器归零，更新位置
+    StableTimer_RightInLin(IN := FALSE, PT := AlarmTime);
+    Alarm_RightInLin := FALSE;
+    Pos_RightInLin_Last := Pos_RightInLin;  // 
+    StableTime_RightInLin := T#0S;
+ELSE
+    //一点变动没有了，光栅异常，开始计时
+    StableTimer_RightInLin(
+        IN := TRUE,
+        PT := AlarmTime,
+        ET => StableTime_RightInLin
+    );
+    
+    // 10s还保持不变，报警，安全PLC启动
+    IF StableTimer_RightInLin.Q THEN
+        Alarm_RightInLin := TRUE;  // 
+		ErrorID:=5006;
+		ErrorDescription:='5006';
+		Error:=TRUE;
+		FB_PlcEmergencyStop();
+		LED_Error:=TRUE;
+    ELSE
+        Alarm_RightInLin := FALSE;
+    END_IF;
+END_IF
+//LeftOut monitor
+IF Delta_LeftOutLin > DeadZone THEN
+    // 有变动，光栅正常，计数器归零，更新位置
+    StableTimer_LeftOutLin(IN := FALSE, PT := AlarmTime);
+    Alarm_LeftOutLin := FALSE;
+    Pos_LeftOutLin_Last := Pos_LeftOutLin;  // 
+    StableTime_LeftOutLin := T#0S;
+ELSE
+    //一点变动没有了，光栅异常，开始计时
+    StableTimer_LeftOutLin(
+        IN := TRUE,
+        PT := AlarmTime,
+        ET => StableTime_LeftOutLin
+    );
+    
+    // 10s还保持不变，报警，安全PLC启动
+    IF StableTimer_LeftOutLin.Q THEN
+        Alarm_LeftOutLin := TRUE;  // 
+		ErrorID:=5007;
+		ErrorDescription:='5007';
+		Error:=TRUE;
+		FB_PlcEmergencyStop();
+		LED_Error:=TRUE;
+    ELSE
+        Alarm_LeftOutLin := FALSE;
+    END_IF;
+END_IF
+//RightOut monitor
+IF Delta_RightOutLin > DeadZone THEN
+    // 有变动，光栅正常，计数器归零，更新位置
+    StableTimer_RightOutLin(IN := FALSE, PT := AlarmTime);
+    Alarm_RightOutLin := FALSE;
+    Pos_RightOutLin_Last := Pos_RightOutLin;  // 
+    StableTime_RightOutLin := T#0S;
+ELSE
+    //一点变动没有了，光栅异常，开始计时
+    StableTimer_RightOutLin(
+        IN := TRUE,
+        PT := AlarmTime,
+        ET => StableTime_RightOutLin
+    );
+    
+    // 10s还保持不变，报警，安全PLC启动
+    IF StableTimer_RightOutLin.Q THEN
+        Alarm_RightOutLin := TRUE;  // 
+		ErrorID:=5008;
+		ErrorDescription:='5008';
+		Error:=TRUE;
+		FB_PlcEmergencyStop();
+		LED_Error:=TRUE;
+    ELSE
+        Alarm_RightOutLin := FALSE;
+    END_IF;
+END_IF]]></ST>
+      </Implementation>
+    </Action>
     <Action Name="A_LoadOpcIocShellExe" Id="{e69e9ea4-205f-45b3-85e7-e1c1b3150dfb}" FolderPath="TC\">
       <Implementation>
         <ST><![CDATA[R_TRIG_Exeload(CLK:=bExe_load_Prog, Q=> );
@@ -14897,6 +15203,8 @@ END_CASE]]></ST>
       <LineId Id="3082" Count="0" />
       <LineId Id="3715" Count="0" />
       <LineId Id="3714" Count="0" />
+      <LineId Id="4454" Count="0" />
+      <LineId Id="4453" Count="0" />
       <LineId Id="3351" Count="0" />
     </LineIds>
     <LineIds Name="MAIN.A_CheckHardwareEmergencyStopStatus">
@@ -15115,6 +15423,20 @@ END_CASE]]></ST>
       <LineId Id="50" Count="0" />
       <LineId Id="37" Count="10" />
       <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="MAIN.A_LEHeartBeatMonitor">
+      <LineId Id="2" Count="3" />
+      <LineId Id="127" Count="5" />
+      <LineId Id="6" Count="5" />
+      <LineId Id="134" Count="2" />
+      <LineId Id="133" Count="0" />
+      <LineId Id="12" Count="7" />
+      <LineId Id="138" Count="2" />
+      <LineId Id="137" Count="0" />
+      <LineId Id="20" Count="106" />
+      <LineId Id="1" Count="0" />
+      <LineId Id="142" Count="106" />
+      <LineId Id="141" Count="0" />
     </LineIds>
     <LineIds Name="MAIN.A_LoadOpcIocShellExe">
       <LineId Id="2" Count="0" />
