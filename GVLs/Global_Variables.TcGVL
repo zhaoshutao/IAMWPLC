@@ -21,6 +21,8 @@ VAR_GLOBAL
 (*加载配方参数*)
 	LoadRecipeParameters:BOOL;
 	loadParametersDone:BOOL;
+(*Max Velocity Global*)
+	MaxVelocityGlobalVelocity : LREAL;
 (*设置光栅bias done *)	
 	PositionBiasDone:BOOL;
 (*回程差*)
@@ -109,6 +111,26 @@ VAR_GLOBAL
 	moveStatusRightOut: BOOL;
 	moveStatusAllAxis: BOOL;
 	moveStatusAnyAxis: BOOL;
+	
+	moveDoneLeftTopMotor: BOOL;
+	moveDoneRightTopMotor: BOOL;
+	moveDoneLeftBottomMotor: BOOL;
+	moveDoneRightBottomMotor: BOOL;
+	moveDoneLeftInMotor: BOOL;
+	moveDoneRightInMotor: BOOL;
+	moveDoneLeftOutMotor: BOOL;
+	moveDoneRightOutMotor: BOOL;
+	moveDoneAllAxisMotor: BOOL;
+	moveStatusLeftTopMotor: BOOL;
+	moveStatusRightTopMotor: BOOL;
+	moveStatusLeftBottomMotor: BOOL;
+	moveStatusRightBottomMotor: BOOL;
+	moveStatusLeftInMotor: BOOL;
+	moveStatusRightInMotor: BOOL;
+	moveStatusLeftOutMotor: BOOL;
+	moveStatusRightOutMotor: BOOL;
+	moveStatusAllAxisMotor: BOOL;
+	moveStatusAnyAxisMotor: BOOL;
 	(*input protection*)
 	//
 	min_UserGapPositionNew:LREAL:=10;
@@ -256,6 +278,15 @@ VAR_GLOBAL
 	RightInLin:axis_ref;
 	LeftOutLin:axis_ref;
 	RightOutLin:axis_ref;
+(*aixs_ref-motor*)
+	LeftTopMotor: axis_ref;
+	RightTopMotor:axis_ref;
+	LeftBottomMotor:axis_ref;
+	RightBottomMotor:axis_ref;
+	LeftInMotor: axis_ref;
+	RightInMotor:axis_ref;
+	LeftOutMotor:axis_ref;
+	RightOutMotor:axis_ref;
 (*axis Position*)
 	Pos_LeftTopLin: LREAL;
 	Pos_RightTopLin:LREAL;
@@ -265,6 +296,33 @@ VAR_GLOBAL
 	Pos_RightInLin:LREAL;
 	Pos_LeftOutLin:LREAL;
 	Pos_RightOutLin:LREAL;
+(*axis Position-motor*)
+	Pos_LeftTopMotor: LREAL;
+	Pos_RightTopMotor:LREAL;
+	Pos_LeftBottomMotor:LREAL;
+	Pos_RightBottomMotor:LREAL;
+	Pos_LeftInMotor: LREAL;
+	Pos_RightInMotor:LREAL;
+	Pos_LeftOutMotor:LREAL;
+	Pos_RightOutMotor:LREAL;
+(*axis Position-Delta*)
+	DeltaPos_LeftTop: LREAL;
+	DeltaPos_RightTop:LREAL;
+	DeltaPos_LeftBottom:LREAL;
+	DeltaPos_RightBottom:LREAL;
+	DeltaPos_LeftIn: LREAL;
+	DeltaPos_RightIn:LREAL;
+	DeltaPos_LeftOut:LREAL;
+	DeltaPos_RightOut:LREAL;
+(*axis Position-Threshold*)
+	ThresholdDeltaPos_LeftTop: LREAL:=0.2;
+	ThresholdDeltaPos_RightTop:LREAL:=0.2;
+	ThresholdDeltaPos_LeftBottom:LREAL:=0.2;
+	ThresholdDeltaPos_RightBottom:LREAL:=0.2;
+	ThresholdDeltaPos_LeftIn: LREAL:=0.2;
+	ThresholdDeltaPos_RightIn:LREAL:=0.2;
+	ThresholdDeltaPos_LeftOut:LREAL:=0.2;
+	ThresholdDeltaPos_RightOut:LREAL:=0.2;
 (*axis Velocity*)
 	Velo_LeftTopLin: LREAL;
 	Velo_RightTopLin:LREAL;
@@ -274,6 +332,60 @@ VAR_GLOBAL
 	Velo_RightInLin:LREAL;
 	Velo_LeftOutLin:LREAL;
 	Velo_RightOutLin:LREAL;
+(*axis Velocity-motor*)
+	Velo_LeftTopMotor: LREAL;
+	Velo_RightTopMotor:LREAL;
+	Velo_LeftBottomMotor:LREAL;
+	Velo_RightBottomMotor:LREAL;
+	Velo_LeftInMotor: LREAL;
+	Velo_RightInMotor:LREAL;
+	Velo_LeftOutMotor:LREAL;
+	Velo_RightOutMotor:LREAL;
+(*axis Velocity-Delta*)
+	DeltaVelo_LeftTop: LREAL;
+	DeltaVelo_RightTop:LREAL;
+	DeltaVelo_LeftBottom:LREAL;
+	DeltaVelo_RightBottom:LREAL;
+	DeltaVelo_LeftIn: LREAL;
+	DeltaVelo_RightIn:LREAL;
+	DeltaVelo_LeftOut:LREAL;
+	DeltaVelo_RightOut:LREAL;
+(*axis Velocity-ThresholdDelta*)
+	ThresholdDeltaVelo_LeftTop: LREAL:=0.1;
+	ThresholdDeltaVelo_RightTop:LREAL:=0.1;
+	ThresholdDeltaVelo_LeftBottom:LREAL:=0.1;
+	ThresholdDeltaVelo_RightBottom:LREAL:=0.1;
+	ThresholdDeltaVelo_LeftIn: LREAL:=0.1;
+	ThresholdDeltaVelo_RightIn:LREAL:=0.1;
+	ThresholdDeltaVelo_LeftOut:LREAL:=0.1;
+	ThresholdDeltaVelo_RightOut:LREAL:=0.1;
+(*axis Torque-motor*)
+	Torque_LeftTopLin: LREAL;
+	Torque_RightTopLin:LREAL;
+	Torque_LeftBottomLin:LREAL;
+	Torque_RightBottomLin:LREAL;
+	Torque_LeftInLin: LREAL;
+	Torque_RightInLin:LREAL;
+	Torque_LeftOutLin:LREAL;
+	Torque_RightOutLin:LREAL;
+(*axis Torque-motor*)
+	Torque_LeftTopMotor: LREAL;
+	Torque_RightTopMotor:LREAL;
+	Torque_LeftBottomMotor:LREAL;
+	Torque_RightBottomMotor:LREAL;
+	Torque_LeftInMotor: LREAL;
+	Torque_RightInMotor:LREAL;
+	Torque_LeftOutMotor:LREAL;
+	Torque_RightOutMotor:LREAL;
+(*axis Torque-Delta*)
+	DeltaTorque_LeftTop: LREAL;
+	DeltaTorque_RightTop:LREAL;
+	DeltaTorque_LeftBottom:LREAL;
+	DeltaTorque_RightBottom:LREAL;
+	DeltaTorque_LeftIn: LREAL;
+	DeltaTorque_RightIn:LREAL;
+	DeltaTorque_LeftOut:LREAL;
+	DeltaTorque_RightOut:LREAL;
 (*Lag Distance*)
 	PosDiff_LeftTopLin_actual: LREAL;
 	PosDiff_RightTopLin_actual:LREAL;
@@ -283,6 +395,24 @@ VAR_GLOBAL
 	PosDiff_RightInLin_actual:LREAL;
 	PosDiff_LeftOutLin_actual:LREAL;
 	PosDiff_RightOutLin_actual:LREAL;
+(*Lag Distance-Motor*)
+	PosDiff_LeftTopMotor_actual: LREAL;
+	PosDiff_RightTopMotor_actual:LREAL;
+	PosDiff_LeftBottomMotor_actual:LREAL;
+	PosDiff_RightBottomMotor_actual:LREAL;
+	PosDiff_LeftInMotor_actual: LREAL;
+	PosDiff_RightInMotor_actual:LREAL;
+	PosDiff_LeftOutMotor_actual:LREAL;
+	PosDiff_RightOutMotor_actual:LREAL;
+(*Delta LagDistance*)
+	DeltaPosDiff_LeftTop_actual: LREAL;
+	DeltaPosDiff_RightTop_actual:LREAL;
+	DeltaPosDiff_LeftBottom_actual:LREAL;
+	DeltaPosDiff_RightBottom_actual:LREAL;
+	DeltaPosDiff_LeftIn_actual: LREAL;
+	DeltaPosDiff_RightIn_actual:LREAL;
+	DeltaPosDiff_LeftOut_actual:LREAL;
+	DeltaPosDiff_RightOut_actual:LREAL;
 (*****************singleCarrier Mode*******************************)
 (**)
 	TopPositionActual:LREAL;
