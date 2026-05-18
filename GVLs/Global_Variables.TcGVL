@@ -5,6 +5,9 @@
 VAR_GLOBAL
 (*IDControl Ready*)
 	IDControlReady:BOOL;
+(*Maintenance Mode*)
+	MaintenanceMode:BOOL;
+	MaintenanceModeLed:BOOL;
 (*RecipeDescription*)
 	RecipeSavedDate:STRING;
 	RecipeDescription:STRING;
@@ -14,6 +17,8 @@ VAR_GLOBAL
 	btn_PowerOff: BOOL;
 (*Reset*)
 	btn_Reset:BOOL;
+(*ModeStatus*)
+	ModeStatus:INT;
 (*Error Massage*)
 	Error:BOOL;
 	ErrorID:DINT;
@@ -74,6 +79,15 @@ VAR_GLOBAL
 	Threshold_OutPos_Debug: LREAL:=4;
 	Threshold_IOLeftPos_Debug: LREAL:=4;
 	Threshold_IORightPos_Debug: LREAL:=4;
+	//单轴目标位置和当前位置之差，阈值
+	Threshold_LeftTopPos_Debug: LREAL:=0.4;	
+	Threshold_RightTopPos_Debug: LREAL:=0.4;
+	Threshold_LeftBottomPos_Debug: LREAL:=0.4;
+	Threshold_RightBottomPos_Debug: LREAL:=0.4;
+	Threshold_LeftInPos_Debug: LREAL:=0.4;	
+	Threshold_RightInPos_Debug: LREAL:=0.4;
+	Threshold_LeftOutPos_Debug: LREAL:=0.4;
+	Threshold_RightOutPos_Debug: LREAL:=0.4;
 (*SingleCarrierMode threshold*)
 	Threshold_TopPos_SingleCarrier: LREAL:=2;
 	Threshold_BottomPos_SingleCarrier: LREAL:=2;
@@ -111,6 +125,8 @@ VAR_GLOBAL
 	moveStatusRightOut: BOOL;
 	moveStatusAllAxis: BOOL;
 	moveStatusAnyAxis: BOOL;
+	moveStatusGap:BOOL;
+	moveStatusTaper:BOOL;
 	
 	moveDoneLeftTopMotor: BOOL;
 	moveDoneRightTopMotor: BOOL;
@@ -206,6 +222,8 @@ VAR_GLOBAL
 (*LED*)
 	Led_Run  AT %Q*:BOOL;
 	Led_Error  AT %Q*:BOOL;
+	
+USE_SingleAxis_Compensation:BOOL:=TRUE;
 (*LimitSwitch*)
 	LS_LeftTop_Far  :BOOL;
 	LS_LeftTop_Near  :BOOL;
@@ -550,6 +568,26 @@ VAR_GLOBAL
 	RxBufferEL			: ComBuffer;	(* Receive data buffer; used with all receive function blocks *)
 	TxBufferEL			: ComBuffer;	(* Transmit data buffer; used with all receive function blocks *)
 
+		(*ColiControl Function*)
+	(*Use in HALF *)
+	CoilControlFunction:BOOL:=FALSE;
+	(*add Beamline taper 模式，入口和出口电机都运动，保持中心gap不变*)
+	//3种模式划分：
+	NormalGapMode:BOOL;
+	IDTaperMode:BOOL;
+	BLTaperMode:BOOL;
+	//BLtaper相关参数
+	BLTaperOrNot:BOOL;//ID taper功能开关，入口电机不动，出口电机动
+	BLUserTaperPositionActual:LREAL;
+	BLUserTaperVelocityActual:LREAL;
+		//
+	min_BLUserTaperPositionNew: LREAL:=0;;
+	max_BLUserTaperPositionNew: LREAL:=1;
+	inRange_BLUserTaperPositionNew: BOOL;
+	//
+	min_BLUserTaperVelocityNew: LREAL:=0;
+	max_BLUserTaperVelocityNew: LREAL:=1;
+	inRange_BLUserTaperVelocityNew: BOOL;
 END_VAR
 
 ]]></Declaration>

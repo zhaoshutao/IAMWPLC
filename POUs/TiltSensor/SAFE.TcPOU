@@ -1,0 +1,580 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <POU Name="SAFE" Id="{7229e59e-c536-4eb2-967b-b786f0d2ae1b}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM SAFE
+VAR
+	TiltSensorFunctionOn:BOOL;
+	//
+	//Top TiltSensor
+	//
+	TiltSensorTopAngle_INT AT%I*: INT;
+	TiltSensorTopAngle_mA: LREAL;
+	TileSensorTop_SN:STRING:='TT1026';
+	TiltSensorTop_ScaleFactor: LREAL:=0.201;
+	fbMovingAvg_TiltSensorTop : FB_Simple_MovingAvg;
+	TiltSensorTop_FilterWindow : INT := 1000;  // 100个周期平均 = 1000ms
+	TiltSensorTop_mA_Filter:LREAL;
+	TiltSensorTop_mA:LREAL;
+	//角度，单位：°
+	TiltSensorTopAngle: LREAL;	
+	//滤波后角度，单位：°
+	TiltSensorTopAngle_Filter: LREAL;
+	TileSensorTop_Underrange AT%I*:BOOL;
+	TileSensorTop_Overrange AT%I*:BOOL;
+	TileSensorTop_Error AT%I*:BOOL;
+	TiltSensorTopAngle_mA_Filter: LREAL;
+	//TileMotorOffset: REAL;
+	//L_Center2Motor: INT:=1375;
+	//初始准直零位角度
+	TiltSensorTop_InitAngle:LREAL;
+	//角度阈值
+	TiltSensorTop_GapThreshold:LREAL;
+	TiltSensorTop_IDTaperThreshold:LREAL;
+	TiltSensorTop_BLTaperThreshold:LREAL;
+	TiltSensorTop_SingleCarrierThreshold:LREAL;
+	TiltSensorTop_DebugThreshold:LREAL;
+	//角度与taper的比例
+	TaperAndTileTopAngleScale:LREAL;
+		//
+	//Bottom TiltSensor
+	//
+	TiltSensorBottomAngle_INT AT%I*: INT;
+	TiltSensorBottomAngle_mA: LREAL;
+	TileSensorBottom_SN:STRING:='TT1026';
+	TiltSensorBottom_ScaleFactor: LREAL:=0.0596;
+	fbMovingAvg_TiltSensorBottom : FB_Simple_MovingAvg;
+	TiltSensorBottom_FilterWindow : INT := 1000;  // 100个周期平均 = 1000ms
+	TiltSensorBottom_mA_Filter:LREAL;
+	TiltSensorBottom_mA:LREAL;
+	//角度，单位：°
+	TiltSensorBottomAngle: LREAL;	
+	//滤波后角度，单位：°
+	TiltSensorBottomAngle_Filter: LREAL;
+	TileSensorBottom_Underrange AT%I*:BOOL;
+	TileSensorBottom_Overrange AT%I*:BOOL;
+	TileSensorBottom_Error AT%I*:BOOL;
+	TiltSensorBottomAngle_mA_Filter: LREAL;
+	//TileMotorOffset: REAL;
+	//L_Center2Motor: INT:=1375;
+	//初始准直零位角度
+	TiltSensorBottom_InitAngle:LREAL;
+	//角度阈值
+	TiltSensorBottom_GapThreshold:LREAL;
+	TiltSensorBottom_IDTaperThreshold:LREAL;
+	TiltSensorBottom_BLTaperThreshold:LREAL;
+	TiltSensorBottom_SingleCarrierThreshold:LREAL;
+	TiltSensorBottom_DebugThreshold:LREAL;
+	//角度与taper的比例
+	TaperAndTileBottomAngleScale:LREAL;
+	
+	//
+	//In TiltSensor
+	//
+	TiltSensorInAngle_INT AT%I*: INT;
+	TiltSensorInAngle_mA: LREAL;
+	TileSensorIn_SN:STRING:='TT1026';
+	TiltSensorIn_ScaleFactor: LREAL:=0.201;
+	fbMovingAvg_TiltSensorIn : FB_Simple_MovingAvg;
+	TiltSensorIn_FilterWindow : INT := 1000;  // 100个周期平均 = 1000ms
+	TiltSensorIn_mA_Filter:LREAL;
+	TiltSensorIn_mA:LREAL;
+	//角度，单位：°
+	TiltSensorInAngle: LREAL;	
+	//滤波后角度，单位：°
+	TiltSensorInAngle_Filter: LREAL;
+	TileSensorIn_Underrange AT%I*:BOOL;
+	TileSensorIn_Overrange AT%I*:BOOL;
+	TileSensorIn_Error AT%I*:BOOL;
+	TiltSensorInAngle_mA_Filter: LREAL;
+	//TileMotorOffset: REAL;
+	//L_Center2Motor: INT:=1375;
+	//初始准直零位角度
+	TiltSensorIn_InitAngle:LREAL;
+	//角度阈值
+	TiltSensorIn_GapThreshold:LREAL;
+	TiltSensorIn_IDTaperThreshold:LREAL;
+	TiltSensorIn_BLTaperThreshold:LREAL;
+	TiltSensorIn_SingleCarrierThreshold:LREAL;
+	TiltSensorIn_DebugThreshold:LREAL;
+	//角度与taper的比例
+	TaperAndTileInAngleScale:LREAL;
+		//
+	//Out TiltSensor
+	//
+	TiltSensorOutAngle_INT AT%I*: INT;
+	TiltSensorOutAngle_mA: LREAL;
+	TileSensorOut_SN:STRING:='TT1026';
+	TiltSensorOut_ScaleFactor: LREAL:=0.0596;
+	fbMovingAvg_TiltSensorOut : FB_Simple_MovingAvg;
+	TiltSensorOut_FilterWindow : INT := 1000;  // 100个周期平均 = 1000ms
+	TiltSensorOut_mA_Filter:LREAL;
+	TiltSensorOut_mA:LREAL;
+	//角度，单位：°
+	TiltSensorOutAngle: LREAL;	
+	//滤波后角度，单位：°
+	TiltSensorOutAngle_Filter: LREAL;
+	TileSensorOut_Underrange AT%I*:BOOL;
+	TileSensorOut_Overrange AT%I*:BOOL;
+	TileSensorOut_Error AT%I*:BOOL;
+	TiltSensorOutAngle_mA_Filter: LREAL;
+	//TileMotorOffset: REAL;
+	//L_Center2Motor: INT:=1375;
+	//初始准直零位角度
+	TiltSensorOut_InitAngle:LREAL;
+	//角度阈值
+	TiltSensorOut_GapThreshold:LREAL;
+	TiltSensorOut_IDTaperThreshold:LREAL;
+	TiltSensorOut_BLTaperThreshold:LREAL;
+	TiltSensorOut_SingleCarrierThreshold:LREAL;
+	TiltSensorOut_DebugThreshold:LREAL;
+	//角度与taper的比例
+	TaperAndTileOutAngleScale:LREAL;
+	
+	a: LREAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//
+//Function On/OFF
+//
+IF NOT TiltSensorFunctionOn THEN
+	RETURN;
+END_IF
+//
+//Top TiltSensor
+//
+TiltSensorTopAngle_mA:=(INT_TO_LREAL(TiltSensorTopAngle_INT)/32767)*16+4;
+// 每个PLC周期（10ms）调用一次,移动平均
+fbMovingAvg_TiltSensorTop(x := TiltSensorTopAngle_mA,    // 输入原始值
+            N := TiltSensorTop_FilterWindow,  // 窗口大小
+            rst := FALSE,       // 不复位
+            y => TiltSensorTopAngle_mA_Filter);     // 输出平均值
+//计算角度
+TiltSensorTopAngle_Filter:=DINT_TO_LREAL(LREAL_TO_DINT(((TiltSensorTopAngle_mA_Filter-12)*(TiltSensorTop_ScaleFactor)+TiltSensorTop_InitAngle)*100000))/100000;//滤波后
+TiltSensorTopAngle:=DINT_TO_LREAL(LREAL_TO_DINT(((TiltSensorTopAngle_mA-12)*(TiltSensorTop_ScaleFactor)+TiltSensorTop_InitAngle)*100000))/100000;//未滤波，原始数据
+//计算电机处由于倾斜导致的偏移量，单位毫米
+//TileMotorOffset:=L_Center2Motor*2*TAN(TiltSensorAngle_degree*PI / 180);
+//阈值触发
+(*先分几种大梁运动模式，每种模式再细分*)
+IF MAIN.pbUserMode THEN
+	IF NormalGapMode THEN
+		IF TiltSensorTopAngle>TiltSensorTop_GapThreshold THEN
+			ErrorID:=1601;
+			Error:=TRUE;
+			ErrorDescription:='TiltSensorTopAngle>TiltSensorTop_Threshold';
+			FB_PlcEmergencyStop();
+			LED_Error:=TRUE;
+		END_IF
+	END_IF
+	IF IDTaperMode THEN
+		IF TiltSensorTopAngle>TiltSensorTop_IDTaperThreshold THEN
+			ErrorID:=1602;
+			Error:=TRUE;
+			ErrorDescription:='TiltSensorTopAngle>TiltSensorTop_IDTaperThreshold';
+			FB_PlcEmergencyStop();
+			LED_Error:=TRUE;
+		END_IF
+	END_IF
+	IF BLTaperMode THEN
+		IF TiltSensorTopAngle>TiltSensorTop_BLTaperThreshold THEN
+			ErrorID:=1603;
+			Error:=TRUE;
+			ErrorDescription:='TiltSensorTopAngle>TiltSensorTop_BLTaperThreshold';
+			FB_PlcEmergencyStop();
+			LED_Error:=TRUE;
+		END_IF
+	END_IF
+ELSIF MAIN.pbSingleCarrierMode THEN
+	IF TiltSensorTopAngle>TiltSensorTop_SingleCarrierThreshold THEN
+		ErrorID:=1604;
+		Error:=TRUE;
+		ErrorDescription:='TiltSensorTopAngle>TiltSensorTop_SingleCarrierThreshold';
+		FB_PlcEmergencyStop();
+		LED_Error:=TRUE;
+	END_IF
+ELSIF MAIN.pbDebugMode THEN
+	IF TiltSensorTopAngle>TiltSensorTop_DebugThreshold THEN
+		ErrorID:=1605;
+		Error:=TRUE;
+		ErrorDescription:='TiltSensorTopAngle>TiltSensorTop_DebugThreshold';
+		FB_PlcEmergencyStop();
+		LED_Error:=TRUE;
+	END_IF
+END_IF
+//角度与taper的比例
+IF NormalGapMode THEN
+	TaperAndTileTopAngleScale:=0;
+ELSIF IDTaperMode THEN
+	TaperAndTileTopAngleScale:=DINT_TO_LREAL(LREAL_TO_DINT((ATAN((UserMode.UserTaperPositionNew/2)/(2*UserMode.L_Center2Motor))*180/PI)*100000))/100000;
+ELSIF BLTaperMode THEN
+	TaperAndTileTopAngleScale:=DINT_TO_LREAL(LREAL_TO_DINT((ATAN((UserMode.BLUserTaperPositionNew/4)/(UserMode.L_HalfGirder))*180/PI)*100000))/100000;
+END_IF
+(*
+//超出检测范围处理
+IF TileSensorTop_Underrange THEN
+	ErrorID:=1604;
+	Error:=TRUE;
+	ErrorDescription:='TileSensorTop_Underrange';
+	//FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+ELSE
+	ErrorID:=0;
+	Error:=FALSE;
+	ErrorDescription:='';
+	LED_Error:=FALSE;
+END_IF
+IF TileSensorTop_Overrange THEN
+	ErrorID:=1605;
+	Error:=TRUE;
+	ErrorDescription:='TileSensorTop_Overrange';
+	//FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+ELSE
+	ErrorID:=0;
+	Error:=FALSE;
+	ErrorDescription:='';
+	LED_Error:=FALSE;
+END_IF
+IF TileSensorTop_Error THEN
+	ErrorID:=1606;
+	Error:=TRUE;
+	ErrorDescription:='TileSensorTop_Error';
+	//FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+ELSE
+	ErrorID:=0;
+	Error:=FALSE;
+	ErrorDescription:='';
+	LED_Error:=FALSE;
+END_IF
+*)
+//
+//Bottom TiltSensor
+//
+TiltSensorBottomAngle_mA:=(INT_TO_LREAL(TiltSensorBottomAngle_INT)/32767)*16+4;
+// 每个PLC周期（10ms）调用一次,移动平均
+fbMovingAvg_TiltSensorBottom(x := TiltSensorBottomAngle_mA,    // 输入原始值
+            N := TiltSensorBottom_FilterWindow,  // 窗口大小
+            rst := FALSE,       // 不复位
+            y => TiltSensorBottomAngle_mA_Filter);     // 输出平均值
+//计算角度
+TiltSensorBottomAngle_Filter:=DINT_TO_LREAL(LREAL_TO_DINT(((TiltSensorBottomAngle_mA_Filter-12)*TiltSensorBottom_ScaleFactor+TiltSensorBottom_InitAngle)*100000))/100000;//滤波后
+TiltSensorBottomAngle:=DINT_TO_LREAL(LREAL_TO_DINT(((TiltSensorBottomAngle_mA-12)*TiltSensorBottom_ScaleFactor+TiltSensorBottom_InitAngle)*100000))/100000;//未滤波，原始数据
+//计算电机处由于倾斜导致的偏移量，单位毫米
+//TileMotorOffset:=L_Center2Motor*2*TAN(TiltSensorAngle_degree*PI / 180);
+//阈值触发
+IF MAIN.pbUserMode THEN
+	IF NormalGapMode THEN
+		IF TiltSensorBottomAngle>TiltSensorBottom_GapThreshold THEN
+			ErrorID:=1606;
+			Error:=TRUE;
+			ErrorDescription:='TiltSensorBottomAngle>TiltSensorBottom_Threshold';
+			FB_PlcEmergencyStop();
+			LED_Error:=TRUE;
+		END_IF
+	END_IF
+	IF IDTaperMode THEN
+		IF TiltSensorBottomAngle>TiltSensorBottom_IDTaperThreshold THEN
+			ErrorID:=1607;
+			Error:=TRUE;
+			ErrorDescription:='TiltSensorBottomAngle>TiltSensorBottom_IDTaperThreshold';
+			FB_PlcEmergencyStop();
+			LED_Error:=TRUE;
+		END_IF
+	END_IF
+	IF BLTaperMode THEN
+		IF TiltSensorBottomAngle>TiltSensorBottom_BLTaperThreshold THEN
+			ErrorID:=1608;
+			Error:=TRUE;
+			ErrorDescription:='TiltSensorBottomAngle>TiltSensorBottom_BLTaperThreshold';
+			FB_PlcEmergencyStop();
+			LED_Error:=TRUE;
+		END_IF
+	END_IF
+ELSIF MAIN.pbSingleCarrierMode THEN
+	IF TiltSensorBottomAngle>TiltSensorBottom_SingleCarrierThreshold THEN
+		ErrorID:=1609;
+		Error:=TRUE;
+		ErrorDescription:='TiltSensorTopAngle>TiltSensorBottom_SingleCarrierThreshold';
+		FB_PlcEmergencyStop();
+		LED_Error:=TRUE;
+	END_IF
+ELSIF MAIN.pbDebugMode THEN
+	IF TiltSensorBottomAngle>TiltSensorBottom_DebugThreshold THEN
+		ErrorID:=1610;
+		Error:=TRUE;
+		ErrorDescription:='TiltSensorBottomAngle>TiltSensorBottom_DebugThreshold';
+		FB_PlcEmergencyStop();
+		LED_Error:=TRUE;
+	END_IF
+END_IF
+//角度与taper的比例
+IF NormalGapMode THEN
+	TaperAndTileBottomAngleScale:=0;
+ELSIF IDTaperMode THEN
+	TaperAndTileBottomAngleScale:=DINT_TO_LREAL(LREAL_TO_DINT((ATAN((UserMode.UserTaperPositionNew/2)/(2*UserMode.L_Center2Motor))*180/PI)*100000))/100000;;
+ELSIF BLTaperMode THEN
+	TaperAndTileBottomAngleScale:=DINT_TO_LREAL(LREAL_TO_DINT((ATAN((UserMode.BLUserTaperPositionNew/4)/(UserMode.L_HalfGirder))*180/PI)*100000))/100000;;
+END_IF
+(*
+//超出检测范围处理
+IF TileSensorBottom_Underrange THEN
+	ErrorID:=1610;
+	Error:=TRUE;
+	ErrorDescription:='TileSensorBottom_Underrange';
+	//FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+ELSE
+	ErrorID:=0;
+	Error:=FALSE;
+	ErrorDescription:='';
+	LED_Error:=FALSE;
+END_IF
+IF TileSensorBottom_Overrange THEN
+	ErrorID:=1611;
+	Error:=TRUE;
+	ErrorDescription:='TileSensorBottom_Overrange';
+	//FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+ELSE
+	ErrorID:=0;
+	Error:=FALSE;
+	ErrorDescription:='';
+	LED_Error:=FALSE;
+END_IF
+IF TileSensorBottom_Error THEN
+	ErrorID:=1612;
+	Error:=TRUE;
+	ErrorDescription:='TileSensorBottom_Error';
+	//FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+ELSE
+	ErrorID:=0;
+	Error:=FALSE;
+	ErrorDescription:='';
+	LED_Error:=FALSE;
+END_IF
+*)
+
+//
+//In TiltSensor
+//
+TiltSensorInAngle_mA:=(INT_TO_LREAL(TiltSensorInAngle_INT)/32767)*16+4;
+// 每个PLC周期（10ms）调用一次,移动平均
+fbMovingAvg_TiltSensorIn(x := TiltSensorInAngle_mA,    // 输入原始值
+            N := TiltSensorIn_FilterWindow,  // 窗口大小
+            rst := FALSE,       // 不复位
+            y => TiltSensorInAngle_mA_Filter);     // 输出平均值
+//计算角度
+TiltSensorInAngle_Filter:=DINT_TO_LREAL(LREAL_TO_DINT(((TiltSensorInAngle_mA_Filter-12)*(TiltSensorIn_ScaleFactor)+TiltSensorIn_InitAngle)*100000))/100000;//滤波后
+TiltSensorInAngle:=DINT_TO_LREAL(LREAL_TO_DINT(((TiltSensorInAngle_mA-12)*(TiltSensorIn_ScaleFactor)+TiltSensorIn_InitAngle)*100000))/100000;//未滤波，原始数据
+//计算电机处由于倾斜导致的偏移量，单位毫米
+//TileMotorOffset:=L_Center2Motor*2*TAN(TiltSensorAngle_degree*PI / 180);
+//阈值触发
+(*先分几种大梁运动模式，每种模式再细分*)
+IF MAIN.pbUserMode THEN
+	IF NormalGapMode THEN
+		IF TiltSensorInAngle>TiltSensorIn_GapThreshold THEN
+			ErrorID:=1601;
+			Error:=TRUE;
+			ErrorDescription:='TiltSensorInAngle>TiltSensorIn_Threshold';
+			FB_PlcEmergencyStop();
+			LED_Error:=TRUE;
+		END_IF
+	END_IF
+	IF IDTaperMode THEN
+		IF TiltSensorInAngle>TiltSensorIn_IDTaperThreshold THEN
+			ErrorID:=1602;
+			Error:=TRUE;
+			ErrorDescription:='TiltSensorInAngle>TiltSensorIn_IDTaperThreshold';
+			FB_PlcEmergencyStop();
+			LED_Error:=TRUE;
+		END_IF
+	END_IF
+	IF BLTaperMode THEN
+		IF TiltSensorInAngle>TiltSensorIn_BLTaperThreshold THEN
+			ErrorID:=1603;
+			Error:=TRUE;
+			ErrorDescription:='TiltSensorInAngle>TiltSensorIn_BLTaperThreshold';
+			FB_PlcEmergencyStop();
+			LED_Error:=TRUE;
+		END_IF
+	END_IF
+ELSIF MAIN.pbSingleCarrierMode THEN
+	IF TiltSensorInAngle>TiltSensorIn_SingleCarrierThreshold THEN
+		ErrorID:=1604;
+		Error:=TRUE;
+		ErrorDescription:='TiltSensorInAngle>TiltSensorIn_SingleCarrierThreshold';
+		FB_PlcEmergencyStop();
+		LED_Error:=TRUE;
+	END_IF
+ELSIF MAIN.pbDebugMode THEN
+	IF TiltSensorInAngle>TiltSensorIn_DebugThreshold THEN
+		ErrorID:=1605;
+		Error:=TRUE;
+		ErrorDescription:='TiltSensorInAngle>TiltSensorIn_DebugThreshold';
+		FB_PlcEmergencyStop();
+		LED_Error:=TRUE;
+	END_IF
+END_IF
+//角度与taper的比例
+IF NormalGapMode THEN
+	TaperAndTileInAngleScale:=0;
+ELSIF IDTaperMode THEN
+	TaperAndTileInAngleScale:=DINT_TO_LREAL(LREAL_TO_DINT((ATAN((UserMode.UserTaperPositionNew/2)/(2*UserMode.L_Center2Motor))*180/PI)*100000))/100000;
+ELSIF BLTaperMode THEN
+	TaperAndTileInAngleScale:=DINT_TO_LREAL(LREAL_TO_DINT((ATAN((UserMode.BLUserTaperPositionNew/4)/(UserMode.L_HalfGirder))*180/PI)*100000))/100000;
+END_IF
+(*
+//超出检测范围处理
+IF TileSensorIn_Underrange THEN
+	ErrorID:=1604;
+	Error:=TRUE;
+	ErrorDescription:='TileSensorIn_Underrange';
+	//FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+ELSE
+	ErrorID:=0;
+	Error:=FALSE;
+	ErrorDescription:='';
+	LED_Error:=FALSE;
+END_IF
+IF TileSensorIn_Overrange THEN
+	ErrorID:=1605;
+	Error:=TRUE;
+	ErrorDescription:='TileSensorIn_Overrange';
+	//FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+ELSE
+	ErrorID:=0;
+	Error:=FALSE;
+	ErrorDescription:='';
+	LED_Error:=FALSE;
+END_IF
+IF TileSensorIn_Error THEN
+	ErrorID:=1606;
+	Error:=TRUE;
+	ErrorDescription:='TileSensorIn_Error';
+	//FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+ELSE
+	ErrorID:=0;
+	Error:=FALSE;
+	ErrorDescription:='';
+	LED_Error:=FALSE;
+END_IF
+*)
+//
+//Out TiltSensor
+//
+TiltSensorOutAngle_mA:=(INT_TO_LREAL(TiltSensorOutAngle_INT)/32767)*16+4;
+// 每个PLC周期（10ms）调用一次,移动平均
+fbMovingAvg_TiltSensorOut(x := TiltSensorOutAngle_mA,    // 输入原始值
+            N := TiltSensorOut_FilterWindow,  // 窗口大小
+            rst := FALSE,       // 不复位
+            y => TiltSensorOutAngle_mA_Filter);     // 输出平均值
+//计算角度
+TiltSensorOutAngle_Filter:=DINT_TO_LREAL(LREAL_TO_DINT(((TiltSensorOutAngle_mA_Filter-12)*TiltSensorOut_ScaleFactor+TiltSensorOut_InitAngle)*100000))/100000;//滤波后
+TiltSensorOutAngle:=DINT_TO_LREAL(LREAL_TO_DINT(((TiltSensorOutAngle_mA-12)*TiltSensorOut_ScaleFactor+TiltSensorOut_InitAngle)*100000))/100000;//未滤波，原始数据
+//计算电机处由于倾斜导致的偏移量，单位毫米
+//TileMotorOffset:=L_Center2Motor*2*TAN(TiltSensorAngle_degree*PI / 180);
+//阈值触发
+IF MAIN.pbUserMode THEN
+	IF NormalGapMode THEN
+		IF TiltSensorOutAngle>TiltSensorOut_GapThreshold THEN
+			ErrorID:=1606;
+			Error:=TRUE;
+			ErrorDescription:='TiltSensorOutAngle>TiltSensorOut_Threshold';
+			FB_PlcEmergencyStop();
+			LED_Error:=TRUE;
+		END_IF
+	END_IF
+	IF IDTaperMode THEN
+		IF TiltSensorOutAngle>TiltSensorOut_IDTaperThreshold THEN
+			ErrorID:=1607;
+			Error:=TRUE;
+			ErrorDescription:='TiltSensorOutAngle>TiltSensorOut_IDTaperThreshold';
+			FB_PlcEmergencyStop();
+			LED_Error:=TRUE;
+		END_IF
+	END_IF
+	IF BLTaperMode THEN
+		IF TiltSensorOutAngle>TiltSensorOut_BLTaperThreshold THEN
+			ErrorID:=1608;
+			Error:=TRUE;
+			ErrorDescription:='TiltSensorOutAngle>TiltSensorOut_BLTaperThreshold';
+			FB_PlcEmergencyStop();
+			LED_Error:=TRUE;
+		END_IF
+	END_IF
+ELSIF MAIN.pbSingleCarrierMode THEN
+	IF TiltSensorOutAngle>TiltSensorOut_SingleCarrierThreshold THEN
+		ErrorID:=1609;
+		Error:=TRUE;
+		ErrorDescription:='TiltSensorInAngle>TiltSensorOut_SingleCarrierThreshold';
+		FB_PlcEmergencyStop();
+		LED_Error:=TRUE;
+	END_IF
+ELSIF MAIN.pbDebugMode THEN
+	IF TiltSensorOutAngle>TiltSensorOut_DebugThreshold THEN
+		ErrorID:=1610;
+		Error:=TRUE;
+		ErrorDescription:='TiltSensorOutAngle>TiltSensorOut_DebugThreshold';
+		FB_PlcEmergencyStop();
+		LED_Error:=TRUE;
+	END_IF
+END_IF
+//角度与taper的比例
+IF NormalGapMode THEN
+	TaperAndTileOutAngleScale:=0;
+ELSIF IDTaperMode THEN
+	TaperAndTileOutAngleScale:=DINT_TO_LREAL(LREAL_TO_DINT((ATAN((UserMode.UserTaperPositionNew/2)/(2*UserMode.L_Center2Motor))*180/PI)*100000))/100000;;
+ELSIF BLTaperMode THEN
+	TaperAndTileOutAngleScale:=DINT_TO_LREAL(LREAL_TO_DINT((ATAN((UserMode.BLUserTaperPositionNew/4)/(UserMode.L_HalfGirder))*180/PI)*100000))/100000;;
+END_IF
+(*
+//超出检测范围处理
+IF TileSensorOut_Underrange THEN
+	ErrorID:=1610;
+	Error:=TRUE;
+	ErrorDescription:='TileSensorOut_Underrange';
+	//FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+ELSE
+	ErrorID:=0;
+	Error:=FALSE;
+	ErrorDescription:='';
+	LED_Error:=FALSE;
+END_IF
+IF TileSensorOut_Overrange THEN
+	ErrorID:=1611;
+	Error:=TRUE;
+	ErrorDescription:='TileSensorOut_Overrange';
+	//FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+ELSE
+	ErrorID:=0;
+	Error:=FALSE;
+	ErrorDescription:='';
+	LED_Error:=FALSE;
+END_IF
+IF TileSensorOut_Error THEN
+	ErrorID:=1612;
+	Error:=TRUE;
+	ErrorDescription:='TileSensorOut_Error';
+	//FB_PlcEmergencyStop();
+	LED_Error:=TRUE;
+ELSE
+	ErrorID:=0;
+	Error:=FALSE;
+	ErrorDescription:='';
+	LED_Error:=FALSE;
+END_IF
+*)]]></ST>
+    </Implementation>
+    <LineIds Name="SAFE">
+      <LineId Id="137" Count="435" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

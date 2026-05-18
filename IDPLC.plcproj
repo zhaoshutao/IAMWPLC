@@ -111,7 +111,16 @@
     <Compile Include="POUs\RS232\FB_SerialCom.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\TiltSensor\FB_Simple_MovingAvg.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\TiltSensor\SAFE.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="RecipeManager.TcRMO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Task_Safe.TcTTO">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -128,6 +137,7 @@
     <Folder Include="POUs\CommonFB\MainFB" />
     <Folder Include="POUs\0.UserMode" />
     <Folder Include="POUs\RS232" />
+    <Folder Include="POUs\TiltSensor" />
     <Folder Include="VISUs" />
   </ItemGroup>
   <ItemGroup>

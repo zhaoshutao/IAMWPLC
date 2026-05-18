@@ -502,9 +502,28 @@ VAR
 	
 	btn_SetMotorAxisPosition: BOOL;
 	MonitorMotorAndLEFunctionOn:BOOL:=TRUE;
+	
+		(*GetMotorTempture*)
+	MotorTemperature AT %I*:ARRAY[0..7] OF UINT;
+	MotorTemperature_LeftTop:LREAL;
+	MotorTemperature_RightTop:LREAL;
+	MotorTemperature_LeftBottom:LREAL;
+	MotorTemperature_RightBottom:LREAL;
+	MotorTemperature_LeftIn:LREAL;
+	MotorTemperature_RightIn:LREAL;
+	MotorTemperature_LeftOut:LREAL;
+	MotorTemperature_RightOut:LREAL;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[(*加载Ricipe参数*)
+      <ST><![CDATA[(*MaintenanceMode*)
+IF MaintenanceMode THEN
+	MaintenanceModeLed:=TRUE;
+	RETURN;
+ELSE
+	MaintenanceModeLed:=FALSE;	
+END_IF
+
+(*加载Ricipe参数*)
 A_InitRecipeParameters();
 IF NOT loadParametersDone THEN
 	RETURN;
@@ -629,6 +648,8 @@ IF MonitorMotorAndLEFunctionOn AND SetMotorAxisPositionDone THEN
 END_IF
 (*A_CheckMaxVelocity*)
 A_CheckMaxVelocity();
+(**)
+A_GetMotorTemperature();
 ]]></ST>
     </Implementation>
     <Folder Name="Axis" Id="{1f5db9b2-f074-43bd-a7a5-f28b002c6ac6}" />
@@ -12702,6 +12723,18 @@ END_CASE
         </NWL>
       </Implementation>
     </Action>
+    <Action Name="A_GetMotorTemperature" Id="{177f6aa7-fb59-4f66-a7a6-1b4260347e60}" FolderPath="Axis\">
+      <Implementation>
+        <ST><![CDATA[MotorTemperature_LeftTop:=UINT_TO_LREAL(MotorTemperature[0])/10;
+MotorTemperature_RightTop:=UINT_TO_LREAL(MotorTemperature[1])/10;
+MotorTemperature_LeftBottom:=UINT_TO_LREAL(MotorTemperature[2])/10;
+MotorTemperature_RightBottom:=UINT_TO_LREAL(MotorTemperature[3])/10;
+MotorTemperature_LeftIn:=UINT_TO_LREAL(MotorTemperature[4])/10;
+MotorTemperature_RightIn:=UINT_TO_LREAL(MotorTemperature[5])/10;
+MotorTemperature_LeftOut:=UINT_TO_LREAL(MotorTemperature[6])/10;
+MotorTemperature_RightOut:=UINT_TO_LREAL(MotorTemperature[7])/10;]]></ST>
+      </Implementation>
+    </Action>
     <Action Name="A_GetTemperatureSensorsData" Id="{d73fb87c-9e06-4b36-8cf6-68d5032eab30}" FolderPath="Temperature\">
       <Implementation>
         <ST><![CDATA[//sensor_1
@@ -12861,18 +12894,18 @@ END_IF
 	Pos_LeftOutMotor:=DINT_TO_LREAL(LREAL_TO_DINT(LeftOutMotor.NcToPlc.ActPos*100000))/100000;
 	Pos_RightOutMotor:=DINT_TO_LREAL(LREAL_TO_DINT(RightOutMotor.NcToPlc.ActPos*100000))/100000;
 
-	moveStatusLeftTop:=LeftTopMotor.Status.Moving;
-	moveStatusRightTop:=RightTopMotor.Status.Moving;
-	moveStatusLeftBottom:=LeftBottomMotor.Status.Moving;
-	moveStatusRightBottom:=RightBottomMotor.Status.Moving;
-	moveStatusLeftIn:=LeftInMotor.Status.Moving;
-	moveStatusRightIn:=RightInMotor.Status.Moving;
-	moveStatusLeftOut:=LeftOutMotor.Status.Moving;
-	moveStatusRightOut:=RightOutMotor.Status.Moving;
-	moveStatusAllAxis:=moveStatusLeftTop AND moveStatusRightTop AND moveStatusLeftBottom AND moveStatusRightBottom
-						AND moveStatusLeftIn AND moveStatusRightIn AND moveStatusLeftOut AND moveStatusRightOut;
-	moveStatusAnyAxis:=moveStatusLeftTop OR moveStatusRightTop OR moveStatusLeftBottom OR moveStatusRightBottom
-						OR moveStatusLeftIn OR moveStatusRightIn OR moveStatusLeftOut OR moveStatusRightOut;
+	moveStatusLeftTopMotor:=LeftTopMotor.Status.Moving;
+	moveStatusRightTopMotor:=RightTopMotor.Status.Moving;
+	moveStatusLeftBottomMotor:=LeftBottomMotor.Status.Moving;
+	moveStatusRightBottomMotor:=RightBottomMotor.Status.Moving;
+	moveStatusLeftInMotor:=LeftInMotor.Status.Moving;
+	moveStatusRightInMotor:=RightInMotor.Status.Moving;
+	moveStatusLeftOutMotor:=LeftOutMotor.Status.Moving;
+	moveStatusRightOutMotor:=RightOutMotor.Status.Moving;
+	moveStatusAllAxisMotor:=moveStatusLeftTopMotor AND moveStatusRightTopMotor AND moveStatusLeftBottomMotor AND moveStatusRightBottomMotor
+						AND moveStatusLeftInMotor AND moveStatusRightInMotor AND moveStatusLeftOutMotor AND moveStatusRightOutMotor;
+	moveStatusAnyAxisMotor:=moveStatusLeftTopMotor OR moveStatusRightTopMotor OR moveStatusLeftBottomMotor OR moveStatusRightBottomMotor
+						OR moveStatusLeftInMotor OR moveStatusRightInMotor OR moveStatusLeftOutMotor OR moveStatusRightOutMotor;
 						
 	Velo_LeftTopMotor:=DINT_TO_LREAL(LREAL_TO_DINT(LeftTopMotor.NcToPlc.ActVelo*100000))/100000;
 	Velo_RightTopMotor:=DINT_TO_LREAL(LREAL_TO_DINT(RightTopMotor.NcToPlc.ActVelo*100000))/100000;
@@ -15985,6 +16018,8 @@ END_CASE
       </Implementation>
     </Action>
     <LineIds Name="MAIN">
+      <LineId Id="5554" Count="5" />
+      <LineId Id="5552" Count="1" />
       <LineId Id="2277" Count="0" />
       <LineId Id="4067" Count="0" />
       <LineId Id="4075" Count="1" />
@@ -16020,6 +16055,7 @@ END_CASE
       <LineId Id="5007" Count="17" />
       <LineId Id="5034" Count="3" />
       <LineId Id="5025" Count="8" />
+      <LineId Id="5550" Count="1" />
       <LineId Id="4453" Count="0" />
       <LineId Id="3351" Count="0" />
     </LineIds>
@@ -16174,6 +16210,13 @@ END_CASE
       <LineId Id="489" Count="0" />
       <LineId Id="397" Count="9" />
       <LineId Id="39" Count="0" />
+    </LineIds>
+    <LineIds Name="MAIN.A_GetMotorTemperature">
+      <LineId Id="1" Count="2" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="6" Count="1" />
+      <LineId Id="4" Count="0" />
     </LineIds>
     <LineIds Name="MAIN.A_GetTemperatureSensorsData">
       <LineId Id="37" Count="0" />

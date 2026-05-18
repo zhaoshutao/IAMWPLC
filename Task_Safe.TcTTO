@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <Task Name="Task_Safe" Id="{8c136848-04ac-49da-9a4a-7347bb28d8da}">
+    <!--CycleTime in micro seconds.-->
+    <CycleTime>1000</CycleTime>
+    <Priority>1</Priority>
+    <PouCall>
+      <Name>SAFE</Name>
+    </PouCall>
+    <TaskFBGuid>{3d25e8de-ebcc-4da6-9c65-b97bb2aaf780}</TaskFBGuid>
+    <Fb_init>{76d89ca4-623b-4096-8170-e5064b3cef4b}</Fb_init>
+    <Fb_exit>{065c7eea-11c3-4f2e-9997-45d3e4b59f69}</Fb_exit>
+    <CycleUpdate>{b8010ce6-0737-4514-8c10-5859f6da0173}</CycleUpdate>
+    <PostCycleUpdate>{c06c88f6-efb7-4b7d-ae8e-29abf5fbf7c2}</PostCycleUpdate>
+  </Task>
+</TcPlcObject>

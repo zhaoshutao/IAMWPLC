@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <POU Name="FB_Simple_MovingAvg" Id="{58139c47-ba61-4f11-8629-0836ae15ee29}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Simple_MovingAvg
+VAR_INPUT
+    x : LREAL;       // 输入值
+    N : INT := 10;  // 平均点数
+    rst : BOOL;     // 复位
+END_VAR
+VAR_OUTPUT
+    y : LREAL;       // 平均值
+END_VAR
+VAR
+    buf : ARRAY[0..999] OF LREAL;  // 固定50个点
+    sum_x : LREAL;
+    cnt : INT := 0;
+    idx : INT := 0;
+    n_actual : INT;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// 复位处理
+IF rst THEN
+    sum_x := 0.0;
+    cnt := 0;
+    idx := 0;
+    y := 0.0;
+    RETURN;
+END_IF;
+
+// 限制N在1-1000之间
+n_actual := N;
+IF n_actual < 1 THEN
+    n_actual := 1;
+ELSIF n_actual > 1000 THEN
+    n_actual := 1000;
+END_IF;
+
+// 移动平均计算
+IF cnt >= n_actual THEN
+    // 缓冲区已满，减去最旧的值
+    sum_x := sum_x - buf[idx];
+ELSE
+    // 缓冲区未满，只增加计数
+    cnt := cnt + 1;
+END_IF;
+
+// 存入新值
+buf[idx] := x;
+sum_x := sum_x + x;
+
+// 更新索引
+idx := idx + 1;
+IF idx >= n_actual THEN
+    idx := 0;
+END_IF;
+
+// 计算平均值
+IF cnt > 0 THEN
+    y := sum_x / cnt;
+ELSE
+    y := 0.0;
+END_IF;]]></ST>
+    </Implementation>
+    <LineIds Name="FB_Simple_MovingAvg">
+      <LineId Id="25" Count="40" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

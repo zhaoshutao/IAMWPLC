@@ -108,6 +108,15 @@ VAR
 	(*¼ì²âµ½ÏÞÎ»£¬»Ö¸´Move×´Ì¬*)
 	FTrig_ReachLS: F_TRIG;
 	FTrig_btn_GapMove: F_TRIG;
+	
+	RTrig_LeftTopMove:R_TRIG;
+	RTrig_RightTopMove:R_TRIG;
+	RTrig_LeftBottomMove:R_TRIG;
+	RTrig_RightBottomMove:R_TRIG;
+	RTrig_LeftInMove:R_TRIG;
+	RTrig_RightInMove:R_TRIG;
+	RTrig_LeftOutMove:R_TRIG;
+	RTrig_RightOutMove:R_TRIG;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[(*********Monitor All Carrirt Position**********************)
@@ -141,6 +150,8 @@ END_IF
 
 (**********************MOVE****************)
 A_DebugMove();
+
+A_CheckTargetPos();
 (**********************STOP***************)
 A_DebugStop();
 
@@ -157,6 +168,194 @@ IF FTrig_ReachLS.Q THEN
 END_IF
 ]]></ST>
     </Implementation>
+    <Action Name="A_CheckTargetPos" Id="{3518206d-5987-427c-af62-ec71343f2283}">
+      <Implementation>
+        <ST><![CDATA[RTrig_LeftTopMove(CLK:=btn_LeftTopLinMove);
+IF RTrig_LeftTopMove.Q THEN
+	IF NOT st_Power THEN
+			ErrorID:=1501;
+			Error:=TRUE;
+			ErrorDescription:='Plz PowerOn Frist';
+			LED_Error:=TRUE;
+			//RETURN;
+		ELSIF ABS(LeftTopLinPositionNew-Pos_LeftTopLin)>Threshold_LeftTopPos_Debug THEN
+			btn_LeftTopLinStop:=TRUE;
+			btn_LeftTopLinMove:=FALSE;
+			ErrorID:=1502;
+			Error:=TRUE;
+			ErrorDescription:='targetPos Out of range!';
+			LED_Error:=TRUE;
+			//RETURN;
+		ELSE
+			ErrorID:=0;
+			Error:=FALSE;
+			ErrorDescription:='';
+			LED_Error:=FALSE;
+		END_IF
+END_IF
+RTrig_RightTopMove(CLK:=btn_RightTopLinMove);
+IF RTrig_RightTopMove.Q THEN
+	IF NOT st_Power THEN
+			ErrorID:=1503;
+			Error:=TRUE;
+			ErrorDescription:='Plz PowerOn Frist';
+			LED_Error:=TRUE;
+			//RETURN;
+		ELSIF ABS(RightTopLinPositionNew-Pos_RightTopLin)>Threshold_RightTopPos_Debug THEN
+			btn_RightTopLinStop:=TRUE;
+			btn_RightTopLinMove:=FALSE;
+			ErrorID:=1504;
+			Error:=TRUE;
+			ErrorDescription:='targetPos Out of range!';
+			LED_Error:=TRUE;
+			//RETURN;
+		ELSE
+			ErrorID:=0;
+			Error:=FALSE;
+			ErrorDescription:='';
+			LED_Error:=FALSE;
+		END_IF
+END_IF
+RTrig_LeftBottomMove(CLK:=btn_LeftBottomLinMove);
+IF RTrig_LeftBottomMove.Q THEN
+	IF NOT st_Power THEN
+			ErrorID:=1505;
+			Error:=TRUE;
+			ErrorDescription:='Plz PowerOn Frist';
+			LED_Error:=TRUE;
+			//RETURN;
+		ELSIF ABS(LeftBottomLinPositionNew-Pos_LeftBottomLin)>Threshold_LeftBottomPos_Debug THEN
+			btn_LeftBottomLinStop:=TRUE;
+			btn_LeftBottomLinMove:=FALSE;
+			ErrorID:=1506;
+			Error:=TRUE;
+			ErrorDescription:='targetPos Out of range!';
+			LED_Error:=TRUE;
+			//RETURN;
+		ELSE
+			ErrorID:=0;
+			Error:=FALSE;
+			ErrorDescription:='';
+			LED_Error:=FALSE;
+		END_IF
+END_IF
+RTrig_RightBottomMove(CLK:=btn_RightBottomLinMove);
+IF RTrig_RightBottomMove.Q THEN
+	IF NOT st_Power THEN
+			ErrorID:=1507;
+			Error:=TRUE;
+			ErrorDescription:='Plz PowerOn Frist';
+			LED_Error:=TRUE;
+			//RETURN;
+		ELSIF ABS(RightBottomLinPositionNew-Pos_RightBottomLin)>Threshold_RightBottomPos_Debug THEN
+			btn_RightBottomLinStop:=TRUE;
+			btn_RightBottomLinMove:=FALSE;
+			ErrorID:=1508;
+			Error:=TRUE;
+			ErrorDescription:='targetPos Out of range!';
+			LED_Error:=TRUE;
+			//RETURN;
+		ELSE
+			ErrorID:=0;
+			Error:=FALSE;
+			ErrorDescription:='';
+			LED_Error:=FALSE;
+		END_IF
+END_IF
+RTrig_LeftInMove(CLK:=btn_LeftInLinMove);
+IF RTrig_LeftInMove.Q THEN
+	IF NOT st_Power THEN
+			ErrorID:=1509;
+			Error:=TRUE;
+			ErrorDescription:='Plz PowerOn Frist';
+			LED_Error:=TRUE;
+			//RETURN;
+		ELSIF ABS(LeftInLinPositionNew-Pos_LeftInLin)>Threshold_LeftInPos_Debug THEN
+			btn_LeftInLinStop:=TRUE;
+			btn_LeftInLinMove:=FALSE;
+			ErrorID:=1510;
+			Error:=TRUE;
+			ErrorDescription:='targetPos Out of range!';
+			LED_Error:=TRUE;
+			//RETURN;
+		ELSE
+			ErrorID:=0;
+			Error:=FALSE;
+			ErrorDescription:='';
+			LED_Error:=FALSE;
+		END_IF
+END_IF
+RTrig_RightInMove(CLK:=btn_RightInLinMove);
+IF RTrig_RightInMove.Q THEN
+	IF NOT st_Power THEN
+			ErrorID:=1511;
+			Error:=TRUE;
+			ErrorDescription:='Plz PowerOn Frist';
+			LED_Error:=TRUE;
+			//RETURN;
+		ELSIF ABS(RightInLinPositionNew-Pos_RightInLin)>Threshold_RightInPos_Debug THEN
+			btn_RightInLinStop:=TRUE;
+			btn_RightInLinMove:=FALSE;
+			ErrorID:=1512;
+			Error:=TRUE;
+			ErrorDescription:='targetPos Out of range!';
+			LED_Error:=TRUE;
+			//RETURN;
+		ELSE
+			ErrorID:=0;
+			Error:=FALSE;
+			ErrorDescription:='';
+			LED_Error:=FALSE;
+		END_IF
+END_IF
+RTrig_LeftOutMove(CLK:=btn_LeftOutLinMove);
+IF RTrig_LeftOutMove.Q THEN
+	IF NOT st_Power THEN
+			ErrorID:=1513;
+			Error:=TRUE;
+			ErrorDescription:='Plz PowerOn Frist';
+			LED_Error:=TRUE;
+			//RETURN;
+		ELSIF ABS(LeftOutLinPositionNew-Pos_LeftOutLin)>Threshold_LeftOutPos_Debug THEN
+			btn_LeftOutLinStop:=TRUE;
+			btn_LeftOutLinMove:=FALSE;
+			ErrorID:=1514;
+			Error:=TRUE;
+			ErrorDescription:='targetPos Out of range!';
+			LED_Error:=TRUE;
+			//RETURN;
+		ELSE
+			ErrorID:=0;
+			Error:=FALSE;
+			ErrorDescription:='';
+			LED_Error:=FALSE;
+		END_IF
+END_IF
+RTrig_RightOutMove(CLK:=btn_RightOutLinMove);
+IF RTrig_RightOutMove.Q THEN
+	IF NOT st_Power THEN
+			ErrorID:=1515;
+			Error:=TRUE;
+			ErrorDescription:='Plz PowerOn Frist';
+			LED_Error:=TRUE;
+			//RETURN;
+		ELSIF ABS(RightOutLinPositionNew-Pos_RightOutLin)>Threshold_RightOutPos_Debug THEN
+			btn_RightOutLinStop:=TRUE;
+			btn_RightOutLinMove:=FALSE;
+			ErrorID:=1516;
+			Error:=TRUE;
+			ErrorDescription:='targetPos Out of range!';
+			LED_Error:=TRUE;
+			//RETURN;
+		ELSE
+			ErrorID:=0;
+			Error:=FALSE;
+			ErrorDescription:='';
+			LED_Error:=FALSE;
+		END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Action>
     <Action Name="A_DebugMove" Id="{688a6355-0b41-43f8-8d7d-2cc411073576}">
       <Implementation>
         <ST><![CDATA[(*********************************************************************LeftTop_MOVE*****************************************************************)
@@ -943,12 +1142,20 @@ END_CASE]]></ST>
       <LineId Id="563" Count="0" />
       <LineId Id="347" Count="0" />
       <LineId Id="564" Count="0" />
+      <LineId Id="909" Count="0" />
+      <LineId Id="908" Count="0" />
       <LineId Id="566" Count="0" />
       <LineId Id="565" Count="0" />
       <LineId Id="349" Count="5" />
       <LineId Id="567" Count="3" />
       <LineId Id="355" Count="1" />
       <LineId Id="572" Count="0" />
+    </LineIds>
+    <LineIds Name="DebugMode.A_CheckTargetPos">
+      <LineId Id="2" Count="90" />
+      <LineId Id="1" Count="0" />
+      <LineId Id="94" Count="90" />
+      <LineId Id="93" Count="0" />
     </LineIds>
     <LineIds Name="DebugMode.A_DebugMove">
       <LineId Id="2" Count="28" />
