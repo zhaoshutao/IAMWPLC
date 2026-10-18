@@ -513,12 +513,31 @@ VAR
 	MotorTemperature_RightIn:LREAL;
 	MotorTemperature_LeftOut:LREAL;
 	MotorTemperature_RightOut:LREAL;
+	
+		//
+	//Ids interlock.
+	//
+	//功能开关
+	IDsInterlockFunctionOn:BOOL:=TRUE;
+	//是否最大间隙，TRUE为最大间隙
+	bID2MaxGapIn AT %I*:BOOL;
+	bID3MaxGapIn AT %I*:BOOL;
+	//本台插入件运动许可,往小间隙
+	bLocalIDMoveMinPermit:BOOL:=TRUE;
+	//本台插入件运动许可,往大间隙
+	bLocalIDMoveMaxPermit:BOOL:=TRUE;//永久可以，不限制
+	//本台插入件是否最大间隙或者在附近
+	IsLocolIDAtMaxGap:BOOL;
+	LocolIDAtMaxGapTolerance:LREAL:=0.1;
+	//有两台及以上不在最大间隙，报警
+	bIDsInterlockAlarm:BOOL;
+	//本机是否在最大间隙
+	blocalMaxGapOut AT %Q*:BOOL;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[(*MaintenanceMode*)
 IF MaintenanceMode THEN
 	MaintenanceModeLed:=TRUE;
-	RETURN;
 ELSE
 	MaintenanceModeLed:=FALSE;	
 END_IF
@@ -538,6 +557,10 @@ IF Global_Variables.m_restartTC THEN
 		A_RestartTC();
 	END_IF
 END_IF
+(*多台插入件互锁*)
+A_IDsInterlock();
+(*检查是否允许插入件运动*)
+A_CheckIDMovePermit();
 (*******InitAxisParameters*******)
 A_InitAxisParameters();
 (*******CheckLimitSwitch*******)
@@ -655,6 +678,7 @@ A_GetMotorTemperature();
     <Folder Name="Axis" Id="{1f5db9b2-f074-43bd-a7a5-f28b002c6ac6}" />
     <Folder Name="Check" Id="{79c48f21-8e44-4159-8773-87594d6e7620}" />
     <Folder Name="Driver" Id="{06d9eaf4-b0e1-444b-9d9d-89e6e18ffc32}" />
+    <Folder Name="IDsInterlock" Id="{1f819ffb-fd42-4aaa-b991-d0d804290c0b}" />
     <Folder Name="LinearEncoder" Id="{4f24c8b2-fa71-4a79-b365-8e83326d2610}" />
     <Folder Name="Recipe" Id="{c556f121-0220-445e-afd2-6e585e1080be}" />
     <Folder Name="Safe" Id="{8d52a6a5-8a59-474d-a357-67246f4286de}" />
@@ -709,6 +733,19 @@ A_GetMotorTemperature();
 ELSE
 	Hardware_EmergencyStop:=TRUE;
 END_IF
+]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="A_CheckIDMovePermit" Id="{8332ee25-851f-4863-835d-9636901d1cec}" FolderPath="Check\">
+      <Implementation>
+        <ST><![CDATA[//bLocalIDMovePermit
+//bMovePermit
+//
+//ID互锁允许 AND 限位正常 ADN taper没有超限 AND 不是维护模式 AND 驱动器错误
+//则许可运动
+//
+bPositiveMovePermit:=bLocalIDMoveMaxPermit AND Unreach_LS_Far AND NOT Taper_BeyondRangeNegtive AND NOT MaintenanceMode;
+bNegativeMovePermit:=bLocalIDMoveMinPermit AND Unreach_LS_Near AND NOT Taper_BeyondRangePositive AND NOT MaintenanceMode;
 ]]></ST>
       </Implementation>
     </Action>
@@ -12822,6 +12859,71 @@ END_IF
 					]]></ST>
       </Implementation>
     </Action>
+    <Action Name="A_IDsInterlock" Id="{54aa462d-1821-4aef-8efb-f7c72960cb83}" FolderPath="IDsInterlock\">
+      <Implementation>
+        <ST><![CDATA[//
+//功能说明：
+//特别针对如R21三台插入件，只有两台都在最大间隙时候，第三台才运行运动，某台不在最大间隙，其它两台不允许运行
+//
+
+//
+//1.功能开关
+//
+IF NOT IDsInterlockFunctionOn THEN
+	RETURN;
+END_IF
+//
+//2.本机是否在最大GAP，输出%Q*信号
+//
+IF MAIN.pbUserMode AND NormalGapMode THEN//只在常规GAP模式判断
+	IF ABS(UserMode.UserGapPositionDisplay - max_UserGapPositionNew)< LocolIDAtMaxGapTolerance THEN
+		IsLocolIDAtMaxGap:=TRUE;
+		blocalMaxGapOut:=TRUE;
+	ELSE
+		IsLocolIDAtMaxGap:=FALSE;
+		blocalMaxGapOut:=FALSE;
+	END_IF
+ELSE//其它模式默认不在最大间隙
+		IsLocolIDAtMaxGap:=FALSE;
+		blocalMaxGapOut:=FALSE;
+END_IF
+//
+//2.运动许可判断，如果不许可，关联到MOVE
+//其它两路插入件，有其一不在最大间隙，许可即撤销，TRUE变FALSE
+//
+IF NOT(bID2MaxGapIn AND bID3MaxGapIn) THEN
+	//运动许可撤销，运动功能限制放在MC_Power中
+	bLocalIDMoveMinPermit:=FALSE;
+	//如果本台同时在最大间隙，报warning
+	IF IsLocolIDAtMaxGap THEN 
+		WarningID:=1001;
+		Warning:=TRUE;
+		WarningDescription:='IDsInterlock warning,ID is not permited to move small';
+		//ErrorDescription:='IDsInterlock warning,ID is not permited to move small';//临时用ErrorDescription传递信息
+	//如果本台也不在最大间隙，有问题，报Error	
+	ELSE
+		WarningID:=1002;
+		Warning:=TRUE;
+		WarningDescription:='IDsInterlock warning,check all IDs GAP';
+		//ErrorDescription:='IDsInterlock warning,check all IDs GAP';//临时用ErrorDescription传递信息
+	END_IF
+ELSE
+	bLocalIDMoveMinPermit:=TRUE;
+	WarningID:=0;
+	Warning:=FALSE;
+	WarningDescription:='';
+	//ErrorDescription:='';//临时用ErrorDescription传递信息
+END_IF
+//RESET warning状态
+IF btn_Reset THEN
+	WarningID:=0;
+	Warning:=FALSE;
+	WarningDescription:='';
+	//ErrorDescription:='';//临时用ErrorDescription传递信息
+END_IF
+]]></ST>
+      </Implementation>
+    </Action>
     <Action Name="A_InitAxisParameters" Id="{a92c2dd6-12b0-4a71-a4bc-d7afbc965cb4}" FolderPath="Axis\">
       <Implementation>
         <ST><![CDATA[//LE
@@ -16018,7 +16120,8 @@ END_CASE
       </Implementation>
     </Action>
     <LineIds Name="MAIN">
-      <LineId Id="5554" Count="5" />
+      <LineId Id="5554" Count="2" />
+      <LineId Id="5558" Count="1" />
       <LineId Id="5552" Count="1" />
       <LineId Id="2277" Count="0" />
       <LineId Id="4067" Count="0" />
@@ -16033,6 +16136,8 @@ END_CASE
       <LineId Id="2284" Count="0" />
       <LineId Id="2378" Count="0" />
       <LineId Id="2285" Count="0" />
+      <LineId Id="6073" Count="2" />
+      <LineId Id="6072" Count="0" />
       <LineId Id="2287" Count="17" />
       <LineId Id="2838" Count="3" />
       <LineId Id="2305" Count="7" />
@@ -16072,6 +16177,13 @@ END_CASE
       <LineId Id="36" Count="1" />
       <LineId Id="4" Count="0" />
       <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="MAIN.A_CheckIDMovePermit">
+      <LineId Id="1" Count="1" />
+      <LineId Id="6" Count="1" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="3" Count="2" />
     </LineIds>
     <LineIds Name="MAIN.A_CheckKillSwitch">
       <LineId Id="42" Count="0" />
@@ -16243,6 +16355,55 @@ END_CASE
       <LineId Id="89" Count="1" />
       <LineId Id="98" Count="17" />
       <LineId Id="91" Count="5" />
+    </LineIds>
+    <LineIds Name="MAIN.A_IDsInterlock">
+      <LineId Id="1" Count="1" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="3" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="22" Count="1" />
+      <LineId Id="57" Count="2" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="60" Count="1" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="66" Count="1" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="70" Count="1" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="29" Count="1" />
+      <LineId Id="94" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="82" Count="2" />
+      <LineId Id="102" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="96" Count="1" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="32" Count="1" />
+      <LineId Id="99" Count="1" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="105" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="88" Count="0" />
+      <LineId Id="87" Count="0" />
+      <LineId Id="91" Count="1" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="104" Count="0" />
+      <LineId Id="90" Count="0" />
+      <LineId Id="43" Count="0" />
     </LineIds>
     <LineIds Name="MAIN.A_InitAxisParameters">
       <LineId Id="1" Count="1" />

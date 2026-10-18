@@ -8,6 +8,10 @@ VAR_GLOBAL
 (*Maintenance Mode*)
 	MaintenanceMode:BOOL;
 	MaintenanceModeLed:BOOL;
+(*本台插入件运动许可，与MC_Power挂钩*)
+	bMovePermit:BOOL:=TRUE;
+	bPositiveMovePermit:BOOL:=TRUE;
+	bNegativeMovePermit:BOOL:=TRUE;
 (*RecipeDescription*)
 	RecipeSavedDate:STRING;
 	RecipeDescription:STRING;
@@ -23,6 +27,10 @@ VAR_GLOBAL
 	Error:BOOL;
 	ErrorID:DINT;
 	ErrorDescription:STRING;
+(*Warning Massage*)
+	Warning:BOOL;
+	WarningID:DINT;
+	WarningDescription:STRING;
 (*加载配方参数*)
 	LoadRecipeParameters:BOOL;
 	loadParametersDone:BOOL;
@@ -88,6 +96,17 @@ VAR_GLOBAL
 	Threshold_RightInPos_Debug: LREAL:=0.4;
 	Threshold_LeftOutPos_Debug: LREAL:=0.4;
 	Threshold_RightOutPos_Debug: LREAL:=0.4;
+(*Taper Mode Threshold,，未添加代码2026.10.18*)
+	Range_TaperPos:LREAL:=5.01;
+	Range_TaperVelo:LREAL:=1.01;
+	Threshold_TaperLeftPos:LREAL:=0.01;
+	Threshold_TaperLeftVelo:LREAL:=0.2;
+	Threshold_TaperRightPos:LREAL:=0.05;
+	Threshold_TaperRightVelo:LREAL:=0.5;
+	Taper_BeyondRangePositive:BOOL;
+	Threshold_TaperTopPos:LREAL:=0.05;
+	Threshold_TaperBottomPos:LREAL:=0.05;
+	Taper_BeyondRangeNegtive:BOOL;
 (*SingleCarrierMode threshold*)
 	Threshold_TopPos_SingleCarrier: LREAL:=2;
 	Threshold_BottomPos_SingleCarrier: LREAL:=2;
